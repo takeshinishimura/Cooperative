@@ -1,0 +1,79 @@
+---
+project:
+  type: website
+  output-dir: docs
+title: "顔認識"
+format:
+  html:
+    toc: true
+    toc-title: 目次
+    toc_float: true
+    toc-depth: 2
+    number-sections: true
+    theme: sketchy
+lang: "ja"
+---
+
+授業では，ウィリアム・ホガースの「ビール街」と「ジン横丁」を紹介した。
+これらの絵画を見たければ，Google検索すると多くの画像が表示される。
+これらの画像のオリジナルはどこにあるのだろうか。
+レポートや論文を書くときは，常にオリジナルがどれなのか，どこにあるのかを考え，オリジナルを見つけなければならない。
+
+日本語での検索だとなかなか見つからない。
+そこで英語で検索してみる。
+[Beer Street and Gin Lane](https://en.wikipedia.org/wiki/Beer_Street_and_Gin_Lane){target="_blank"} というWikipediaのページが見つかる。
+残念ながら，Wikipediaには「ビール街とジン横丁」の日本語のページはないようである。
+Wikipediaで使われている画像はどこから来たものだろうか。
+
+調べると，大英博物館に所蔵されていることがわかる。
+そして，CC BY-NC-SA 4.0ライセンスの下，大英博物館の次のページで公開されていることまでたどり着ける。
+
+::: {.callout-note collapse="true" icon="true"}
+## William Hogarth (1751) *Gin Lane*
+
+[William Hogarth "Gin Lane" © The Trustees of the British Museum](https://www.britishmuseum.org/collection/object/P_1868-0822-1595){target="_blank"}
+:::
+
+この画像を自分のパソコンにダウンロードしてみよう。
+右下の「Use this image」からダウンロードできる。
+似たようなものが4種類あり，ここではAsset numberが16606001のファイルをダウンロードする。
+念のため，ダウンロードしてもよいことを確認しておく。
+ファイル名は「16606001.JPG」となるはずである。
+
+この画像の中にどういう人がいるか興味あるだろう。
+一人ずつ確認することは容易であるが，もしかしたら見落とす可能性もある。
+そこで，Pythonを使ってこの画像の顔認識をしてみる。
+
+
+## 画像の顔認識
+
+Pythonで顔認識は以下のようにして実現できる。
+
+- [face_recognition.ipynb](https://github.com/takeshinishimura/Cooperative/blob/main/face_recognition.ipynb){target="_blank"}
+
+先ほどダウンロードしたファイルを読み込んで，顔認識してみよう。
+
+出力されたファイルを見ると，顔認識されていないように見える。
+実際，facesの結果が()であることから，顔認識されていないことが分かる。
+プログラミングに間違いがあるだろうか。
+もしかしたら，絵画の中の顔は認識できないのかもしれない。
+明らかに人物が写っている写真を使って，このプログラムで顔認識できるかどうか，試してみよう。
+
+
+## 画像の顔認識の別のやり方
+
+顔認識の別のやり方は，例えば以下のようにして実現できる。
+
+- [face_recognition2.ipynb](https://github.com/takeshinishimura/Cooperative/blob/main/face_recognition2.ipynb){target="_blank"}
+
+最初のインストールに時間がかかる。
+顔認識のための
+これは期待できそうだ。
+
+先ほどダウンロードしたファイルを読み込んで，顔認識してみよう。
+
+出力されたファイルを見ると，4人が顔認識されている。
+このモデルは精度が高いことが分かる。
+ここでは，[ternaus/retinaface](https://github.com/ternaus/retinaface){target="_blank"} を使って顔認識している。
+PyTorchを聞いたことはないだろうか。
+興味のある人はいろいろ調べてみよう。
