@@ -68,7 +68,6 @@ Pythonで顔認識は以下のようにして実現できる。
 - [face_recognition2.ipynb](https://github.com/takeshinishimura/Cooperative/blob/main/face_recognition2.ipynb){target="_blank"}
 
 最初のインストールに時間がかかる。
-顔認識のための
 これは期待できそうだ。
 
 先ほどダウンロードしたファイルを読み込んで，顔認識してみよう。
