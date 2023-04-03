@@ -2,7 +2,7 @@
 project:
   type: website
   output-dir: docs
-title: "ガイダンス"
+title: "はじめに"
 format:
   html:
     toc: true
