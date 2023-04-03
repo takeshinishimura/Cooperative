@@ -8,9 +8,9 @@
 各項目の★は難易度を表しています。
 ★3つの項目は難しいため，スキップして構いません。
 
-- [はじめに](https://takeshinishimura.github.io/Cooperative/01_introduction.html) ★☆☆
-- [統計データを用いた作図](https://takeshinishimura.github.io/Cooperative/02_stats.html) ★☆☆
-- [顔認識](https://takeshinishimura.github.io/Cooperative/03_face.html) ★★★
+1. [はじめに](https://takeshinishimura.github.io/Cooperative/01_introduction.html) ★☆☆
+1. [統計データを用いた作図](https://takeshinishimura.github.io/Cooperative/02_stats.html) ★☆☆
+1. [顔認識](https://takeshinishimura.github.io/Cooperative/03_face.html) ★★★
 
 
 質問等はメールで連絡するか，直接聞いてください。
