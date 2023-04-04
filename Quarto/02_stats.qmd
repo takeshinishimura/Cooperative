@@ -1,0 +1,253 @@
+---
+project:
+  type: website
+  output-dir: docs
+title: "統計データを用いた作図"
+format:
+  html:
+    toc: true
+    toc-title: 目次
+    toc_float: true
+    toc-depth: 2
+    number-sections: true
+    theme: lumen
+lang: "ja"
+---
+
+ここでは，農業協同組合数の推移の折れ線グラフを作成する。
+日本の統計データの多くは，[政府統計の総合窓口](https://www.e-stat.go.jp/){target="_blank"}から取得可能である。
+このサイトのことをe-Statと呼ぶ。
+e-Statがどのようなサイトかは，[『ｅ－Ｓｔａｔ』とは？](https://www.e-stat.go.jp/help){target="_blank"}などを読むとよい。
+
+農業協同組合に関する統計データもe-Statから取得できる。
+農業協同組合数の推移がわかる最新のデータは，次のページから取得できる。
+実際に検索してみて，このページにたどり着けるかどうか，試してみよう。
+
+::: {.callout-note collapse="true" icon="true"}
+## [農業協同組合等現在数統計 確報 令和３年度農業協同組合等現在数統計 総括の部 1 農業協同組合、同連合会及び農事組合法人数の推移（第１表） 年度次
+
+[https://www.e-stat.go.jp/stat-search/files?stat_infid=000032206155](https://www.e-stat.go.jp/stat-search/files?stat_infid=000032206155){target="_blank"}
+:::
+
+さて，ここからどのようにして折れ線グラフを書くか。
+Excel形式でダウンロードできるので，ダウンロードしてみる。
+r006-02-001.xlsという名前のファイル名で，ファイルがダウンロードされたはずである。
+あとは，Microsoft Officeを構成するアプリケーションのひとつであるExcelでファイルを開き，Excelの機能を使って折れ線グラフを作成することができる。
+Excelの図で満足できる人はここで終わりである。
+以下の説明は，Excelでは満足できない人のためのものである。
+
+
+## ExcelファイルをRで扱う
+
+### 作業ディレクトリの変更
+
+まず，Rを起動し，現在，パソコンのどこにいるのかを確認する。
+どこというのは，ディレクトリ（フォルダとも呼ぶ）構成のどこかという意味であり，Windowsなら"C:"から始まり，macOSなら"/"から始まる階層構造のどこかにいるはずである。
+何も設定をしていなければ，Rの起動直後は，ホームディレクトリにいる。
+次のコマンドで，自分がどこにいるかを確認できる。
+
+```{r}
+#| include: false
+#| echo: false
+#| eval: false
+getwd()
+```
+
+作業グディレクトリ（working directory）だからwdであり，それを得るという意味でgetを付けている。
+通常，コマンドの意味は知る必要ないが，覚えるためには意味とコマンドの綴りが対応させなければならず，必然的に覚えざるを得ない。
+作業グディレクトリを設定するには次のようにする。
+
+```{r}
+#| include: false
+#| echo: false
+#| eval: false
+setwd("~")
+```
+
+"~"はホームディレクトリを意味する。
+"~"を自分が作業したいところにすればよい。
+よくわからないと思うので，最初はExcelファイルをホームディレクトリに移動させてそこで，作業するのも悪くない。
+Excelファイルの移動は，Windowsならエクスプローラーを使い，macOSならファインダーを使えばよい。
+この場合，作業ディレクトリは変更する必要がない。
+
+
+### Excelファイルを読み込む
+
+実は，いきなりハードルが高い。
+Excelファイルを読み込むのがハードルが高いのではなく，e-StatにあるExcelファイルのフォーマットが原因で，データを扱えるようにするまでが一苦労である。
+本当なら試行錯誤が必要であるが，以下のとおり実行すれば問題なく読み込める（今回の場合，実はヘッダーを読んでいない（諦めた。通常は読まなければならない））。
+
+readxlを初めて使う場合のみ，以下のコマンドを実行する。
+一度実行すれば，パソコンの電源を切ったとしても，再度実行する必要はない（実行してもエラーにはならないので，不安なら実行すればよい）。
+
+
+```{r}
+#| include: false
+#| echo: false
+install.packages("readxl")
+```
+
+以下のコマンドでExcelファイルを読み込むことができる。
+
+```{r}
+#| include: false
+#| echo: false
+library(readxl)
+df <- readxl::read_excel("r006-02-001.xls", col_names = FALSE, skip = 12)
+
+# 前処理半作：データ分析は前処理が重要だという諺
+df <- data.frame(df)
+names(df) <- c("年次", "単位農協_総合農協", "単位農協_専門農協_出資組合", "単位農協_専門農協_非出資組合", "単位農協_合計", "連合会_出資連合会", "連合会_非出資連合会", "連合会_合計", "農事組合法人_１号", "農事組合法人_２号", "農事組合法人_１号及び２号", "農事組合法人_合計")
+df <- df[1:76, ]
+df <- df[-49, ]
+df[, 1] <- 1:nrow(df) + 22 + 1925
+dfcoop <- df
+```
+
+読み込めたかどうか確認するためには，以下のコマンドを実行する。
+
+```{r}
+#| include: false
+#| echo: false
+head(dfcoop)
+```
+
+無事，読み込めた（本当は読み込めたとは言えない）。
+
+次に，折れ線グラフを作成してみる。
+
+```{r}
+#| include: false
+#| echo: false
+plot(dfcoop[, c("年次", "単位農協_総合農協")], type = "o", main = "総合農業協同組合数の推移", xlab = "年3月末", pch = 16, las = 1)
+```
+
+macOSの場合，文字化けする（トーフになる）。
+回避策はあるが，該当箇所を英語にするのが早い。
+余裕が出てからそういうことに気を配ればよく，今のところ気にする必要はない（自分のせいではないと思うことが大事）。
+
+せっかくExcelファイルを読み込んだのに，総合農協の推移だけ示すのは味気ない。
+そこで，専門農協のうちの出資組合と非出資組合も同じ図に表示してみる。
+
+```{r}
+#| include: false
+#| echo: false
+dfcoop2 <- dfcoop
+rownames(dfcoop2) <- dfcoop2[, 1]
+dfcoop2 <- dfcoop2[, -1]
+matplot(dfcoop2[, c("単位農協_総合農協", "単位農協_専門農協_出資組合", "単位農協_専門農協_非出資組合")], type = "o", main = "単位農協数の推移", xlab = "年3月末", ylab = "農業協同組合数", lwd = 1, lty = 1, pch = 16, las = 1,  axes = FALSE)
+axis(1, at = 1:nrow(dfcoop2), labels = min(rownames(dfcoop2)):max(rownames(dfcoop2)))
+axis(2, las = 1)
+legend("topright", legend = c("総合農協", "専門農協_出資組合", "専門農協_非出資組合"), col = 1:3, lwd = 1, lty = 1, pch = 16)
+```
+
+それっぽいものができた。
+
+
+## 作図にあたっての注意事項
+
+棒グラフについて書く？
+
+
+## より高度な方法
+
+e-StatからExcelファイルをダウンロードせずとも，APIを使ってデータを取得できることがある。
+ややスッキリしない表現なのは，APIを使ってデータの取得できるものとできないものがあるためである。
+今回扱った農業協同組合数の推移のデータはAPIを使って取得できる。
+以下の説明は高度であるため，スキップしてよい。
+ただし，Rのスキルを身につけたい人は，後日で構わないので，ぜひ挑戦してほしい。
+
+まず，e-Statのサイトにユーザ登録して，APIを取得する。
+取得方法は自分で調べてほしい。
+
+次に，[keyring: Access the system credential store from R](https://github.com/r-lib/keyring){target="_blank"}を設定する。
+これは必須ではないが，便利なので，設定しておくとよい。
+
+```{r}
+#| include: false
+#| echo: false
+# 以下を実行する前に，e-StatのAPIを取得しておく。
+install.packages("keyring")
+# library(keyring)
+keyring::key_set("e-stat")
+# 使う場合は。
+# keyring::key_get("e-stat")
+```
+
+いよいよ本題に入る。
+以下の説明したやり方以外にも，s-Statからデータを取得する方法はある。
+例えば，[estatapi](https://yutannihilation.github.io/estatapi/)というパッケージを使ってもほぼ同じことができるはずである。
+興味ある人は，自分で確かめてほしい。
+なお，statsDataId = "0002003131"にある数字は，e-Statの[農業協同組合等現在数統計 確報 令和３年度農業協同組合等現在数統計総括の部 1 農業協同組合、同連合会及び農事組合法人数の推移（第１表）](https://www.e-stat.go.jp/dbview?sid=0002003131){target="_blank"}のページを指すIDである。
+
+```{r}
+#| include: false
+#| echo: false
+library(httr)
+
+response <- httr::GET(
+  url = "https://api.e-stat.go.jp/rest/2.1/app/getSimpleStatsData",
+  query = list(
+    appId = keyring::key_get("e-stat"),
+    statsDataId = "0002003131",
+    sectionHeaderFlg = 2
+  )
+)
+
+response <- httr::content(response)
+df <- read.csv(text = sub("^.*\\\"VALUE\\\"\n", "", response), header = TRUE, check.names = FALSE)
+
+df2 <- df
+names(df2) <- gsub("\\(.+\\)", "", names(df2))
+df2[, 4] <- factor(df2[, 4])
+df2 <- tidyr::spread(df2, key = "農業協同組合等統括の部現在数", value = value)
+
+dfMultifunctional <- na.omit(df2[, c("年次", "単位農協_総合農協")])
+dfInvested <- na.omit(df2[, c("年次", "単位農協_専門農協_出資組合")])
+dfNoninvested <- na.omit(df2[, c("年次", "単位農協_専門農協_非出資組合")])
+
+dfcoop <- merge(merge(dfMultifunctional, dfInvested, by = "年次", all = TRUE), dfNoninvested, by = "年次", all = TRUE)
+
+# 「年次」列に1996年3月末の行が，「1996年3月末(変更前)」と「1996年3月末(変更後)」の2つあるため，前者を削除する
+rm1996 <- function (x) {
+  tmp <- x[x[, "年次"] != "1996年3月末(変更前)", ]
+  tmp[tmp[, "年次"] == "1996年3月末(変更後)", "年次"] <- "1996年3月末"
+  tmp
+}
+dfcoop <- rm1996(dfcoop)
+dfcoop <- dfcoop[dfcoop[, "年次"] != "2022年4月1日", ]
+dfcoop[, "年次"] <- as.double(gsub("年3月末", "", dfcoop[, "年次"]))
+
+head(dfcoop)
+```
+
+これで必要なデータが整ったことが確認できる。
+もう少し見栄えのよい表にしたければ，[DT: A Wrapper of the JavaScript Library 'DataTables'](https://cran.r-project.org/web/packages/DT/index.html){target="_blank"}を使うとよい。
+
+```{r}
+#| include: false
+#| echo: false
+caption <- "農業協同組合数の推移"
+DT::datatable(
+  dfcoop, caption = caption, rownames = TRUE,
+  extensions = 'Buttons',
+  options = list(
+    pageLength = 10,
+    dom = 'Blfrtip',
+    buttons = list(
+      c('csv', 'excel'),
+      I('colvis')
+    )
+  )
+) |>
+  DT::formatCurrency(c(2:ncol(dfcoop)), currency = "", interval = 3, mark = ",", digits = 0)
+```
+
+このデータフレームから折れ線グラフを作成する方法は，上述の方法と同じである。
+以下では，授業で使用した図の作成方法を紹介する。
+
+```{r}
+#| include: false
+#| echo: false
+ggplot2
+```

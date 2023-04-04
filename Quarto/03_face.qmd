@@ -74,6 +74,6 @@ Pythonで顔認識は以下のようにして実現できる。
 
 出力されたファイルを見ると，4人が顔認識されている。
 このモデルは精度が高いことが分かる。
-ここでは，[ternaus/retinaface](https://github.com/ternaus/retinaface){target="_blank"} を使って顔認識している。
+ここでは，[retinaface](https://github.com/ternaus/retinaface){target="_blank"} を使って顔認識している。
 PyTorchを聞いたことはないだろうか。
 興味のある人はいろいろ調べてみよう。
