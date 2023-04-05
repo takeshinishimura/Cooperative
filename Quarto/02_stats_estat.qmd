@@ -34,7 +34,8 @@ e-Statがどのようなサイトかは，[『e-Stat』とは？](https://www.e-
 r006-02-001.xlsという名前のファイル名で，ファイルがダウンロードされたはずである。
 あとは，Microsoft Officeを構成するアプリケーションのひとつであるExcelを起動して，ファイルを開き，Excelの機能を使って折れ線グラフを作成することができる。
 Excelの図で満足できる人はこれで終わりである。
-ちまちまとマウスをクリックしながら，またセルを異動させながら，折れ線グラフを作成するとよい。
+ちまちまとマウスをクリックしながら，はたまた数値を別のセルに移動させながら，折れ線グラフを作成するとよい。
+
 以下の説明は，Excelでは満足できない人のためのものである。
 
 
@@ -45,7 +46,7 @@ Excelの図で満足できる人はこれで終わりである。
 まず，Rを起動し，現在，パソコンのどこにいるのかを確認する。
 「どこ」というのは，自分のパソコンのディレクトリ（フォルダとも呼ぶ）構成の「どこ」にいるのかという意味であり，Windowsなら"C:"から始まり，macOSなら"/"から始まる階層構造における位置のことである。
 何も設定をしていなければ，Rの起動直後は，ホームディレクトリにいるはずである。
-次のコマンドで，自分がどこにいるかを確認できる。
+次のコマンドで，自分がどこにいるか（カレントディレクトリの場所）を確認できる。
 
 ```{r}
 #| eval: false
@@ -71,7 +72,7 @@ Excelファイルの移動は，Windowsならエクスプローラーを使い�
 
 実は，いきなりハードルが高い。
 Excelファイルを読み込むのがハードルが高いのではなく，e-StatにあるExcelファイルのフォーマットが原因で，データを扱えるようにするまでが一苦労である。
-本当なら試行錯誤が必要であるが，以下のとおり実行すれば問題なく読み込める（今回の場合，ヘッダーを読み込んでいない（諦めた。通常は読み込まなければならない））。
+本当なら試行錯誤が必要であるが，以下のとおり実行すれば問題なく読み込める（今回の場合，ヘッダーを読み込んでいない。諦めた。通常は読み込まなければならない）。
 
 readxlを初めて使う場合のみ，以下のコマンドを実行する。
 一度実行すれば，パソコンの電源を切ったとしても，再度実行する必要はない（実行してもエラーにはならないので，不安なら実行すればよい）。
@@ -138,7 +139,7 @@ head(dfcoop)
 次に，折れ線グラフを作成してみる。
 
 ```{r}
-plot(dfcoop[, c("年次", "単位農協_総合農協")], type = "o", main = "総合農業協同組合数の推移", xlab = "年3月末", pch = 16, las = 1)
+plot(dfcoop[, c("年次", "単位農協_総合農協")], type = "o", main = "総合農協数の推移", xlab = "年3月末", pch = 16, las = 1)
 ```
 
 macOSの場合，文字化けする（トーフになる）かもしれない。
@@ -175,6 +176,13 @@ outdir <- "./fig"
 ```{r}
 #| include: false
 outdir <- "../fig"
+```
+
+出力先ディレクトリがなければ，出力先ディレクトリを作成する。
+あれば何もしない。
+このコードは便利なので，個人的によく使う。
+
+```{r}
 if (!file.exists(outdir)) {
   dir.create(outdir)
 }
@@ -197,9 +205,9 @@ dev.off()
 
 ```{r}
 #| eval: false
-dev.copy(cairo_pdf, file =  file.path(outdir, "number_of_ja2.pdf"))
+dev.copy(cairo_pdf, file = file.path(outdir, "number_of_ja2.pdf"))
 dev.off()
-dev.copy(png, file =  file.path(outdir, "number_of_ja2.png"))
+dev.copy(png, file = file.path(outdir, "number_of_ja2.png"))
 dev.off()
 ```
 
@@ -306,7 +314,7 @@ DT::datatable(
 
 今回はDTを使うメリットがほとんどないが，複雑な表だと視認性が劇的に改善するため，覚えておくとよい。
 
-### ggplot2で折れ線グラフの作図
+### ggplot2を用いた折れ線グラフの作図
 
 上記のデータフレームから折れ線グラフを作成する方法は，@sec-simpleplot の方法と同じである。
 以下では，授業で使用した図の作成方法を紹介する。
@@ -356,8 +364,8 @@ PDFファイルに保存するときは，以下のようにする。
 
 ```{r}
 #| warning: false
-ggsave(g, file = file.path(outdir, "number_of_ja_gg.pdf"), width = 8, height = 6)
-ggsave(g, file = file.path(outdir, "number_of_ja_gg.png"), width = 8, height = 6)
+ggsave(g, file = file.path(outdir, "number_of_ja_gg.pdf"), width = 10, height = 7)
+ggsave(g, file = file.path(outdir, "number_of_ja_gg.png"), width = 10, height = 7)
 ```
 
 
