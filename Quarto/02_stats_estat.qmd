@@ -249,7 +249,7 @@ keyring::key_set("e-stat")
 ### e-Statからデータ取得
 
 いよいよ本題に入る。
-s-Statから欲しいデータを取得してみよう。
+e-Statから欲しいデータを取得してみよう。
 
 次のコードを実行することで，欲しいデータが取得できる。
 statsDataId = "0002003131"の数字は，e-Statの[農業協同組合等現在数統計 確報 令和３年度農業協同組合等現在数統計総括の部 1 農業協同組合、同連合会及び農事組合法人数の推移（第１表）](https://www.e-stat.go.jp/dbview?sid=0002003131){target="_blank"}のページを指すIDである。
@@ -271,7 +271,7 @@ df <- read.csv(text = sub("^.*\\\"VALUE\\\"\n", "", response), header = TRUE, ch
 df2 <- df
 names(df2) <- gsub("\\(.+\\)", "", names(df2))
 
-df2[, 4] <- factor(df2[, 4])
+df2[, "農業協同組合等統括の部現在数"] <- factor(df2[, "農業協同組合等統括の部現在数"])
 df2 <- tidyr::spread(df2, key = "農業協同組合等統括の部現在数", value = value)
 
 dfMultifunctional <- na.omit(df2[, c("年次", "単位農協_総合農協")])
@@ -316,7 +316,7 @@ DT::datatable(
 
 ### ggplot2を用いた折れ線グラフの作図
 
-上記のデータフレームから折れ線グラフを作成する方法は，@sec-simpleplot の方法と同じである。
+上記のデータフレームから折れ線グラフを作成する方法は，@sec-simpleplot と同じである。
 以下では，授業で使用した図の作成方法を紹介する。
 
 ```{r}
@@ -364,8 +364,8 @@ g + theme(text = element_text(family = "HiraKakuProN-W3"))
 
 ```{r}
 #| warning: false
-ggsave(g, file = file.path(outdir, "number_of_ja_gg.pdf"), width = 10, height = 7)
-ggsave(g, file = file.path(outdir, "number_of_ja_gg.png"), width = 10, height = 7)
+ggsave(g, file = file.path(outdir, "number_of_ja_gg.pdf"), width = 8, height = 4)
+ggsave(g, file = file.path(outdir, "number_of_ja_gg.png"), width = 8, height = 4)
 ```
 
 

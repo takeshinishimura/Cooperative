@@ -1,0 +1,431 @@
+---
+project:
+  type: website
+  output-dir: docs
+title: "地図"
+format:
+  html:
+    toc: true
+    toc-title: 目次
+    toc_float: true
+    toc-depth: 3
+    number-sections: true
+    theme: lumen
+lang: ja
+---
+
+授業では，農業協同組合の数が都道府県によって異なることを説明した。
+それでは，実際に都道府県ごとの農協の数はどうなっているのだろうか。
+
+e-Statを探すと，都道府県ごとの農協の数に関する統計データが存在することがわかる。
+
+::: {.callout-note collapse="true" icon="true"}
+## 農業協同組合等現在数統計 確報 令和３年度農業協同組合等現在数統計 総括の部 1 農業協同組合、同連合会及び農事組合法人数の推移（第１表） 年度次
+
+[https://www.e-stat.go.jp/stat-search/files?stat_infid=000032206156](https://www.e-stat.go.jp/stat-search/files?stat_infid=000032206156){target="_blank"}
+:::
+
+r006-02-002.xlsという名前のファイル名で，ファイルがダウンロードできる。
+このファイルをRで読み込む前に，Excelで開いてみる。
+これは参った。
+ヘッダーがゴチャゴチャしている。
+ここで，Excelではグラフ作成時にセルを指定できるから何の問題もないと考える人にとっては，以下の説明は無益である。
+
+
+## e-Statからデータ取得
+
+[統計データを用いた作図：e-Stat編](https://takeshinishimura.github.io/Cooperative/02_stats_estat.html){target="_blank"}の後半では，e-StatのAPIを使って，Rに統計データを取り込んだ。
+ここでも同様のことが可能である。
+
+早速，次のコードを実行し，欲しいデータが取得しよう。
+なお，statsDataId = "0002003132"の数字は，e-Statの[農業協同組合等現在数統計 確報 令和３年度農業協同組合等現在数統計単位農協の部 1 都道府県別業種別現在数 総括表 出資組合（第２表）、非出資組合（第３表）](https://www.e-stat.go.jp/dbview?sid=0002003132){target="_blank"}のページを指すIDである。
+
+```{r}
+library(httr)
+
+response <- httr::GET(
+  url = "https://api.e-stat.go.jp/rest/2.1/app/getSimpleStatsData",
+  query = list(
+    appId = keyring::key_get("e-stat"),
+    statsDataId = "0002003132",
+    sectionHeaderFlg = 2
+  )
+)
+response <- httr::content(response)
+df <- read.csv(text = sub("^.*\\\"VALUE\\\"\n", "", response), header = TRUE, check.names = FALSE)
+
+df2 <- df
+names(df2) <- gsub("\\(.+\\)", "", names(df2))
+df2[df2$value == "-", "value"] <- ""
+df2$value <- as.double(df2$value)
+
+# 以下の処理で都道府県の順番が崩れるため，元データの都道府県の順番を残しておく
+pref <- unique(df2[, "都道府県"])
+pref <- pref[-grep("計$|^２|^全", pref)]
+
+df2[, "総括表"] <- factor(df2[, "総括表"])
+# df2 <- tidyr::spread(df2, key = "総括表", value = value)# これだとうまくいかない
+df2 <- reshape2::dcast(df2, 都道府県 ~ 総括表)
+
+row.names(df2) <- df2[, "都道府県"]
+df2 <- df2[pref, ]
+
+dfja2 <- df2[, c("都道府県", grep("出資組合（第２表）_", names(df2), value = TRUE))]
+dfja3 <- df2[, c("都道府県", grep("非出資組合（第３表）_", names(df2), value = TRUE))]
+dfref1 <- df2[, c("都道府県", grep("（参考１）出資組合と非出資組合の計（専門農協、業種別）_", names(df2), value = TRUE))]
+
+names(dfja2) <- sub("出資組合（第２表）_", "", names(dfja2))
+names(dfja3) <- sub("非出資組合（第３表）_", "", names(dfja3))
+names(dfref1) <- sub("（参考１）出資組合と非出資組合の計（専門農協、業種別）_", "", names(dfref1))
+
+caption <- "都道府県別業種別現在数 - 出資組合（第２表）"
+DT::datatable(
+  dfja2[, -1], caption = caption, rownames = TRUE,
+  extensions = 'Buttons',
+  options = list(
+    pageLength = 10,
+    dom = 'Blfrtip',
+    buttons = list(
+      c('csv', 'excel'),
+      I('colvis')
+    )
+  )
+)
+
+caption <- "都道府県別業種別現在数 - 非出資組合（第３表）"
+DT::datatable(
+  dfja3[, -1], caption = caption, rownames = TRUE,
+  extensions = 'Buttons',
+  options = list(
+    pageLength = 10,
+    dom = 'Blfrtip',
+    buttons = list(
+      c('csv', 'excel'),
+      I('colvis')
+    )
+  )
+)
+
+caption <- "都道府県別業種別現在数 - （参考１）　出資組合と非出資組合の計（専門農協、業種別）"
+DT::datatable(
+  dfref1[, -1], caption = caption, rownames = TRUE,
+  extensions = 'Buttons',
+  options = list(
+    pageLength = 10,
+    dom = 'Blfrtip',
+    buttons = list(
+      c('csv', 'excel'),
+      I('colvis')
+    )
+  )
+)
+```
+
+これらのデータをよく見ると，次のリンク先のページからダウンロードできるExcelファイルの内容も含んでいることが確認できる。
+実際にダウンロードして確認してみよう。
+
+::: {.callout-note collapse="true" icon="true"}
+## 農業協同組合等現在数統計 確報 令和３年度農業協同組合等現在数統計 単位農協の部 1 都道府県別業種別現在数 総括表 非出資組合（第３表） 年度次
+
+[https://www.e-stat.go.jp/stat-search/files?stat_infid=000032206157](https://www.e-stat.go.jp/stat-search/files?stat_infid=000032206157){target="_blank"}
+:::
+
+::: {.callout-note collapse="true" icon="true"}
+## 農業協同組合等現在数統計 確報 令和３年度農業協同組合等現在数統計 単位農協の部 1 都道府県別業種別現在数 総括表 （参考１）出資組合と非出資組合の計（専門農協、業種別） 年度次
+
+[https://www.e-stat.go.jp/stat-search/files?stat_infid=000032206158](https://www.e-stat.go.jp/stat-search/files?stat_infid=000032206158){target="_blank"}
+:::
+
+このことから，APIを使って取得できるデータは，Excelファイルとして取得できるデータと1対1で対応しているわけではないことが分かる。
+
+ちなみに，上の3つの表の列の並び順がグチャグチャなのは仕方ない。
+ファイルを読み込んだ後，データをロングからワイドに変換する際に，この問題が生じる。
+これが[Hadley Wickham](https://hadley.nz/){target="_blank"}のやり方である。
+元データの順番を使って，これらの列の順番を整えることは可能であるが，そうするのがかなり面倒であるにも関わらず，メリットがほぼないため，ここではやらない。
+列の並び順が気になるのはこの表だけである。
+なお，このことはプログラミングをする上で，非常に重要なことである。
+左から何列目という数え方は止めた方がよい（コードを単純化するために順番で列を指定することはある）。
+
+
+## 都道府県別データの作図
+
+まず，総合農協の数を都道府県別に比較してみよう。
+その前に，ggplot2では日本語の変数名では処理できないようなので，変数名をアスキー文字に変換しておく。
+
+```{r}
+jaen <- matrix(c(
+  "都道府県", "pref",
+  "総合農協", "Multifunctional",
+  "総合農協_業務代理農協", "MultifunctionalProxy",
+  "総合農協_うち共済事業を行う農協", "ofwhichOperatingMutualInsurance",
+  "総合農協_うち共済事業を行う農協_業務代理農協", "ofwhichOperatingMutualInsuranceProxy",
+  "一般農協", "Ordinary",
+  "畜産", "Livestock",
+  "酪農", "Dairy",
+  "養鶏", "Poultry",
+  "牧野管理", "ManagementofPasture",
+  "園芸特産", "HorticulturalSpecialities",
+  "農村工業", "RuralManufacturing",
+  "農事放送", "AgriculturalBroadcasting",
+  "その他", "Others", 
+  "出資組合計", "Invested Cooperatives total"),
+  ncol = 2, byrow = TRUE)
+jaen2 <- data.frame(jaen)
+names(jaen2) <- c("ja", "en")
+
+dfja2_en <- dfja2
+newnames <- rep("", ncol(dfja2_en))
+names(dfja2_en) <- jaen2$en[match(names(dfja2_en), jaen2$ja)]
+dfja2_en$pref <- factor(dfja2_en$pref, levels = pref)
+```
+
+よく見かけるのが，横軸（または縦軸）に都道府県を棒グラフである。
+
+```{r}
+#| warning: false
+library(ggplot2)
+
+g <- ggplot(data = dfja2_en) +
+  geom_bar(aes(x = pref, y = Multifunctional), stat = "identity") +
+  labs(y = "総合農協の数", title = "都道府県別総合農協数") +
+  theme(axis.title.x = element_blank(),
+        axis.text.x = element_text(angle = 90, hjust = 1, vjust = .5))
+g + theme(text = element_text(family = "HiraKakuProN-W3"))
+```
+
+最後のところでエラーが出る場合は，gだけにして，プラス以降を入力しない。
+文字化けするかもしれないが，気にする必要はない（文字化けを修正するのは大変）。
+
+この図は図として正しい。
+ただし，大変見づらい。
+見づらい理由は，横軸（都道府県）が細分化されているのに加え，北海道の値だけが大きいためである。
+なお，グラフを描かずとも，次のコマンドでほぼ類似の情報が得られる。
+
+```{r}
+summary(dfja2_en$Multifunctional)
+stem(dfja2_en$Multifunctional, scale = 2)
+```
+
+それでは，どうすれば見やすくなるだろうか。
+このとき，決して棒グラフの途中を省略して，北海道の棒を低くしてはならない。
+途中を省略した棒グラフを幽霊グラフと呼ぶことがある（[【連載】ねこでも分かる！いかさまグラフにはもうダマされない！！「第５回　棒グラフ（１）」 - ed-ict｜授業でもっとICT活用](https://www.ed-ict.net/entry/neco-demo-wakaru-graph-5){target="_blank"}を参照）。
+北海道を除いたグラフを作成してみよう。
+
+```{r}
+#| warning: false
+g <- ggplot(data = dfja2_en[dfja2_en[, "pref"] != "北海道",]) +
+  geom_bar(aes(x = pref, y = Multifunctional), stat = "identity", fill = "gray", colour = "black") +
+  geom_hline(yintercept = mean(dfja2_en[dfja2_en[, "pref"] != "北海道",]$Multifunctional), colour = "red", linetype = "dashed") +
+  labs(y = "総合農協の数", title = "都府県別総合農協数") +
+  theme_minimal() +
+  theme(axis.title.x = element_blank(),
+        axis.text.x = element_text(angle = 90, hjust = 1, vjust = .5))
+g + theme(text = element_text(family = "HiraKakuProN-W3"))
+```
+
+北海道を除くとともに，平均値を赤色の点線で図に示した。
+やはり残念なグラフになってしまう。
+しかしながら，まったく無意味とは言えない。
+というのも，この棒グラフから，総合農協の数は西日本より，東日本の方が多そうであることが分かるからである。
+
+横棒グラフにすると多少ましかもしれない。
+
+```{r}
+#| warning: false
+g <- ggplot(data = dfja2_en) +
+  geom_bar(aes(x = pref, y = Multifunctional), stat = "identity", fill = "gray", colour = "black") +
+  coord_flip() +
+  scale_x_discrete(limits = rev(levels(dfja2_en$pref))) +
+  geom_hline(yintercept = mean(dfja2_en$Multifunctional), colour = "red", linetype = "dashed") +
+  labs(y = "総合農協の数", title = "都道府県別総合農協数") +
+  theme_minimal() +
+  theme(axis.title = element_blank())
+g + theme(text = element_text(family = "HiraKakuProN-W3"))
+```
+
+```{r}
+#| include: false
+outdir <- "../fig"
+if (!file.exists(outdir)) {
+  dir.create(outdir)
+}
+
+ggsave(g, file = file.path(outdir, "number_of_ja_bar.pdf"), width = 10, height = 7)
+```
+
+棒グラフは諦めて，日本地図に表示するとどうなるだろうか。
+
+
+## 都道府県別に色分けした地図
+
+```{r}
+#| warning: false
+library(rnaturalearth)
+library(rnaturalearthhires)
+
+japan_map <- rnaturalearth::ne_states("Japan", returnclass = "sf")
+names(japan_map)[names(japan_map) == "name_ja"] <- "pref"
+
+# 農協のデータに「都府県」の文字を追加する
+dfja2_en$pref <- ifelse(dfja2_en$pref %in% c("北海道", "東京", "京都", "大阪"),
+  paste0(dfja2_en$pref, c("", "都", "府", "府")[match(dfja2_en$pref, c("北海道", "東京", "京都", "大阪"))]),
+  paste0(dfja2_en$pref, "県"))
+
+japan_map2 <- dplyr::left_join(japan_map, dfja2_en, by = "pref")
+
+g <- ggplot(data = japan_map2) +
+  geom_sf(aes(fill = Multifunctional)) +
+  scale_fill_distiller(name = "総合農協の数", palette = "Greens", direction = 1) +
+  theme_void()
+g + theme(text = element_text(family = "HiraKakuProN-W3"))
+```
+
+北海道だけが極端に色が濃くなった。
+実際の数値がこうであるのだから，これはこれで問題ないが，これだけの情報なら地図で示すほどでもない気がする。
+北海道を除いた地図を作成すべきか。
+いやそれは馬鹿げている。
+
+次に，農協の数の順位に応じて都道府県を4段階に分けて，色を塗ってみる。
+四分位数による区分である。
+これにより，農協の数が相対的に多い都道府県と少ない都道府県が分かる。
+
+```{r}
+library(rmapshaper)
+
+dfja2_en$Multifunctional_q <- 
+adddf <- data.frame(
+  pref = dfja2_en$pref,
+  Multifunctional_q = factor(cut(dfja2_en$Multifunctional, breaks = quantile(dfja2_en$Multifunctional), labels = FALSE, include.lowest = TRUE)))
+
+japan_map2 <- dplyr::left_join(japan_map2, adddf, by = "pref")
+# 離島を削除する
+japan_map_shrinked <- rmapshaper::ms_filter_islands(japan_map2, min_area = 300000000)
+# japan_map_shrinked <- rmapshaper::ms_filter_islands(japan_map2, min_area = 1301448169)# 沖縄県が消える ※沖縄本島の面積は1,207.00km
+
+g <- ggplot(data = japan_map_shrinked) +
+  geom_sf(aes(fill = Multifunctional_q)) +
+  guides(fill = guide_legend(title = "総合農協の数（4段階）", reverse = TRUE)) +
+  theme_void() +
+# ggthemes::theme_map() +
+  scale_fill_brewer(palette = "BuGn")
+g + theme(text = element_text(family = "HiraKakuProN-W3"))
+```
+
+```{r}
+#| include: false
+ggsave(g, file = file.path(outdir, "number_of_ja_map.pdf"), width = 7)
+```
+
+地図の余白を小さくするために，一定の面積より小さい離島を削除した。
+離島を削除することに問題はあるかもしれない。
+描画範囲を指定することも考えたが，いずれにしてもどこを消すかを判断しなければならず，苦渋の決断が強いられる。
+沖縄県を切り取って左上に表示する方法もよく用いられるが，それだけではこの問題は解決しない。
+おそらく専門家はどうすべきか答えを持っているはずであるが，私はその答えを知らない。
+ここでの目的は都道府県別の比較であるため，全都道府県（の大半）が表示されていれば問題ないと考え，このような図にした。
+
+さて，これまでを振り返ると総合農協の数しか図示していない。
+次に，専門農協の数を図示してみよう。
+
+専門農協の数は計算によって求められる。
+出資組合計から総合農協の数を引き，非出資組合計を加えたものが，専門農協の数になるはずである。
+実は，この数値はすでにdfref1[, "計"]にある。
+念のため，自分で計算した値と，dfref1[, "計"]が一致するか確認してみよう。
+
+```{r}
+dfja2[, "出資組合計"] - dfja2[, "総合農協"] + tidyr::replace_na(dfja3[, "非出資組合計"], 0) == dfref1[, "計"]
+```
+
+専門農協の数で日本地図を色分けする前に，専門農協の数が都道府県別にどうなっているかを概観する。
+
+```{r}
+summary(dfref1[, "計"])
+stem(dfref1[, "計"], scale = 2)
+```
+
+ひとつ飛び抜けた都道府県が存在することが分かる。
+元データを見ればどの都道府県か分かるが，ここでは地図を描いて確認したい。
+
+ggplot2の前に，変数名をアスキー文字に変換しておく。
+
+```{r}
+#| message: false
+jaen <- matrix(c(
+  "都道府県", "pref",
+  "一般農協", "Ordinary",
+  "畜産", "Livestock",
+  "酪農", "Dairy",
+  "養鶏", "Poultry",
+  "牧野管理", "ManagementofPasture",
+  "園芸特産", "Horticultural Specialities",
+  "農村工業", "RuralManufacturing",
+  "農事放送", "AgriculturalBroadcasting",
+  "その他", "Others",
+  "計", "total"),
+  ncol = 2, byrow = TRUE)
+jaenref1 <- data.frame(jaen)
+names(jaenref1) <- c("ja", "en")
+
+dfref1_en <- dfref1
+newnames <- rep("", ncol(dfref1_en))
+names(dfref1_en) <- jaenref1$en[match(names(dfref1_en), jaenref1$ja)]
+dfref1_en$pref <- factor(dfref1_en$pref, levels = pref)
+
+# 農協のデータに「都府県」の文字を追加する
+dfref1_en$pref <- ifelse(dfref1_en$pref %in% c("北海道", "東京", "京都", "大阪"),
+  paste0(dfref1_en$pref, c("", "都", "府", "府")[match(dfref1_en$pref, c("北海道", "東京", "京都", "大阪"))]),
+  paste0(dfref1_en$pref, "県"))
+
+library(NipponMap)
+library(sf)
+nippon_map <- sf::read_sf(system.file("shapes/jpn.shp", package = "NipponMap")[1], crs = "WGS84")
+nippon_map$pref <- dfref1_en$pref# こういう強引なことはやってはいけない
+japan_map2 <- dplyr::left_join(nippon_map, dfref1_en, by = "pref")
+
+g <- ggplot(data = japan_map2) +
+  geom_sf(aes(fill = total)) +
+  scale_fill_distiller(name = "専門農協の数", palette = "Blues", direction = 1) +
+  theme(axis.text = element_blank()) +
+  theme_minimal()
+g + theme(text = element_text(family = "HiraKakuProN-W3"))
+```
+
+専門農協の数が多いのは岩手県であることが分かる。
+ここで，四分位数による区分を見てもよいが，ここでは，専門農協の業種別データがあるので，これらのデータを使って，岩手県にどのような専門農協が多いかを確認してみよう。
+
+
+```{r}
+tmp <- dfref1[, -which(names(dfref1) == "計")]
+dfref1_long <- tmp %>%
+  tidyr::pivot_longer(cols = names(tmp)[-1], names_to = "JA")
+names(dfref1_long)[1] <- "pref"
+dfref1_long$JA <- factor(dfref1_long$JA, levels = jaenref1$ja[-length(jaenref1$ja)])
+
+# 地図上のNAの色がグレーになるため，NAを0にする
+dfref1_long$value[is.na(dfref1_long$value)] <- 0
+
+# 農協のデータに「都府県」の文字を追加する
+dfref1_long$pref <- ifelse(dfref1_long$pref %in% c("北海道", "東京", "京都", "大阪"),
+  paste0(dfref1_long$pref, c("", "都", "府", "府")[match(dfref1_long$pref, c("北海道", "東京", "京都", "大阪"))]),
+  paste0(dfref1_long$pref, "県"))
+
+japan_map2 <- dplyr::left_join(japan_map, dfref1_long, by = "pref")
+
+g <- ggplot(data = japan_map2) +
+  geom_sf(aes(fill = value)) +
+  coord_sf(xlim = c(128, 146), ylim = c(30, 46)) +
+# facet_grid(~ JA) +
+  facet_wrap(~ JA, ncol = 3) +
+  scale_fill_distiller(name = "専門農協の数", palette = "Blues", direction = 1) +
+  theme_classic() +
+  theme(axis.line = element_blank(),
+        axis.ticks = element_blank(),
+        axis.text = element_blank())
+g + theme(text = element_text(family = "HiraKakuProN-W3"))
+```
+
+```{r}
+#| include: false
+ggsave(g, file = file.path(outdir, "number_of_ja_map2.pdf"), width = 7)
+```
+
+岩手県には牧野管理の専門農協が多いことが分かる。
