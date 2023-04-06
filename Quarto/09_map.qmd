@@ -81,42 +81,45 @@ names(dfref1) <- sub("（参考１）出資組合と非出資組合の計（専�
 caption <- "都道府県別業種別現在数 - 出資組合（第２表）"
 DT::datatable(
   dfja2[, -1], caption = caption, rownames = TRUE,
-  extensions = 'Buttons',
+  extensions = c('Buttons', 'ColReorder'),
   options = list(
     pageLength = 10,
     dom = 'Blfrtip',
     buttons = list(
       c('csv', 'excel'),
       I('colvis')
-    )
+    ),
+    colReorder = TRUE
   )
 )
 
 caption <- "都道府県別業種別現在数 - 非出資組合（第３表）"
 DT::datatable(
   dfja3[, -1], caption = caption, rownames = TRUE,
-  extensions = 'Buttons',
+  extensions = c('Buttons', 'ColReorder'),
   options = list(
     pageLength = 10,
     dom = 'Blfrtip',
     buttons = list(
       c('csv', 'excel'),
       I('colvis')
-    )
+    ),
+    colReorder = TRUE
   )
 )
 
 caption <- "都道府県別業種別現在数 - （参考１）　出資組合と非出資組合の計（専門農協、業種別）"
 DT::datatable(
   dfref1[, -1], caption = caption, rownames = TRUE,
-  extensions = 'Buttons',
+  extensions = c('Buttons', 'ColReorder'),
   options = list(
     pageLength = 10,
     dom = 'Blfrtip',
     buttons = list(
       c('csv', 'excel'),
       I('colvis')
-    )
+    ),
+    colReorder = TRUE
   )
 )
 ```
@@ -345,7 +348,7 @@ stem(dfref1[, "計"], scale = 2)
 ひとつ飛び抜けた都道府県が存在することが分かる。
 元データを見ればどの都道府県か分かるが，ここでは地図を描いて確認したい。
 
-ggplot2の前に，変数名をアスキー文字に変換しておく。
+ggplot2の前に，変数名をアスキー文字に変換するなど，先ほどと同じ前処理が必要である。
 
 ```{r}
 #| message: false
