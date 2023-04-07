@@ -303,7 +303,7 @@ adddf <- data.frame(
 japan_map2 <- dplyr::left_join(japan_map2, adddf, by = "pref")
 # 離島を削除する
 japan_map_shrinked <- rmapshaper::ms_filter_islands(japan_map2, min_area = 300000000)
-# japan_map_shrinked <- rmapshaper::ms_filter_islands(japan_map2, min_area = 1301448169)# 沖縄県が消える ※沖縄本島の面積は1,207.00km
+# japan_map_shrinked <- rmapshaper::ms_filter_islands(japan_map2, min_area = 1301448169)# 沖縄県が消える ※沖縄本島の面積は1,207.00km2
 
 g <- ggplot(data = japan_map_shrinked) +
   geom_sf(aes(fill = Multifunctional_q)) +
