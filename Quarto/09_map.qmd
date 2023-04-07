@@ -432,7 +432,7 @@ g + theme(text = element_text(family = "HiraKakuProN-W3"))
 
 ```{r}
 #| include: false
-ggsave(g, file = file.path(outdir, "number_of_ja_map2.pdf"), width = 14, height = 14)
+ggsave(g, file = file.path(outdir, "number_of_ja_map2.pdf"), width = 10, height = 10)
 ```
 
 岩手県には牧野管理の専門農協が多いことが分かる。
