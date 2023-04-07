@@ -11,7 +11,7 @@ format:
     toc-depth: 2
     number-sections: true
     theme: lumen
-lang: "ja"
+lang: ja
 ---
 
 授業では，ウィリアム・ホガースの「ビール街」と「ジン横丁」を紹介した。
