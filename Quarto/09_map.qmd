@@ -245,6 +245,26 @@ g <- ggplot(data = dfja2_en) +
 g + theme(text = element_text(family = "HiraKakuProN-W3"))
 ```
 
+棒グラフと似たものにロリポップチャートがあり，次のように点と線の組み合わせで表現する。
+
+```{r}
+#| warning: false
+# library(geomtextpath)
+
+g <- ggplot(data = dfja2_en) +
+  geom_segment(aes(x = 0, y = pref, xend = Multifunctional, yend = pref, colour = ifelse(dfja2_en$Multifunctional > mean(dfja2_en$Multifunctional), "red", "skyblue"))) +
+  geom_point(aes(x = Multifunctional, y = pref, colour = ifelse(dfja2_en$Multifunctional > mean(dfja2_en$Multifunctional), "red", "skyblue"))) +
+  scale_y_discrete(limits = rev(levels(dfja2_en$pref))) +
+  geom_vline(xintercept = mean(dfja2_en$Multifunctional), colour = "gray60", linetype = "dashed") +
+# geom_textvline(label = paste0("mean = ", round(mean(dfja2_en$Multifunctional), 1)), xintercept = mean(dfja2_en$Multifunctional), colour = "gray60", linetype = "dashed", hjust = 0, vjust = -.5) +
+  labs(y = "総合農協の数", title = "都道府県別総合農協数") +
+  theme_minimal() +
+  scale_color_brewer(palette = "Set1", direction = 1) +
+  theme(legend.position = "none") +
+  theme(axis.title = element_blank())
+g + theme(text = element_text(family = "HiraKakuProN-W3"))
+```
+
 ```{r}
 #| include: false
 outdir <- "../fig"
@@ -252,10 +272,10 @@ if (!file.exists(outdir)) {
   dir.create(outdir)
 }
 
-ggsave(g, file = file.path(outdir, "number_of_ja_bar.pdf"), width = 10, height = 7)
+ggsave(g, file = file.path(outdir, "number_of_ja_lollipop.pdf"), width = 10, height = 7)
 ```
 
-棒グラフは諦めて，日本地図に表示するとどうなるだろうか。
+これらのグラフは諦めて，日本地図に表示するとどうなるだろうか。
 
 
 ## 都道府県別に色分けした地図
@@ -380,6 +400,7 @@ dfref1_en$pref <- ifelse(dfref1_en$pref %in% c("北海道", "東京", "京都", 
 
 library(NipponMap)
 library(sf)
+
 nippon_map <- sf::read_sf(system.file("shapes/jpn.shp", package = "NipponMap")[1], crs = "WGS84")
 nippon_map$pref <- dfref1_en$pref# こういう強引なことはやってはいけない
 japan_map2 <- dplyr::left_join(nippon_map, dfref1_en, by = "pref")
