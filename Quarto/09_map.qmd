@@ -33,7 +33,7 @@ r006-02-002.xlsという名前のファイルがダウンロードできる。
 
 ## e-Statからデータ取得
 
-[統計データを用いた作図：e-Stat編](https://takeshinishimura.github.io/Cooperative/02_stats_estat.html){target="_blank"}の後半では，e-StatのAPIを使って，Rに統計データを取り込んだ。
+[統計データを用いた作図：e-Stat編](https://takeshinishimura.github.io/Cooperative/02_stats_estatapi.html){target="_blank"}の後半では，e-StatのAPIを使って，Rに統計データを取り込んだ。
 ここでも同様のことが可能である。
 
 早速，次のコードを実行し，欲しいデータが取得しよう。

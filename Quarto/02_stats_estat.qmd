@@ -14,29 +14,30 @@ format:
 lang: ja
 ---
 
-ここでは，農業協同組合数の推移の折れ線グラフを作成する。
+ここでは，消費生活協同組合の組合数と組合員数の推移の折れ線グラフを作成する。
 日本の統計データの多くは，[政府統計の総合窓口](https://www.e-stat.go.jp/){target="_blank"}から取得可能である。
 このサイトのことをe-Statと呼ぶ。
 e-Statがどのようなサイトかは，[『e-Stat』とは？](https://www.e-stat.go.jp/help){target="_blank"}などを読むとよい。
 
-農業協同組合に関する統計データもe-Statから取得できる。
-農業協同組合数の推移がわかる最新のデータは，次のページから取得できる。
+消費生活協同組合に関する統計データはe-Statから取得できる。
+消費生活協同組合の組合数と組合員数の推移がわかる最新のデータは，次のページから取得できる。
 実際に検索してみて，このページにたどり着けるか試してみよう。
 
 ::: {.callout-note collapse="true" icon="true"}
-## [農業協同組合等現在数統計 確報 令和３年度農業協同組合等現在数統計 総括の部 1 農業協同組合、同連合会及び農事組合法人数の推移（第１表） 年度次
+## 消費生活協同組合（連合会）実態調査 2-1 組合数及び組合員数の状況
 
-[https://www.e-stat.go.jp/stat-search/files?stat_infid=000032206155](https://www.e-stat.go.jp/stat-search/files?stat_infid=000032206155){target="_blank"}
+[https://www.e-stat.go.jp/stat-search/files?stat_infid=000032203791](https://www.e-stat.go.jp/stat-search/files?stat_infid=000032203791){target="_blank"}
 :::
 
 さて，ここからどのようにして折れ線グラフを描こうか。
 上述のサイトからExcel形式でファイルをダウンロードできるので，ダウンロードしてみる。
-r006-02-001.xlsという名前のファイル名で，ファイルがダウンロードされたはずである。
+2-1.xlsxというファイル名で，ファイルがダウンロードされたはずである。
 あとは，Microsoft Officeを構成するアプリケーションのひとつであるExcelを起動して，ファイルを開き，Excelの機能を使って折れ線グラフを作成することができる。
 Excelの図で満足できる人はこれで終わりである。
 ちまちまとマウスをクリックしながら，はたまた数値を別のセルに移動させながら，折れ線グラフを作成するとよい。
-
 以下の説明は，Excelでは満足できない人のためのものである。
+
+これ以降は，[The Comprehensive R Archive Network](https://cran.r-project.org/banner.shtml)から自分のパソコンのOSに合ったファイルをダウンロードして，自分のパソコンにインストールしておかなければならない。
 
 
 ## ExcelファイルをRで扱う
@@ -72,11 +73,10 @@ Excelファイルの移動は，Windowsならエクスプローラーを使い�
 
 実は，いきなりハードルが高い。
 Excelファイルを読み込むのがハードルが高いのではなく，e-StatにあるExcelファイルのフォーマットが原因で，データを扱えるようにするまでが一苦労である。
-本当なら試行錯誤が必要であるが，以下のとおり実行すれば問題なく読み込める（今回の場合，ヘッダーを読み込んでいない。諦めた。通常は読み込まなければならない）。
+本当なら試行錯誤が必要であるが，以下のとおり実行すれば問題なく読み込める。
 
 readxlを初めて使う場合のみ，以下のコマンドを実行する。
 一度実行すれば，パソコンの電源を切ったとしても，再度実行する必要はない（実行してもエラーにはならないので，不安なら実行すればよい）。
-
 
 ```{r}
 #| eval: false
@@ -84,6 +84,7 @@ install.packages("readxl")
 ```
 
 丁寧な説明はここまでとする。
+
 Rに慣れていない人は，まずはコンマ区切り（CSV）またはタブ区切り（TSV）テキストファイルを読み込む練習から始めるべきである。
 これらのファイルは，拡張子が.csvや.tsvとなっている。
 また，Excelのようにセル結合等，見栄えを意識したデータではないため，初心者には非常にわかりやすい。
@@ -94,35 +95,46 @@ CSVファイルが読み込めるようになってから，以下を読み進�
 ```{r}
 #| eval: false
 library(readxl)
-df <- readxl::read_excel("r006-02-001.xls", col_names = FALSE, skip = 12)
+df <- readxl::read_excel("2-1.xlsx", col_names = FALSE, skip = 2)
 ```
 ```{r}
 #| echo: false
 #| message: false
 library(readxl)
-df <- readxl::read_excel("../data/r006-02-001.xls", col_names = FALSE, skip = 12)
+df <- readxl::read_excel("../data/2-1.xlsx", col_names = FALSE, skip = 2)
 ```
 
 次に，読み込んだデータの前処理をする。
 ここで何をやるかは，そのファイルがどうなっているかに依存する。
 この作業を地道にやることにより，データ分析を見越して綺麗なファイルを作成しなければならないことに気づくはずである。
-ここで，農林水産省を責めてはいけない。
 それぞれの立場でそれぞれの事情があるのだろうと思いを馳せるだけである。
 地味で辛い作業である。
 
 ```{r}
-# 前処理半作：データ分析は前処理が大事だという諺（嘘）
-df_header1 <- c("", rep("単位農協", 4), rep("連合会", 3), rep("農事組合法人", 4))
-df_header2 <- c("年次", "総合農協", "専門農協_出資組合", "専門農協_非出資組合", "合計", "出資連合会", "非出資連合会", "合計", "１号", "２号", "１号及び２号", "合計")
-df_header <- paste(df_header1, df_header2, sep = "_")
-df_header <- sub("^_", "", df_header)
+# 下にある注を削除
+df <- df[-c(30:nrow(df)), ]
 
-df <- data.frame(df)
-names(df) <- df_header
-df <- df[1:76, ]
-df <- df[-49, ]
-df[, 1] <- 1:nrow(df) + 22 + 1925
-dfcoop <- df
+# ヘッダーを整理
+tmp <- gsub("　", "", df[1, ])
+tmp[3:5] <- tmp[2]
+tmp[7:8] <- tmp[6]
+tmp[10:11] <- tmp[9]
+names(df) <- paste(tmp, gsub("　", "", df[2, ]), sep = "_")
+names(df) <- sub("_NA", "", names(df))
+df <- df[-c(1:3), ]
+
+# 昭和32年という非表示の行を見つけて唖然とする
+df[1, ]
+
+# 年度を西暦に強引に変換する
+df <- df[-1, ]
+df[, "年度"] <- c(seq(35 + 1925, 2005, 5), seq(2006, 2020, 1))
+
+# 列を数値型に変換する
+df[, 2:ncol(df)] <- lapply(df[, 2:ncol(df)], as.double)
+
+# 以下は好みであり，実行しなくてもよい
+dfcoop <- data.frame(df)
 ```
 
 Excelファイルから読み込んだデータが分析可能な状態になっているかどうかを確認するためには，以下のコマンドを実行する。
@@ -132,14 +144,14 @@ head(dfcoop)
 ```
 
 このようになっていれば，作図や分析に使えるデータであるといえる。
-なお，NAというのはNAという文字があるのではなく，そこには何もないという意味で理解するとよい。
 
-### 折れ線グラフの作図 {#sec-simpleplot}
+
+## 折れ線グラフ
 
 次に，折れ線グラフを作成してみる。
 
 ```{r}
-plot(dfcoop[, c("年次", "単位農協_総合農協")], type = "o", main = "総合農協数の推移", xlab = "年3月末", pch = 16, las = 1)
+plot(dfcoop[, c("年度", "組合数_総数")], type = "o", main = "消費生活協同組合の数の推移", xlab = "年度", pch = 16, las = 1)
 ```
 
 macOSの場合，文字化けする（トーフになる）かもしれない。
@@ -150,17 +162,19 @@ Rの操作方法に慣れてきたらこういうことに気を配ればよく�
 などを参考にするとよい。
 よく分からない場合は文字化けしたまま進めばよい。
 
-せっかくExcelファイルを読み込んだのに，総合農協の推移だけ示すのは味気ない。
-そこで，専門農協のうちの出資組合と非出資組合も同じ図に表示してみる。
+先ほどの図をよく見ると，2005年までは点の数が少ないことがわかる。
+これは，元データを正しく反映したものである。
 
 ```{r}
-dfcoop2 <- dfcoop
-rownames(dfcoop2) <- dfcoop2[, 1]
-dfcoop2 <- dfcoop2[, -1]
-matplot(dfcoop2[, c("単位農協_総合農協", "単位農協_専門農協_出資組合", "単位農協_専門農協_非出資組合")], type = "o", main = "単位農協数の推移", xlab = "年3月末", ylab = "農業協同組合数", lwd = 1, lty = 1, pch = 16, las = 1,  axes = FALSE)
-axis(1, at = 1:nrow(dfcoop2), labels = min(rownames(dfcoop2)):max(rownames(dfcoop2)))
-axis(2, las = 1)
-legend("topright", legend = c("総合農協", "専門農協_出資組合", "専門農協_非出資組合"), col = 1:3, lwd = 1, lty = 1, pch = 16)
+dfcoop[, "年度"]
+```
+
+このことから，Rでは何も指定しなくても，軸のスケールを正しく反映した図が描かれることがわかる。
+
+続いて，組合員数の図を描画してみる。
+
+```{r}
+plot(dfcoop[, c("年度", "組合員数_地域")], type = "o", main = "消費生活協同組合の組合員数の推移", xlab = "年度", pch = 16, las = 1)
 ```
 
 それっぽいものができた。
@@ -193,11 +207,8 @@ if (!file.exists(outdir)) {
 
 ```{r}
 #| results: 'hide'
-pdf(file.path(outdir, "number_of_ja.pdf"), width = 10, height = 10)
-matplot(dfcoop2[, c("単位農協_総合農協", "単位農協_専門農協_出資組合", "単位農協_専門農協_非出資組合")], type = "o", main = "単位農協数の推移", xlab = "年3月末", ylab = "農業協同組合数", lwd = 1, lty = 1, pch = 16, las = 1,  axes = FALSE)
-axis(1, at = 1:nrow(dfcoop2), labels = min(rownames(dfcoop2)):max(rownames(dfcoop2)))
-axis(2, las = 1)
-legend("topright", legend = c("総合農協", "専門農協_出資組合", "専門農協_非出資組合"), col = 1:3, lwd = 1, lty = 1, pch = 16)
+pdf(file.path(outdir, "number_of_coop_members_plot.pdf"), width = 10, height = 10)
+plot(dfcoop[, c("年度", "組合員数_地域")], type = "o", main = "消費生活協同組合の組合員数の推移", xlab = "年度", pch = 16, las = 1)
 dev.off()
 ```
 
@@ -205,141 +216,45 @@ dev.off()
 
 ```{r}
 #| eval: false
-dev.copy(cairo_pdf, file = file.path(outdir, "number_of_ja2.pdf"))
+dev.copy(cairo_pdf, file = file.path(outdir, "number_of_coop_members_plot2.pdf"))
 dev.off()
-dev.copy(png, file = file.path(outdir, "number_of_ja2.png"))
+dev.copy(png, file = file.path(outdir, "number_of_coop_members_plot2.png"))
 dev.off()
 ```
 
 dev.copy()とpdf()で出力されるPDFは同じではない。
 結果を比較してみよう。
-トラブルが少ない前者を推奨する。
 
 実用的なファイルフォーマットは，ほぼPDFとPNGだけである。
 Wordで使うことを考えると，WindowsではPNGで，macOSではPDFで保存すればよい。
-ちなみに，保存は書き出しや出力と言い換えても，多くの場合，問題ない。
+ちなみに，保存は書き出しや出力と言い換えても，多くの場合は問題ない。
 
-## より高度な方法 {#sec-estat}
-
-e-StatからExcelファイルをダウンロードせずとも，APIを使ってデータを取得できることがある。
-ややスッキリしない表現なのは，APIを使ってデータを取得できるものとできないものがあるためである。
-幸いなことに，今回扱った農業協同組合数の推移のデータはAPIを使って取得できる。
-
-以下の説明は高度であるため，スキップしてよい。
-ただし，Rのスキルを身につけたい人は，時間をかけて構わないので，ぜひ挑戦してほしい。
-
-### e-StatのAPI取得
-
-まず，e-Statのサイトでユーザ登録して，APIを取得する。
-取得方法は自分で調べてほしい。
-
-次に，[keyring: Access the system credential store from R](https://github.com/r-lib/keyring){target="_blank"}を設定する。
-これは必須ではないが，便利なので設定しておくとよい。
-
-```{r}
-#| eval: false
-# 以下を実行する前に，e-StatのAPIを取得しておく
-install.packages("keyring")
-# library(keyring)
-keyring::key_set("e-stat")
-# 使う場合は，以下のようにする
-# keyring::key_get("e-stat")
-```
-
-### e-Statからデータ取得
-
-いよいよ本題に入る。
-e-Statから欲しいデータを取得してみよう。
-
-次のコードを実行することで，欲しいデータが取得できる。
-statsDataId = "0002003131"の数字は，e-Statの[農業協同組合等現在数統計 確報 令和３年度農業協同組合等現在数統計総括の部 1 農業協同組合、同連合会及び農事組合法人数の推移（第１表）](https://www.e-stat.go.jp/dbview?sid=0002003131){target="_blank"}のページを指すIDである。
-
-```{r}
-library(httr)
-
-response <- httr::GET(
-  url = "https://api.e-stat.go.jp/rest/2.1/app/getSimpleStatsData",
-  query = list(
-    appId = keyring::key_get("e-stat"),
-    statsDataId = "0002003131",
-    sectionHeaderFlg = 2
-  )
-)
-response <- httr::content(response)
-df <- read.csv(text = sub("^.*\\\"VALUE\\\"\n", "", response), header = TRUE, check.names = FALSE)
-
-df2 <- df
-names(df2) <- gsub("\\(.+\\)", "", names(df2))
-
-df2[, "農業協同組合等統括の部現在数"] <- factor(df2[, "農業協同組合等統括の部現在数"])
-df2 <- tidyr::spread(df2, key = "農業協同組合等統括の部現在数", value = value)
-
-dfMultifunctional <- na.omit(df2[, c("年次", "単位農協_総合農協")])
-dfInvested <- na.omit(df2[, c("年次", "単位農協_専門農協_出資組合")])
-dfNoninvested <- na.omit(df2[, c("年次", "単位農協_専門農協_非出資組合")])
-
-dfcoop <- merge(merge(dfMultifunctional, dfInvested, by = "年次", all = TRUE), dfNoninvested, by = "年次", all = TRUE)
-
-# 「年次」列に1996年3月末の行が，「1996年3月末(変更前)」と「1996年3月末(変更後)」の2つあるため，前者を削除する
-rm1996 <- function (x) {
-  tmp <- x[x[, "年次"] != "1996年3月末(変更前)", ]
-  tmp[tmp[, "年次"] == "1996年3月末(変更後)", "年次"] <- "1996年3月末"
-  tmp
-}
-dfcoop <- rm1996(dfcoop)
-dfcoop <- dfcoop[dfcoop[, "年次"] != "2022年4月1日", ]
-dfcoop[, "年次"] <- as.double(gsub("年3月末", "", dfcoop[, "年次"]))
-
-head(dfcoop)
-```
-
-欲しかったデータが分析可能な形になったことが確認できる。
-もう少し見栄えのよい表にしたければ，[DT: A Wrapper of the JavaScript Library 'DataTables'](https://cran.r-project.org/web/packages/DT/index.html){target="_blank"}を使うとよい。
-
-```{r}
-caption <- "農業協同組合数の推移"
-DT::datatable(
-  dfcoop, caption = caption, rownames = TRUE,
-  extensions = 'Buttons',
-  options = list(
-    pageLength = 10,
-    dom = 'Blfrtip',
-    buttons = list(
-      c('csv', 'excel')
-    )
-  )
-) |>
-  DT::formatCurrency(c(2:ncol(dfcoop)), currency = "", interval = 3, mark = ",", digits = 0)
-```
-
-今回はDTを使うメリットがほとんどないが，複雑な表だと視認性が劇的に改善するため，覚えておくとよい。
-
-### ggplot2を用いた折れ線グラフの作図
-
-上記のデータフレームから折れ線グラフを作成する方法は，@sec-simpleplot と同じである。
 以下では，授業で使用した図の作成方法を紹介する。
+
+
+## ggplot2を用いた折れ線グラフ
+
+[ggplot2](https://ggplot2.tidyverse.org/){target="_blank"}は好き嫌いが分かれるグラフである。
+個人的には，Rのコードが分かりやすく，短時間でいい感じのグラフに仕上がることから，ggplot2は非常に便利である（ただし，凝り過ぎには注意）と考えている。
 
 ```{r}
 #| warning: false
 library(ggplot2)
 
-dfcoop2 <- reshape2::melt(dfcoop, id.vars = "年次")
-names(dfcoop2)[2:3] <- c("単位農協", "組合数")
-levels(dfcoop2[, "単位農協"]) <- sub("単位農協_", "", levels(dfcoop2[, "単位農協"]))
+dfcoop2 <- reshape2::melt(dfcoop[, c("年度", grep("組合数_", names(dfcoop), value = TRUE))], id.vars = "年度")
+names(dfcoop2)[2:3] <- c("消費生活協同組合", "組合数")
 
 g <- ggplot(data = dfcoop2) +
-  geom_line(aes(x = 年次, y = 組合数, group = 単位農協, colour = 単位農協)) +
-  geom_point(aes(x = 年次, y = 組合数, group = 単位農協, colour = 単位農協)) +
-  ggtitle("単位農協数の推移")
+  geom_line(aes(x = 年度, y = 組合数, group = 消費生活協同組合, colour = 消費生活協同組合)) +
+  geom_point(aes(x = 年度, y = 組合数, group = 消費生活協同組合, colour = 消費生活協同組合)) +
+  ggtitle("消費生活協同組合の数の推移")
 g + theme(text = element_text(family = "HiraKakuProN-W3"))
 ```
 
 最後のところでエラーが出る場合は，gだけにして，プラス以降を入力しない。
 文字化けするかもしれないが，気にする必要はない（文字化けを修正するのは大変）。
 
-[ggplot2](https://ggplot2.tidyverse.org/){target="_blank"}は好き嫌いが分かれるグラフである。
-個人的には，Rのコードが分かりやすく，短時間でいい感じのグラフに仕上がることから，ggplot2は非常に便利である（ただし，凝り過ぎには注意）と考えている。
-少し工夫するだけで見栄えは劇的に改善する。
+次のように，少し工夫するだけで見栄えは劇的に改善する。
 
 ```{r}
 #| warning: false
@@ -347,10 +262,10 @@ g + theme(text = element_text(family = "HiraKakuProN-W3"))
 library(ggsci)
 
 g <- ggplot(data = dfcoop2) +
-  geom_line(aes(x = 年次, y = 組合数, group = 単位農協, colour = 単位農協)) +
-  geom_point(aes(x = 年次, y = 組合数, group = 単位農協, colour = 単位農協)) +
+  geom_line(aes(x = 年度, y = 組合数, group = 消費生活協同組合, colour = 消費生活協同組合)) +
+  geom_point(aes(x = 年度, y = 組合数, group = 消費生活協同組合, colour = 消費生活協同組合)) +
   scale_y_continuous(labels = scales::comma_format()) +
-  ggtitle("単位農協数の推移") +
+  ggtitle("消費生活協同組合の数の推移") +
   theme_bw() +
 # theme_minimal() +
 # theme_classic() +
@@ -364,51 +279,97 @@ g + theme(text = element_text(family = "HiraKakuProN-W3"))
 
 ```{r}
 #| warning: false
-ggsave(g, file = file.path(outdir, "number_of_ja_gg.pdf"), width = 8, height = 4)
-ggsave(g, file = file.path(outdir, "number_of_ja_gg.png"), width = 8, height = 4)
+ggsave(g, file = file.path(outdir, "number_of_coop.pdf"), width = 8, height = 4)
+ggsave(g, file = file.path(outdir, "number_of_coop.png"), width = 8, height = 4)
+```
+
+同じようにして，組合員数の推移のグラフを描くことができる。
+
+```{r}
+#| warning: false
+dfcoop2 <- reshape2::melt(dfcoop[, c("年度", grep("組合員数_", names(dfcoop), value = TRUE))], id.vars = "年度")
+names(dfcoop2)[2:3] <- c("消費生活協同組合", "組合員数")
+
+g <- ggplot(data = dfcoop2) +
+  geom_line(aes(x = 年度, y = 組合員数, group = 消費生活協同組合, colour = 消費生活協同組合)) +
+  geom_point(aes(x = 年度, y = 組合員数, group = 消費生活協同組合, colour = 消費生活協同組合)) +
+  scale_y_continuous(labels = scales::comma_format()) +
+  ggtitle("消費生活協同組合の組合員数の推移") +
+  theme_bw() +
+  scale_color_d3()
+g + theme(text = element_text(family = "HiraKakuProN-W3"))
+
+ggsave(g, file = file.path(outdir, "number_of_coop_members.pdf"), width = 8, height = 4)
 ```
 
 
-## e-Statの検索
+## 練習問題
 
-@sec-estat では，statsDataId = “0002003131”とIDを指定した。
-しかし，通常はデータを探すところから始める必要がある。
-以下に探し方の一例を示す。
+ここで練習問題である。
+上の内容を応用して，次の消費生活協同組合の事業種類別の組合数のデータを基に，折れ線グラフのPDFファイルを作成してみよう。
+
+::: {.callout-note collapse="true" icon="true"}
+## 消費生活協同組合（連合会）実態調査 令和3年度消費生活協同組合（連合会）実態調査 2-2 事業種類別組合数の状況 年次
+
+[https://www.e-stat.go.jp/stat-search/files?stat_infid=000032203792](https://www.e-stat.go.jp/stat-search/files?stat_infid=000032203792){target="_blank"}
+:::
+
+Rの前処理に慣れるまでは，ダウンロードしたExcelファイルを綺麗にし，別名で保存してから，Rで読み込むと面倒なことはせずにすむ。
+とくに，セル結合をなくし，不要な行や列を削除しておくとよい。
+Excel形式ではなく，CSVで保存するのもよいかもしれない。
+ただし，再現可能性の観点から，ダウンロードしたExcelファイルは変更せずに残しておくことが望ましい。
+
+以下のようにすると，欲しいPDFファイルが得られる。
 
 ```{r}
 #| eval: false
-library(httr)
-library(listviewer)
-library(rlist)
-
-searchword <- "農業協同組合"
-
-response <- httr::GET(
-  url = "https://api.e-stat.go.jp/rest/2.1/app/json/getStatsList",
-  query = list(
-    appId = keyring::key_get("e-stat"),
-    searchWord = searchword
-  )
-) |>
-  httr::content()
-listviewer::jsonedit(response)
-
-df <- response$GET_STATS_LIST$DATALIST_INF$TABLE_INF |>
-  rlist::list.select(
-    id = `@id`,
-    stat_name = STAT_NAME$`$`,
-    gov_org = GOV_ORG$`$`,
-    statistics_name = STATISTICS_NAME,
-#   title = TITLE$`$`, # Error in TITLE$`$` : $ operator is invalid for atomic vectors
-    survey_date = SURVEY_DATE,
-    table_name = TITLE_SPEC$TABLE_NAME
-  ) |>
-  rlist::list.stack()
-
-head(df)
+df <- readxl::read_excel("2-2.xlsx", col_names = FALSE, skip = 1)
+```
+```{r}
+#| echo: false
+#| message: false
+df <- readxl::read_excel("../data/2-2.xlsx", col_names = FALSE, skip = 1)
 ```
 
-ここで示した方法は，[Rからe-Stat APIを使う - Qiita](https://qiita.com/nozma/items/f88f5cc60ab63461deae){target="_blank"}が大変参考になった。
-これ以外にも，e-Statからデータを取得する方法はある。
-例えば，[estatapi](https://yutannihilation.github.io/estatapi/){target="_blank"}というパッケージを使ってもほぼ同じことができるはずである。
-興味ある人は，自分で確かめてほしい。
+```{r}
+#| warning: false
+# 下にある注を削除
+df <- df[-c(83:nrow(df)), ]
+
+# ヘッダーを整理
+tmp <- c(gsub("　|\r|\n", "", df[1, ])[1:3], gsub("　|\r|\n", "", df[2, ])[seq(5, 18, 3)])
+df <- df[, c(1:2, 4, seq(5, 15, 3), 18)]
+names(df) <- tmp
+df <- df[-c(1:4), ]
+
+# 組合数の行のみ抽出する
+df <- df[df[, "組合種類"] == "組合数", ]
+
+# 昭和32年という非表示の行を見つけて唖然とする
+df[1, ]
+
+# 年度を西暦に強引に変換する
+df <- df[-1, ]
+df[, "年度"] <- c(seq(35 + 1925, 2005, 5), seq(2006, 2020, 1))
+
+# 列を数値型に変換する
+df[df == "-"] <- ""
+df[, 3:ncol(df)] <- lapply(df[, 3:ncol(df)], as.double)
+
+# 以下は好みであり，実行しなくてもよい
+dfcoop <- data.frame(df)
+
+dfcoop2 <- reshape2::melt(dfcoop[, -which(names(dfcoop) == "組合種類")], id.vars = "年度")
+names(dfcoop2)[2:3] <- c("消費生活協同組合", "組合数")
+
+g <- ggplot(data = dfcoop2) +
+  geom_line(aes(x = 年度, y = 組合数, group = 消費生活協同組合, colour = 消費生活協同組合)) +
+  geom_point(aes(x = 年度, y = 組合数, group = 消費生活協同組合, colour = 消費生活協同組合)) +
+  scale_y_continuous(labels = scales::comma_format()) +
+  ggtitle("消費生活協同組合の事業種類別組合数の推移") +
+  theme_bw() +
+  scale_color_d3()
+g + theme(text = element_text(family = "HiraKakuProN-W3"))
+
+ggsave(g, file = file.path(outdir, "number_of_coop_types.pdf"), width = 8, height = 4)
+```
