@@ -369,7 +369,6 @@ g <- ggplot(data = dfcoop2) +
   ggtitle("消費生活協同組合の事業種類別組合数の推移") +
   theme_bw() +
   scale_color_d3()
-g + theme(text = element_text(family = "HiraKakuProN-W3"))
 
 ggsave(g, file = file.path(outdir, "number_of_coop_types.pdf"), width = 8, height = 4)
 ```
