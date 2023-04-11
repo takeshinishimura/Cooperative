@@ -28,7 +28,7 @@ e-Statには，より長期にわたるデータがあるため，上記の表�
 このページの目的は，Rで作図の練習をすることである。
 
 
-## HTMLの表をRで扱う
+## HTMLの表の読み込み
 
 上記リンク先のデータを入手し，Rで読み込む。
 
@@ -84,7 +84,7 @@ x <- DT::datatable(
 x
 ```
 
-### 折れ線グラフと棒グラフ
+## 折れ線グラフと棒グラフ
 
 まず，折れ線グラフを作成してみる。
 横軸に年度を取り，縦軸に組合数（総数）を取った図を描くと以下のようになる。
@@ -108,7 +108,7 @@ plot(rownames(tmp), tmp, type = "l", xlab = "年度", ylab = "組合数", ylim =
 
 ```{r results = "markup", echo = TRUE}
 layout(matrix(1:2, ncol=2))
-barplot(t(tmp), ylim=c(1200, max(tmp)), xlab = "年度", ylab = "組合数", col = gray.colors(1), las = 1)
+barplot(t(tmp), ylim = c(1200, max(tmp)), xlab = "年度", ylab = "組合数", col = gray.colors(1), las = 1)
 barplot(t(tmp), xlab = "年度", ylab = "組合数", col = gray.colors(1), las = 1)
 ```
 
@@ -117,7 +117,7 @@ barplot(t(tmp), xlab = "年度", ylab = "組合数", col = gray.colors(1), las =
 Excelで作図する場合，このようなおかしさに気づきにくいため，注意が必要である。
 
 
-### 比較可能なグラフ
+## 比較可能なグラフ
 
 次に，地域組合と職域組合の比較を試みる。
 
@@ -140,7 +140,7 @@ par(mar = c(4, 4, 1, 8))
 barplot(tmp[2:1,], xlab = "年度", ylab = "組合数", col = rev(gray.colors(2)), yaxt = "n", las = 1)
 axis(2, at = seq(0, 1200, 200), label = format(seq(0, 1200, 200), big.mark = ",", scientific = FALSE), las = 1)
 par(xpd = TRUE)
-legend(par()$usr[2], par()$usr[4], legend = rownames(tmp), pch = 22, pt.bg = gray.colors(2), col = 1, bty = "n")
+legend(par()$usr[2], par()$usr[4], legend = rownames(tmp), col = 1, pch = 22, pt.bg = gray.colors(2), bty = "n")
 ```
 
 前の図と違って，職能組合の変化が把握しやすい。
@@ -156,7 +156,7 @@ legend(par()$usr[2], par()$usr[4], legend = rownames(tmp), pch = 22, pt.bg = gra
 par(mar = c(4, 4, 1, 8))
 barplot(tmp, beside = TRUE, xlab = "年度", ylab = "組合数", col = gray.colors(2), las = 1)
 par(xpd = TRUE)
-legend(par()$usr[2], par()$usr[4], legend = rownames(tmp), pch = 22, pt.bg = gray.colors(2), col = 1, bty = "n")
+legend(par()$usr[2], par()$usr[4], legend = rownames(tmp), col = 1, pch = 22, pt.bg = gray.colors(2), bty = "n")
 ```
 
 しかしながら，必ずしも見やすいとはいえない。
