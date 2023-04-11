@@ -245,12 +245,14 @@ dfcoop2 <- reshape2::melt(dfcoop[, c("年度", grep("組合数_", names(dfcoop),
 names(dfcoop2)[2:3] <- c("消費生活協同組合", "組合数")
 
 # _を（）に変換する
-dfcoop2[, "消費生活協同組合"] <- apply(dfcoop2[, "消費生活協同組合", drop = FALSE], 1, function(x) {
-  if (grep("_", x)) {
-    x <- paste0(sub("_", "（", x), "）")
-  }
-  return(x)}
-)
+levels(dfcoop2[, "消費生活協同組合"])[grep("_", levels(dfcoop2[, "消費生活協同組合"]))] <- paste0(sub("_", "（", grep("_", levels(dfcoop2[, "消費生活協同組合"]), value = TRUE)), "）")
+# factorではない場合
+# dfcoop2[, "消費生活協同組合"] <- apply(dfcoop2[, "消費生活協同組合", drop = FALSE], 1, function(x) {
+# if (grep("_", x)) {
+#   x <- paste0(sub("_", "（", x), "）")
+# }
+# return(x)}
+# )
 
 g <- ggplot(data = dfcoop2) +
   geom_line(aes(x = 年度, y = 組合数, group = 消費生活協同組合, colour = 消費生活協同組合)) +
@@ -300,12 +302,7 @@ dfcoop2 <- reshape2::melt(dfcoop[, c("年度", grep("組合員数_", names(dfcoo
 names(dfcoop2)[2:3] <- c("消費生活協同組合", "組合員数")
 
 # _を（）に変換する
-dfcoop2[, "消費生活協同組合"] <- apply(dfcoop2[, "消費生活協同組合", drop = FALSE], 1, function(x) {
-  if (grep("_", x)) {
-    x <- paste0(sub("_", "（", x), "）")
-  }
-  return(x)}
-)
+levels(dfcoop2[, "消費生活協同組合"])[grep("_", levels(dfcoop2[, "消費生活協同組合"]))] <- paste0(sub("_", "（", grep("_", levels(dfcoop2[, "消費生活協同組合"]), value = TRUE)), "）")
 
 g <- ggplot(data = dfcoop2) +
   geom_line(aes(x = 年度, y = 組合員数 / 10000, group = 消費生活協同組合, colour = 消費生活協同組合)) +
