@@ -15,7 +15,7 @@ lang: ja
 ---
 
 ここでは，消費生活協同組合数の推移の折れ線グラフを作成する。
-次のリンクから確認できるように，この統計データはExcelファイルではなく，HTMLの表である。
+次のリンクから確認できるように，ここで用いる統計データはExcelファイルではなく，HTMLの表である。
 
 ::: {.callout-note collapse="true" icon="true"}
 ## 厚生労働省「第1表　組合数及び組合員数の状況（消費生活協同組合（連合会）実態調査（平成11年度調査）結果）」
@@ -23,10 +23,14 @@ lang: ja
 [https://www.mhlw.go.jp/toukei/saikin/hw/shakai/seikyo/hyo1-1.html](https://www.mhlw.go.jp/toukei/saikin/hw/shakai/seikyo/hyo1-1.html){target="_blank"}
 :::
 
+この表には，1966（昭和41）年度から1999（平成11）年度のデータが示されている。
+e-Statには，より長期にわたるデータがあるため，上記の表は授業では使っていない。
+このページの目的は，Rで作図の練習をすることである。
+
 
 ## HTMLの表をRで扱う
 
-上記のリンク先のデータを入手し，Rで読み込む。
+上記リンク先のデータを入手し，Rで読み込む。
 
 ```{r results = "markup", echo = TRUE}
 # 厚生労働省「第1表　組合数及び組合員数の状況」
@@ -37,29 +41,29 @@ df <- rvest::html_table(html)[[1]]
 head(df)
 ```
 
-表がHTMLの表のため，最初に整えなければならない。
-この作業のほとんどはアドホックに行う。
+複雑な表ではないため，かなり綺麗に読み取れている。
+ただし，数字が文字列として認識されており，このままでは図を描くことはできない。
 
 ```{r results = "markup", echo = TRUE}
-dfcoop <- df
-dfcoop <- data.frame(dfcoop[-c(3:4), ])
-names(dfcoop) <- paste0(paste(dfcoop[1, ], dfcoop[2, ], sep = "（"), "）")
+names(df) <- paste0(paste(df[1, ], df[2, ], sep = "（"), "）")
+names(df)[1] <- df[1, 1]
+df <- df[-c(1:4), ]
 
-# 年度の列を綺麗にしてから，削除する
-names(dfcoop)[1] <- dfcoop[1, 1]
-dfcoop <- dfcoop[-c(1:2), ]
-dfcoop[dfcoop[, "年度"] == "元", "年度"] <- 1
+dfcoop <- data.frame(df, check.names = FALSE)
+
+# 年度の西暦に変換してから，削除する
+dfcoop[dfcoop[, "年度"] == "元", "年度"] <- "1"
 dfcoop[, "年度"] <- as.double(dfcoop[, "年度"])
 nen <- ifelse(dfcoop[, "年度"] > 31, dfcoop[, "年度"] + 1925, dfcoop[, "年度"] + 1988)
 dfcoop[, "年度"] <- nen
+rownames(dfcoop) <- dfcoop[, "年度"]
+dfcoop <- dfcoop[, -1]
 for (i in 1:ncol(dfcoop)) {
   dfcoop[, i] <- as.double(gsub(",", "", dfcoop[, i]))
 }
-rownames(dfcoop) <- dfcoop[, "年度"]
-dfcoop <- dfcoop[, -1]
 ```
 
-前処理の終わったデータは，以下の表のとおりである。
+前処理の終わったデータは，以下の表のようになる。
 
 ```{r results = "markup", echo = TRUE}
 caption <- "消費生活協同組合（連合会）実態調査（平成11年度調査） - 組合数及び組合員数の状況"
@@ -67,7 +71,7 @@ x <- DT::datatable(
   dfcoop, caption = caption, rownames = TRUE,
   extensions = 'Buttons',
   options = list(
-    pageLength = 20,
+    pageLength = 10,
     dom = 'Blfrtip',
     buttons = list(
       c('csv', 'excel'),
@@ -80,7 +84,7 @@ x <- DT::datatable(
 x
 ```
 
-### 折れ線グラフと棒グラフの作図
+### 折れ線グラフと棒グラフ
 
 まず，折れ線グラフを作成してみる。
 横軸に年度を取り，縦軸に組合数（総数）を取った図を描くと以下のようになる。
@@ -95,44 +99,48 @@ plot(rownames(tmp), tmp, type = "l", xlab = "年度", ylab = "組合数", ylim =
 
 左図からは，年度によって大きく変化している印象を受ける。
 1975年度くらいに組合数が多くなり，その後，ほぼ以前の数に戻っている。
+ただし，縦軸が0から始まっていない。
 縦軸を0から始まるように書き直したのが，右図である。
 右図からは，左図ほど大きな変化がある印象は受けない。
-折れ線グラフの場合，縦軸をどうすべきかに決まりはなく，変化を強調したければ，左図のように描いてよい。
+折れ線グラフの場合，縦軸をどうすべきかに決まりはなく，変化を強調したければ，左図のように描いてもよい。
 
 同じデータで棒グラフを作成すると，以下のようになる。
 
 ```{r results = "markup", echo = TRUE}
 layout(matrix(1:2, ncol=2))
-barplot(t(tmp), ylim=c(1100, max(tmp) + 100), xlab = "年度", ylab = "組合数", col = gray.colors(1), las = 1)
-barplot(t(tmp), ylim=c(0, max(tmp) + 100), xlab = "年度", ylab = "組合数", col = gray.colors(1), las = 1)
+barplot(t(tmp), ylim=c(1200, max(tmp)), xlab = "年度", ylab = "組合数", col = gray.colors(1), las = 1)
+barplot(t(tmp), xlab = "年度", ylab = "組合数", col = gray.colors(1), las = 1)
 ```
 
 棒グラフの場合，棒の高さが意味を持つため，縦軸に0を含めなければならず，左図のように描いてはならない。
 そもそもRでは，左図のような図は縦軸の端に合わせて描画されないため，図としておかしいことがわかる。
-Excelで作図する場合，このようなおかしさに気づかないため，注意が必要である。
+Excelで作図する場合，このようなおかしさに気づきにくいため，注意が必要である。
 
 
-### 組合数（地域，職域）
+### 比較可能なグラフ
 
 次に，地域組合と職域組合の比較を試みる。
 
 ```{r results = "markup", echo = TRUE}
 tmp <- t(as.matrix(dfcoop[, c("組合数（地域）", "組合数（職域）")]))
 
-par(mar = c(4, 4, 1, 8))
-barplot(tmp, col = gray.colors(2), xlab = "年度", ylab = "組合数", las = 1)
-par(xpd = TRUE)
-legend(par()$usr[2], par()$usr[4], legend = rev(rownames(tmp)), pch = 22, pt.bg = gray.colors(2), col = 1, bty = "n")
+barplot(tmp, xlab = "年度", ylab = "組合数", las = 1, legend.text = TRUE)
 ```
 
 積み上げ棒グラフの場合，地域組合と職域組合の合計の推移と，それぞれの推移が把握可能である。
 この図は，地域組合を下に，職能組合を上にして作図した。
 地域組合の変化は把握しやすい一方で，職能組合の変化は把握しづらい。
 そこで，棒の上下を入れ替えてみよう。
+ついでに，凡例がグラフと重なっているのを修正する。
+
 次の図は，職域組合を下に，地域組合を上にして作図した。
 
 ```{r results = "markup", echo = TRUE}
-barplot(tmp[2:1,], xlab = "年度", ylab = "組合数", las = 1, legend.text = TRUE, args.legend = list(x = ncol(tmp), y = max(tmp[1, ]) + max(tmp[2, ]), bty = "n"))
+par(mar = c(4, 4, 1, 8))
+barplot(tmp[2:1,], xlab = "年度", ylab = "組合数", col = rev(gray.colors(2)), yaxt = "n", las = 1)
+axis(2, at = seq(0, 1200, 200), label = format(seq(0, 1200, 200), big.mark = ",", scientific = FALSE), las = 1)
+par(xpd = TRUE)
+legend(par()$usr[2], par()$usr[4], legend = rownames(tmp), pch = 22, pt.bg = gray.colors(2), col = 1, bty = "n")
 ```
 
 前の図と違って，職能組合の変化が把握しやすい。
@@ -141,50 +149,28 @@ barplot(tmp[2:1,], xlab = "年度", ylab = "組合数", las = 1, legend.text = T
 これは，職能組合の変化が単調であることが理由であり，たまたまである。
 このため，積み上げ棒グラフが，内容を把握しやすいグラフかどうかはデータに依存するといえる。
 
-そこで，積み上げ棒グラフを使わない方法を試みる。
+次に，積み上げ棒グラフを使わない方法を試みる。
 次の棒グラフのように，地域組合と職域組合の棒を横に並べると，それぞれの推移が把握しやすくなる。
 
 ```{r results = "markup", echo = TRUE}
 par(mar = c(4, 4, 1, 8))
 barplot(tmp, beside = TRUE, xlab = "年度", ylab = "組合数", col = gray.colors(2), las = 1)
 par(xpd = TRUE)
-legend(par()$usr[2], par()$usr[4], legend = rownames(tmp), pch = 22, pt.bg = rev(gray.colors(2)), col = 1, bty = "n")
+legend(par()$usr[2], par()$usr[4], legend = rownames(tmp), pch = 22, pt.bg = gray.colors(2), col = 1, bty = "n")
 ```
 
 しかしながら，必ずしも見やすいとはいえない。
 横軸の項目数が多すぎるためである。
 これは棒グラフの限界である。
-横軸のすべての目盛りが表示されていないこともこれが原因である。
 
-
-```{r, echo = FALSE}
-#| context: server
-library(shiny)#| 
-shiny::shinyApp(
-  ui = fluidPage(
-    selectInput("name", "変数を選択:", 
-                choices = colnames(dfcoop)),
-    plotOutput("results")
-  ),
-  server = function(input, output) {
-    output$results <- renderPlot({
-      barplot(t(as.matrix(dfcoop[, input$name, drop = FALSE])),
-              col = gray.colors(1), xlab = "年度", ylab = input$name, las = 1)
-    })
-  },
-  options = list(height = 500)
-)
-```
-
-ここに文章。
-あ
+一方，折れ線グラフは複数の線があっても問題なく比較できる。
 
 ```{r results = "markup", echo = TRUE}
-ymax <- max(max(dfcoop[, "組合員数（地域）"]), max(dfcoop[, "組合員数（職域）"]))
-plot(rownames(dfcoop), dfcoop[, "組合員数（地域）"], type = "l", col = 2, xlab = "年度", ylab = "組合員数", ylim = c(0, ymax), las = 1)
+ymax <- max(dfcoop[, c("組合数（地域）", "組合数（職域）")])
+plot(as.numeric(rownames(dfcoop)), dfcoop[, "組合数（地域）"], type = "l", col = 2, xlab = "年度", ylab = "組合数", ylim = c(0, ymax), las = 1, bty = "n")
 par(new = TRUE)
-plot(rownames(dfcoop), dfcoop[, "組合員数（職域）"], type = "l", col = 4, ylim = c(0, ymax), xlab = "", ylab = "", axes = FALSE)
-legend("topleft", legend = c("組合員数（地域）", "組合員数（職域）"), lty = 1, col = c(2, 4))
-
-dev.off()
+plot(as.numeric(rownames(dfcoop)), dfcoop[, "組合数（職域）"], type = "l", col = 4, xlab = "", ylab = "", ylim = c(0, ymax), axes = FALSE)
+legend("bottomright", legend = c("組合数（地域）", "組合数（職域）"), lty = 1, col = c(2, 4))
 ```
+
+ggplot2に慣れた場合，細かい設定が面倒だと感じるようになるだろう。
