@@ -252,7 +252,7 @@ g + theme(text = element_text(family = "HiraKakuProN-W3"))
 # library(geomtextpath)
 
 g <- ggplot(data = dfja2_en) +
-  geom_segment(aes(x = 0, y = pref, xend = Multifunctional, yend = pref, colour = ifelse(dfja2_en$Multifunctional > mean(dfja2_en$Multifunctional), "red", "skyblue"))) +
+  geom_segment(aes(x = 0, y = pref, xend = Multifunctional, yend = pref, colour = ifelse(dfja2_en$Multifunctional > mean(dfja2_en$Multifunctional), "red", "skyblue")), linewidth = .8) +
   geom_point(aes(x = Multifunctional, y = pref, colour = ifelse(dfja2_en$Multifunctional > mean(dfja2_en$Multifunctional), "red", "skyblue"))) +
   scale_y_discrete(limits = rev(levels(dfja2_en$pref))) +
   geom_vline(xintercept = mean(dfja2_en$Multifunctional), colour = "gray60", linetype = "dashed") +

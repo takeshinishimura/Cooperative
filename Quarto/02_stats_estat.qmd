@@ -244,6 +244,14 @@ library(ggplot2)
 dfcoop2 <- reshape2::melt(dfcoop[, c("年度", grep("組合数_", names(dfcoop), value = TRUE))], id.vars = "年度")
 names(dfcoop2)[2:3] <- c("消費生活協同組合", "組合数")
 
+# _を（）に変換する
+dfcoop2[, "消費生活協同組合"] <- apply(dfcoop2[, "消費生活協同組合", drop = FALSE], 1, function(x) {
+  if (grep("_", x)) {
+    x <- paste0(sub("_", "（", x), "）")
+  }
+  return(x)}
+)
+
 g <- ggplot(data = dfcoop2) +
   geom_line(aes(x = 年度, y = 組合数, group = 消費生活協同組合, colour = 消費生活協同組合)) +
   geom_point(aes(x = 年度, y = 組合数, group = 消費生活協同組合, colour = 消費生活協同組合)) +
@@ -264,6 +272,7 @@ library(ggsci)
 g <- ggplot(data = dfcoop2) +
   geom_line(aes(x = 年度, y = 組合数, group = 消費生活協同組合, colour = 消費生活協同組合)) +
   geom_point(aes(x = 年度, y = 組合数, group = 消費生活協同組合, colour = 消費生活協同組合)) +
+# scale_x_continuous(breaks = seq(1960, 2020, 10), minor_breaks = NULL) +
   scale_y_continuous(labels = scales::comma_format()) +
   ggtitle("消費生活協同組合の数の推移") +
   theme_bw() +
@@ -290,10 +299,19 @@ ggsave(g, file = file.path(outdir, "number_of_coop.png"), width = 8, height = 4)
 dfcoop2 <- reshape2::melt(dfcoop[, c("年度", grep("組合員数_", names(dfcoop), value = TRUE))], id.vars = "年度")
 names(dfcoop2)[2:3] <- c("消費生活協同組合", "組合員数")
 
+# _を（）に変換する
+dfcoop2[, "消費生活協同組合"] <- apply(dfcoop2[, "消費生活協同組合", drop = FALSE], 1, function(x) {
+  if (grep("_", x)) {
+    x <- paste0(sub("_", "（", x), "）")
+  }
+  return(x)}
+)
+
 g <- ggplot(data = dfcoop2) +
-  geom_line(aes(x = 年度, y = 組合員数, group = 消費生活協同組合, colour = 消費生活協同組合)) +
-  geom_point(aes(x = 年度, y = 組合員数, group = 消費生活協同組合, colour = 消費生活協同組合)) +
-  scale_y_continuous(labels = scales::comma_format()) +
+  geom_line(aes(x = 年度, y = 組合員数 / 10000, group = 消費生活協同組合, colour = 消費生活協同組合)) +
+  geom_point(aes(x = 年度, y = 組合員数 / 10000, group = 消費生活協同組合, colour = 消費生活協同組合)) +
+# scale_x_continuous(breaks = seq(1960, 2020, 10), minor_breaks = NULL) +
+  scale_y_continuous(labels = scales::comma_format(), name = "組合員数（万人）") +
   ggtitle("消費生活協同組合の組合員数の推移") +
   theme_bw() +
   scale_color_d3()
@@ -314,10 +332,10 @@ ggsave(g, file = file.path(outdir, "number_of_coop_members.pdf"), width = 8, hei
 [https://www.e-stat.go.jp/stat-search/files?stat_infid=000032203792](https://www.e-stat.go.jp/stat-search/files?stat_infid=000032203792){target="_blank"}
 :::
 
-Rの前処理に慣れるまでは，ダウンロードしたExcelファイルを綺麗にし，別名で保存してから，Rで読み込むと面倒なことはせずにすむ。
+Rの前処理に慣れるまでは，ダウンロードしたExcelファイルをMicrosoft Excelで開いて，綺麗に整え，別名で保存してから，Rで読み込むと面倒なことをせずにすむ。
 とくに，セル結合をなくし，不要な行や列を削除しておくとよい。
 Excel形式ではなく，CSVで保存するのもよいかもしれない。
-ただし，再現可能性の観点から，ダウンロードしたExcelファイルは変更せずに残しておくことが望ましい。
+ただし，再現可能性の観点から，ダウンロードしたExcelファイルは変更せずに，変更後のファイルとは別に残しておくことが望ましい。
 
 以下のようにすると，欲しいPDFファイルが得られる。
 
@@ -365,6 +383,7 @@ names(dfcoop2)[2:3] <- c("消費生活協同組合", "組合数")
 g <- ggplot(data = dfcoop2) +
   geom_line(aes(x = 年度, y = 組合数, group = 消費生活協同組合, colour = 消費生活協同組合)) +
   geom_point(aes(x = 年度, y = 組合数, group = 消費生活協同組合, colour = 消費生活協同組合)) +
+# scale_x_continuous(breaks = seq(1960, 2020, 10), minor_breaks = NULL) +
   scale_y_continuous(labels = scales::comma_format()) +
   ggtitle("消費生活協同組合の事業種類別組合数の推移") +
   theme_bw() +

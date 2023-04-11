@@ -102,7 +102,7 @@ dfcoop2 <- dfcoop
 rownames(dfcoop2) <- dfcoop2[, 1]
 dfcoop2 <- dfcoop2[, -1]
 matplot(dfcoop2[, c("単位農協_総合農協", "単位農協_専門農協_出資組合", "単位農協_専門農協_非出資組合")], type = "o", main = "単位農協数の推移", xlab = "年3月末", ylab = "農業協同組合数", lwd = 1, lty = 1, pch = 16, las = 1,  axes = FALSE)
-axis(1, at = 1:nrow(dfcoop2), labels = min(rownames(dfcoop2)):max(rownames(dfcoop2)))
+axis(1, at = seq(3, 73, 10), labels = seq(1950, 2020, 10))
 axis(2, las = 1)
 legend("topright", legend = c("総合農協", "専門農協_出資組合", "専門農協_非出資組合"), col = 1:3, lwd = 1, lty = 1, pch = 16)
 ```
@@ -216,6 +216,9 @@ dfcoop2 <- reshape2::melt(dfcoop, id.vars = "年次")
 names(dfcoop2)[2:3] <- c("単位農協", "組合数")
 levels(dfcoop2[, "単位農協"]) <- sub("単位農協_", "", levels(dfcoop2[, "単位農協"]))
 
+# _を（）に変換する
+levels(dfcoop2[, "単位農協"])[grep("_", levels(dfcoop2[, "単位農協"]))] <- paste0(sub("_", "（", grep("_", levels(dfcoop2[, "単位農協"]), value = TRUE)), "）")
+
 g <- ggplot(data = dfcoop2) +
   geom_line(aes(x = 年次, y = 組合数, group = 単位農協, colour = 単位農協)) +
   geom_point(aes(x = 年次, y = 組合数, group = 単位農協, colour = 単位農協)) +
@@ -230,12 +233,12 @@ g + theme(text = element_text(family = "HiraKakuProN-W3"))
 
 ```{r}
 #| warning: false
-# 便利なカラーパレット
 library(ggsci)
 
 g <- ggplot(data = dfcoop2) +
   geom_line(aes(x = 年次, y = 組合数, group = 単位農協, colour = 単位農協)) +
   geom_point(aes(x = 年次, y = 組合数, group = 単位農協, colour = 単位農協)) +
+# scale_x_continuous(breaks = seq(1950, 2020, 10), minor_breaks = NULL) +
   scale_y_continuous(labels = scales::comma_format()) +
   ggtitle("単位農協数の推移") +
   theme_bw() +
@@ -245,9 +248,7 @@ g <- ggplot(data = dfcoop2) +
 g + theme(text = element_text(family = "HiraKakuProN-W3"))
 ```
 
-いい感じの図が描けた。
-
-図をファイルに保存するときは，以下のようにする。
+いい感じの図が描けたので，ファイルに保存する。
 
 ```{r}
 #| warning: false
@@ -261,6 +262,7 @@ outdir <- "../fig"
 ```
 
 ```{r}
+#| warning: false
 if (!file.exists(outdir)) {
   dir.create(outdir)
 }
