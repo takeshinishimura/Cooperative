@@ -279,6 +279,43 @@ if (!file.exists(outdir)) {
 ggsave(g, file = file.path(outdir, "number_of_ja_lollipop.pdf"), width = 10, height = 7)
 ```
 
+縦軸で都道府県の順位を表現することもできる。
+
+```{r}
+#| warning: false
+g <- ggplot(data = dfja2_en) +
+  geom_segment(
+    aes(x = 0, y = pref[order(Multifunctional)],
+        xend = Multifunctional[order(Multifunctional)],
+        yend = pref[order(Multifunctional)]),
+    colour = "darkorange",
+    linewidth = .8
+  ) +
+  geom_point(
+    aes(x = Multifunctional[order(Multifunctional)],
+        y = pref[order(Multifunctional)]),
+    colour = "darkorange"
+  ) +
+  scale_y_discrete(limits = pref[order(dfja2_en$Multifunctional)]) +
+  geom_vline(xintercept = mean(dfja2_en$Multifunctional), colour = "gray60", linetype = "dashed") +
+  labs(y = "総合農協の数", title = "都道府県別総合農協数") +
+  theme_minimal() +
+#  scale_color_brewer(palette = "Paired") +
+  theme(legend.position = "none") +
+  theme(axis.title = element_blank())
+g + theme(text = element_text(family = "HiraKakuProN-W3"))
+```
+
+```{r}
+#| include: false
+outdir <- "../fig"
+if (!file.exists(outdir)) {
+  dir.create(outdir)
+}
+
+ggsave(g, file = file.path(outdir, "number_of_ja_lollipop_ordered.pdf"), width = 10, height = 7)
+```
+
 これらのグラフは諦めて，日本地図に表示するとどうなるだろうか。
 
 
@@ -411,7 +448,7 @@ japan_map2 <- dplyr::left_join(nippon_map, dfref1_en, by = "pref")
 
 g <- ggplot(data = japan_map2) +
   geom_sf(aes(fill = total)) +
-  scale_fill_distiller(name = "専門農協の数", palette = "Blues", direction = 1) +
+  scale_fill_distiller(name = "専門農協の数", palette = "YlOrRd", direction = 1) +
   theme(axis.text = element_blank()) +
   theme_minimal()
 g + theme(text = element_text(family = "HiraKakuProN-W3"))
@@ -447,7 +484,7 @@ g <- ggplot(data = japan_map2) +
   coord_sf(xlim = c(128, 146), ylim = c(30, 46)) +
 # facet_grid(~ JA) +
   facet_wrap(~ JA, ncol = 3) +
-  scale_fill_distiller(name = "専門農協の数", palette = "Blues", direction = 1) +
+  scale_fill_distiller(name = "専門農協の数", palette = "YlOrRd", direction = 1) +
   theme_classic() +
   theme(axis.line = element_blank(),
         axis.ticks = element_blank(),
