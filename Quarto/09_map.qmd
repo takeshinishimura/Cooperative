@@ -33,7 +33,7 @@ r006-02-002.xlsという名前のファイルがダウンロードできる。
 
 ## e-Statからデータ取得
 
-[統計データを用いた作図：e-Stat編](https://takeshinishimura.github.io/Cooperative/02_stats_estatapi.html){target="_blank"}の後半では，e-StatのAPIを使って，Rに統計データを取り込んだ。
+[統計データを用いた作図：e-Stat（API）編](https://takeshinishimura.github.io/Cooperative/02_stats_estatapi.html){target="_blank"}の後半では，e-StatのAPIを使って，Rに統計データを取り込んだ。
 ここでも同様のことが可能である。
 
 早速，次のコードを実行し，欲しいデータが取得しよう。
@@ -259,11 +259,15 @@ g <- ggplot(data = dfja2_en) +
 # geom_textvline(label = paste0("mean = ", round(mean(dfja2_en$Multifunctional), 1)), xintercept = mean(dfja2_en$Multifunctional), colour = "gray60", linetype = "dashed", hjust = 0, vjust = -.5) +
   labs(y = "総合農協の数", title = "都道府県別総合農協数") +
   theme_minimal() +
-  scale_color_brewer(palette = "Set1", direction = 1) +
+  scale_color_brewer(palette = "Paired", direction = 1) +
+# scale_color_brewer(palette = "Paired", direction = -1) +
   theme(legend.position = "none") +
   theme(axis.title = element_blank())
 g + theme(text = element_text(family = "HiraKakuProN-W3"))
 ```
+
+ここでは，総合農協の数が全国平均より少ない都道府県を強調している。
+逆に，多い都道府県を強調したければ，directionを-1にするだけでよい。
 
 ```{r}
 #| include: false

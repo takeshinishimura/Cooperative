@@ -127,13 +127,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<p>さて，ここからどのようにして折れ線グラフを描こうか。 上述のサイトからExcel形式でファイルをダウンロードできるので，ダウンロードしてみる。 2-1.xlsxというファイル名で，ファイルがダウンロードされたはずである。 あとは，Microsoft Officeを構成するアプリケーションのひとつであるExcelを起動して，ファイルを開き，Excelの機能を使って折れ線グラフを作成することができる。 Excelの図で満足できる人はこれで終わりである。 ちまちまとマウスをクリックしながら，はたまた数値を別のセルに移動させながら，折れ線グラフを作成するとよい。 以下の説明は，Excelでは満足できない人のためのものである。</p>
+<p>さて，ここからどのようにして折れ線グラフを描こうか。 上述のサイトからExcel形式でファイルをダウンロードできるので，ダウンロードしてみよう。 2-1.xlsxという名前のファイルがダウンロードされたはずである。</p>
+<p>あとは，Microsoft Officeを構成するアプリケーションのひとつであるExcelを起動して，ファイルを開き，Excelの機能を使って折れ線グラフを作成できる。 Excelの図で満足できる人はこれで終わりである。 ちまちまとマウスをクリックしながら，はたまた数値を別のセルに移動させながら，折れ線グラフを作成するとよい。 以下の説明は，Excelでは満足できない人のためのものである。</p>
 <p>これ以降は，<a href="https://cran.r-project.org/banner.shtml">The Comprehensive R Archive Network</a>から自分のパソコンのOSに合ったファイルをダウンロードして，自分のパソコンにインストールしておかなければならない。</p>
 <section id="excelファイルをrで扱う" class="level2" data-number="1">
 <h2 data-number="1" class="anchored" data-anchor-id="excelファイルをrで扱う"><span class="header-section-number">1</span> ExcelファイルをRで扱う</h2>
 <section id="作業ディレクトリの変更" class="level3" data-number="1.1">
 <h3 data-number="1.1" class="anchored" data-anchor-id="作業ディレクトリの変更"><span class="header-section-number">1.1</span> 作業ディレクトリの変更</h3>
-<p>まず，Rを起動し，現在，パソコンのどこにいるのかを確認する。 「どこ」というのは，自分のパソコンのディレクトリ（フォルダとも呼ぶ）構成の「どこ」にいるのかという意味であり，Windowsなら”C:“から始まり，macOSなら”/“から始まる階層構造における位置のことである。 何も設定をしていなければ，Rの起動直後は，ホームディレクトリにいるはずである。 次のコマンドで，自分がどこにいるか（カレントディレクトリの場所）を確認できる。</p>
+<p>まず，Rを起動し，現在，パソコンのどこにいるのかを確認する。 「どこ」というのは，自分のパソコンのディレクトリ（フォルダとも呼ぶ）構成の「どこ」にいるのかという意味であり，Windowsなら “C:” から始まり，macOSなら “/” から始まる階層構造における位置のことである。 何も設定をしていなければ，Rの起動直後は，ホームディレクトリにいるはずである。 次のコマンドで，自分がどこにいるか（カレントディレクトリの場所）を確認できる。</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">getwd</span>()</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
@@ -141,7 +142,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">setwd</span>(<span class="st">"~"</span>)</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>“~”はホームディレクトリを意味する。 “~”を自分が作業したいところにすればよい。 よくわからないと思うので，最初は先ほどダウンロードしたExcelファイルをホームディレクトリに移動して，そこで作業するのも悪くない。 Excelファイルの移動は，Windowsならエクスプローラーを使い，macOSならファインダーを使えばよい。 この場合，作業ディレクトリは変更する必要がない。</p>
+<p>“~” はホームディレクトリを意味する。 “~” を自分が作業したいところに変更すればよい。 よくわからないと思うので，最初は先ほどダウンロードしたExcelファイルをホームディレクトリに移動して，そこで作業するのも悪くない。 Excelファイルの移動は，Windowsならエクスプローラーを使い，macOSならファインダーを使えばよい。 この場合，作業ディレクトリは変更する必要がない。</p>
 </section>
 <section id="excelファイルの読み込み" class="level3" data-number="1.2">
 <h3 data-number="1.2" class="anchored" data-anchor-id="excelファイルの読み込み"><span class="header-section-number">1.2</span> Excelファイルの読み込み</h3>
@@ -231,8 +232,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><img src="02_stats_estat_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<p>macOSの場合，文字化けする（トーフになる）かもしれない。 回避策はあるが，該当箇所を英語にするのが早い。 Rの操作方法に慣れてきたらこういうことに気を配ればよく，今のところ気にする必要はない（自分のせいではないと思うことが大事）。</p>
-<p>とりあえず，<a href="https://okumuralab.org/~okumura/stat/Rprofile.html" target="_blank">~/.Rprofile</a>や<a href="https://github.com/Gedevan-Aleksizde/fontregisterer" target="_blank">fontregisterer</a> などを参考にするとよい。 よく分からない場合は文字化けしたまま進めばよい。</p>
+<p>macOSの場合，文字化けする（トーフになる）かもしれない。 回避策はあるが，該当箇所を英語にするのが早い。 Rの操作方法に慣れてきたらこういうことに気を配ればよく，今のところ気にする必要はない（自分のせいではないと思うことが大事）。 気になるようであれば，<a href="https://okumuralab.org/~okumura/stat/Rprofile.html" target="_blank">~/.Rprofile</a>や<a href="https://github.com/Gedevan-Aleksizde/fontregisterer" target="_blank">fontregisterer</a> などを参考にするとよい。 よく分からない場合は文字化けしたまま進めばよい。</p>
 <p>先ほどの図をよく見ると，2005年までは点の数が少ないことがわかる。 これは，元データを正しく反映したものである。</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>dfcoop[, <span class="st">"年度"</span>]</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -244,7 +244,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>このことから，Rでは何も指定しなくても，軸のスケールを正しく反映した図が描かれることがわかる。</p>
 <p>続いて，組合員数の図を描画してみる。</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(dfcoop[, <span class="fu">c</span>(<span class="st">"年度"</span>, <span class="st">"組合員数_地域"</span>)], <span class="at">type =</span> <span class="st">"o"</span>, <span class="at">main =</span> <span class="st">"消費生活協同組合の組合員数の推移"</span>, <span class="at">xlab =</span> <span class="st">"年度"</span>, <span class="at">pch =</span> <span class="dv">16</span>, <span class="at">las =</span> <span class="dv">1</span>)</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(dfcoop[, <span class="fu">c</span>(<span class="st">"年度"</span>, <span class="st">"組合員数_総数"</span>)], <span class="at">type =</span> <span class="st">"o"</span>, <span class="at">main =</span> <span class="st">"消費生活協同組合の組合員数の推移"</span>, <span class="at">xlab =</span> <span class="st">"年度"</span>, <span class="at">pch =</span> <span class="dv">16</span>, <span class="at">las =</span> <span class="dv">1</span>)</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="02_stats_estat_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid" width="672"></p>
 </div>
