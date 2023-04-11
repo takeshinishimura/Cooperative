@@ -33,6 +33,8 @@ e-Statには，より長期にわたるデータがあるため，上記の表�
 上記リンク先のデータを入手し，Rで読み込む。
 
 ```{r results = "markup", echo = TRUE}
+library(rvest)
+
 # 厚生労働省「第1表　組合数及び組合員数の状況」
 url <- "https://www.mhlw.go.jp/toukei/saikin/hw/shakai/seikyo/hyo1-1.html"
 html <- rvest::read_html(url)
@@ -66,6 +68,8 @@ for (i in 1:ncol(dfcoop)) {
 前処理の終わったデータは，以下の表のようになる。
 
 ```{r results = "markup", echo = TRUE}
+library(DT)
+
 caption <- "消費生活協同組合（連合会）実態調査（平成11年度調査） - 組合数及び組合員数の状況"
 x <- DT::datatable(
   dfcoop, caption = caption, rownames = TRUE,
