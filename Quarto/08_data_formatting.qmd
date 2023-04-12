@@ -211,21 +211,21 @@ df3[, "組合員別内訳"] <- apply(df3[, "組合員別内訳", drop = FALSE], 
 unique(df3[, "組合員別内訳"])
 ```
 
-ここから，必要なデータを抽出sする。
+ここから，必要なデータを抽出する。
 まず，"正組合員（計）"と"准組合員（計）"の折れ線グラフを描くことにしよう。
 その前に，これまでデータフレームに番号を振っており，どれが最新か分かりづらいため，最新のデータフレームを分かりやすいデータフレーム名に変更しておく。
 
 ```{r}
 #| warning: false
-dfcoop <- df3
+dfja <- df3
 
 library(ggplot2)
 library(ggsci)
 
-dfcoop1 <- dfcoop[grep("^正組合員（計）$|^准組合員（計）$", dfcoop[, "組合員別内訳"]), ]
-dfcoop1[, "組合員別内訳"] <- factor(dfcoop1[, "組合員別内訳"], levels = unique(dfcoop1[, "組合員別内訳"]))
+dfja1 <- dfja[grep("^正組合員（計）$|^准組合員（計）$", dfja[, "組合員別内訳"]), ]
+dfja1[, "組合員別内訳"] <- factor(dfja1[, "組合員別内訳"], levels = unique(dfja1[, "組合員別内訳"]))
 
-g <- ggplot(data = dfcoop1) +
+g <- ggplot(data = dfja1) +
   geom_line(aes(x = 年度, y = value, group = 組合員別内訳, colour = 組合員別内訳)) +
   geom_point(aes(x = 年度, y = value, group = 組合員別内訳, colour = 組合員別内訳)) +
   scale_y_continuous(limits = c(0, NA), breaks = seq(0, 6000000, 1000000), labels = scales::comma_format(), name = "組合員数") +
@@ -254,10 +254,10 @@ ggsave(g, file = file.path(outdir, "number_of_ja_members.pdf"), width = 8, heigh
 
 ```{r}
 #| warning: false
-dfcoop2 <- dfcoop[grep("^正組合員（個人）$|^正組合員（法人）$|^正組合員（団体）$|^准組合員（個人）$|^准組合員（団体）$", dfcoop[, "組合員別内訳"]), ]
-dfcoop2[, "組合員別内訳"] <- factor(dfcoop2[, "組合員別内訳"], levels = unique(dfcoop2[, "組合員別内訳"]))
+dfja2 <- dfja[grep("^正組合員（個人）$|^正組合員（法人）$|^正組合員（団体）$|^准組合員（個人）$|^准組合員（団体）$", dfja[, "組合員別内訳"]), ]
+dfja2[, "組合員別内訳"] <- factor(dfja2[, "組合員別内訳"], levels = unique(dfja2[, "組合員別内訳"]))
 
-g <- ggplot(data = dfcoop2) +
+g <- ggplot(data = dfja2) +
   geom_line(aes(x = 年度, y = value, group = 組合員別内訳, colour = 組合員別内訳)) +
   geom_point(aes(x = 年度, y = value, group = 組合員別内訳, colour = 組合員別内訳)) +
   scale_y_continuous(limits = c(0, NA), labels = scales::comma_format(), name = "組合員数") +
@@ -276,7 +276,7 @@ ggsave(g, file = file.path(outdir, "number_of_ja_members_kojin_dantai.pdf"), wid
 表を見る場合は，データをロングではなくワイドにした方が分かりやすい。
 
 ```{r}
-tmp <- reshape2::dcast(dfcoop2, 年度 ~ 組合員別内訳)
+tmp <- reshape2::dcast(dfja2, 年度 ~ 組合員別内訳)
 
 caption <- "農業協同組合の組合員数（個人，法人，団体）の推移"
 DT::datatable(
@@ -303,10 +303,10 @@ DT::datatable(
 
 ```{r}
 #| warning: false
-dfcoop3 <- dfcoop[grep("^正組合員（個人（女性））$", dfcoop[, "組合員別内訳"]), ]
-dfcoop3[, "組合員別内訳"] <- factor(dfcoop3[, "組合員別内訳"], levels = unique(dfcoop3[, "組合員別内訳"]))
+dfja3 <- dfja[grep("^正組合員（個人（女性））$", dfja[, "組合員別内訳"]), ]
+dfja3[, "組合員別内訳"] <- factor(dfja3[, "組合員別内訳"], levels = unique(dfja3[, "組合員別内訳"]))
 
-g <- ggplot(data = dfcoop3) +
+g <- ggplot(data = dfja3) +
   geom_line(aes(x = 年度, y = value, group = 組合員別内訳, colour = 組合員別内訳)) +
   geom_point(aes(x = 年度, y = value, group = 組合員別内訳, colour = 組合員別内訳)) +
   scale_y_continuous(limits = c(0, NA), labels = scales::comma_format(), name = "組合員数") +
@@ -324,10 +324,10 @@ ggsave(g, file = file.path(outdir, "number_of_ja_members_female.pdf"), width = 8
 
 ```{r}
 #| warning: false
-dfcoop4 <- dfcoop[grep("^正組合員（個人（女性））$|^正組合員（計）$|^准組合員（計）$", dfcoop[, "組合員別内訳"]), ]
-dfcoop4[, "組合員別内訳"] <- factor(dfcoop4[, "組合員別内訳"], levels = unique(dfcoop4[, "組合員別内訳"]))
+dfja4 <- dfja[grep("^正組合員（個人（女性））$|^正組合員（計）$|^准組合員（計）$", dfja[, "組合員別内訳"]), ]
+dfja4[, "組合員別内訳"] <- factor(dfja4[, "組合員別内訳"], levels = unique(dfja4[, "組合員別内訳"]))
 
-g <- ggplot(data = dfcoop4) +
+g <- ggplot(data = dfja4) +
   geom_line(aes(x = 年度, y = value, group = 組合員別内訳, colour = 組合員別内訳)) +
   geom_point(aes(x = 年度, y = value, group = 組合員別内訳, colour = 組合員別内訳)) +
   scale_y_continuous(limits = c(0, NA), breaks = seq(0, 6000000, 1000000), labels = scales::comma_format(), name = "組合員数") +
@@ -344,10 +344,10 @@ ggsave(g, file = file.path(outdir, "number_of_ja_members_female_vs_all.pdf"), wi
 
 ```{r}
 #| warning: false
-dfcoop5 <- dfcoop[grep("^正組合員戸数$|^准組合員戸数$", dfcoop[, "組合員別内訳"]), ]
-dfcoop5[, "組合員別内訳"] <- factor(dfcoop5[, "組合員別内訳"], levels = unique(dfcoop5[, "組合員別内訳"]))
+dfja5 <- dfja[grep("^正組合員戸数$|^准組合員戸数$", dfja[, "組合員別内訳"]), ]
+dfja5[, "組合員別内訳"] <- factor(dfja5[, "組合員別内訳"], levels = unique(dfja5[, "組合員別内訳"]))
 
-g <- ggplot(data = dfcoop5) +
+g <- ggplot(data = dfja5) +
   geom_line(aes(x = 年度, y = value, group = 組合員別内訳, colour = 組合員別内訳)) +
   geom_point(aes(x = 年度, y = value, group = 組合員別内訳, colour = 組合員別内訳)) +
   scale_y_continuous(limits = c(0, NA), labels = scales::comma_format(), name = "組合員戸数") +
@@ -365,10 +365,10 @@ ggsave(g, file = file.path(outdir, "number_of_ja_members_hh.pdf"), width = 8, he
 
 ```{r}
 #| warning: false
-dfcoop6 <- dfcoop[grep("^一戸複数正組合員制実施組合数$", dfcoop[, "組合員別内訳"]), ]
-dfcoop6[, "組合員別内訳"] <- factor(dfcoop6[, "組合員別内訳"], levels = unique(dfcoop6[, "組合員別内訳"]))
+dfja6 <- dfja[grep("^一戸複数正組合員制実施組合数$", dfja[, "組合員別内訳"]), ]
+dfja6[, "組合員別内訳"] <- factor(dfja6[, "組合員別内訳"], levels = unique(dfja6[, "組合員別内訳"]))
 
-g <- ggplot(data = dfcoop6) +
+g <- ggplot(data = dfja6) +
   geom_line(aes(x = 年度, y = value, group = 組合員別内訳, colour = 組合員別内訳)) +
   geom_point(aes(x = 年度, y = value, group = 組合員別内訳, colour = 組合員別内訳)) +
   scale_y_continuous(limits = c(0, NA), labels = scales::comma_format(), name = "組合数") +
