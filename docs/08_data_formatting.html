@@ -68,24 +68,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="08_data_formatting_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="08_data_formatting_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
 
-<script src="08_data_formatting_files/libs/htmlwidgets-1.6.2/htmlwidgets.js"></script>
-<link href="08_data_formatting_files/libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet">
-<script src="08_data_formatting_files/libs/datatables-binding-0.27/datatables.js"></script>
-<script src="08_data_formatting_files/libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
-<link href="08_data_formatting_files/libs/dt-core-1.12.1/css/jquery.dataTables.min.css" rel="stylesheet">
-<link href="08_data_formatting_files/libs/dt-core-1.12.1/css/jquery.dataTables.extra.css" rel="stylesheet">
-<script src="08_data_formatting_files/libs/dt-core-1.12.1/js/jquery.dataTables.min.js"></script>
-<script src="08_data_formatting_files/libs/jszip-1.12.1/jszip.min.js"></script>
-<link href="08_data_formatting_files/libs/dt-ext-buttons-1.12.1/css/buttons.dataTables.min.css" rel="stylesheet">
-<script src="08_data_formatting_files/libs/dt-ext-buttons-1.12.1/js/dataTables.buttons.min.js"></script>
-<script src="08_data_formatting_files/libs/dt-ext-buttons-1.12.1/js/buttons.html5.min.js"></script>
-<script src="08_data_formatting_files/libs/dt-ext-buttons-1.12.1/js/buttons.colVis.min.js"></script>
-<script src="08_data_formatting_files/libs/dt-ext-buttons-1.12.1/js/buttons.print.min.js"></script>
-<link href="08_data_formatting_files/libs/dt-ext-colreorder-1.12.1/css/colReorder.dataTables.min.css" rel="stylesheet">
-<script src="08_data_formatting_files/libs/dt-ext-colreorder-1.12.1/js/dataTables.colReorder.min.js"></script>
-<link href="08_data_formatting_files/libs/crosstalk-1.2.0/css/crosstalk.min.css" rel="stylesheet">
-<script src="08_data_formatting_files/libs/crosstalk-1.2.0/js/crosstalk.min.js"></script>
-
 
 </head>
 
@@ -99,7 +81,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul>
   <li><a href="#e-statからデータ取得" id="toc-e-statからデータ取得" class="nav-link active" data-scroll-target="#e-statからデータ取得"><span class="header-section-number">1</span> e-Statからデータ取得</a></li>
   <li><a href="#データ整形" id="toc-データ整形" class="nav-link" data-scroll-target="#データ整形"><span class="header-section-number">2</span> データ整形</a></li>
-  <li><a href="#データ整形-1" id="toc-データ整形-1" class="nav-link" data-scroll-target="#データ整形-1"><span class="header-section-number">3</span> データ整形</a></li>
+  <li><a href="#作図" id="toc-作図" class="nav-link" data-scroll-target="#作図"><span class="header-section-number">3</span> 作図</a></li>
   </ul>
 </nav>
 </div>
@@ -535,8 +517,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </section>
-<section id="データ整形-1" class="level2" data-number="3">
-<h2 data-number="3" class="anchored" data-anchor-id="データ整形-1"><span class="header-section-number">3</span> データ整形</h2>
+<section id="作図" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="作図"><span class="header-section-number">3</span> 作図</h2>
 <p>作図のためには，ここまでで整形されたデータフレームから，作図に必要な行を抽出すればよい。 まず，正組合員と准組合員の折れ線グラフを描くことにしよう。 その前に，これまでデータフレームに番号を振っており，どれが最新か分かりづらいため，最新のデータフレームを分かりやすいデータフレーム名に変更しておく。</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>dfja <span class="ot">&lt;-</span> df3</span>
@@ -584,25 +566,182 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>tmp <span class="ot">&lt;-</span> reshape2<span class="sc">::</span><span class="fu">dcast</span>(dfja2, 年度 <span class="sc">~</span> 組合員別内訳)</span>
 <span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>caption <span class="ot">&lt;-</span> <span class="st">"農業協同組合の組合員数（個人，法人，団体）の推移"</span></span>
-<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>DT<span class="sc">::</span><span class="fu">datatable</span>(</span>
-<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>  tmp, <span class="at">caption =</span> caption, <span class="at">rownames =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">extensions =</span> <span class="fu">c</span>(<span class="st">'Buttons'</span>, <span class="st">'ColReorder'</span>),</span>
-<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">options =</span> <span class="fu">list</span>(</span>
-<span id="cb37-8"><a href="#cb37-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">pageLength =</span> <span class="dv">20</span>,</span>
-<span id="cb37-9"><a href="#cb37-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">dom =</span> <span class="st">'Blfrtip'</span>,</span>
-<span id="cb37-10"><a href="#cb37-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">buttons =</span> <span class="fu">list</span>(</span>
-<span id="cb37-11"><a href="#cb37-11" aria-hidden="true" tabindex="-1"></a>      <span class="fu">c</span>(<span class="st">'csv'</span>, <span class="st">'excel'</span>),</span>
-<span id="cb37-12"><a href="#cb37-12" aria-hidden="true" tabindex="-1"></a>      <span class="fu">I</span>(<span class="st">'colvis'</span>)</span>
-<span id="cb37-13"><a href="#cb37-13" aria-hidden="true" tabindex="-1"></a>    ),</span>
-<span id="cb37-14"><a href="#cb37-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">colReorder =</span> <span class="cn">TRUE</span></span>
-<span id="cb37-15"><a href="#cb37-15" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb37-16"><a href="#cb37-16" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
-<span id="cb37-17"><a href="#cb37-17" aria-hidden="true" tabindex="-1"></a>  DT<span class="sc">::</span><span class="fu">formatCurrency</span>(<span class="fu">c</span>(<span class="dv">2</span><span class="sc">:</span><span class="fu">ncol</span>(tmp)), <span class="at">currency =</span> <span class="st">""</span>, <span class="at">interval =</span> <span class="dv">3</span>, <span class="at">mark =</span> <span class="st">","</span>, <span class="at">digits =</span> <span class="dv">0</span>)</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(tmp, <span class="at">digits =</span> <span class="dv">3</span>, <span class="at">format.args =</span> <span class="fu">list</span>(<span class="at">big.mark =</span> <span class="st">","</span>, <span class="at">scientific =</span> <span class="cn">FALSE</span>))</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-
-<div class="datatables html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-2ecdf1ad5620f94bb93e" style="width:100%;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-2ecdf1ad5620f94bb93e">{"x":{"filter":"none","vertical":false,"extensions":["Buttons","ColReorder"],"caption":"<caption>農業協同組合の組合員数（個人，法人，団体）の推移<\/caption>","data":[["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19"],[1998,1999,2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016],[5335636,5287799,5240785,5202171,5149940,5098862,5045472,4988029,4931853,4877364,4816570,4762961,4707348,4655215,4599727,4546050,4478620,4415549,4348560],[null,null,null,null,null,null,null,null,null,null,null,null,null,13746,14579,15454,16486,17840,19298],[8567,8453,8714,9040,8822,9080,9471,9768,10347,11085,11622,12243,12926,null,null,null,null,null,null],[3709270,3753847,3783223,3795042,3836078,3915087,4013870,4113281,4302285,4466327,4585398,4725052,4892837,5085096,5283967,5503946,5692730,5857393,5997642],[75003,75168,75874,76282,77054,77043,77043,77075,77946,78033,80744,79185,80744,79974,79694,79913,79778,79390,78926]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>年度<\/th>\n      <th>正組合員（個人）<\/th>\n      <th>正組合員（法人）<\/th>\n      <th>正組合員（団体）<\/th>\n      <th>准組合員（個人）<\/th>\n      <th>准組合員（団体）<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":20,"dom":"Blfrtip","buttons":[["csv","excel"],["colvis"]],"colReorder":true,"columnDefs":[{"targets":2,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatCurrency(data, \"\", 0, 3, \",\", \".\", true, null);\n  }"},{"targets":3,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatCurrency(data, \"\", 0, 3, \",\", \".\", true, null);\n  }"},{"targets":4,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatCurrency(data, \"\", 0, 3, \",\", \".\", true, null);\n  }"},{"targets":5,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatCurrency(data, \"\", 0, 3, \",\", \".\", true, null);\n  }"},{"targets":6,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatCurrency(data, \"\", 0, 3, \",\", \".\", true, null);\n  }"},{"className":"dt-right","targets":[1,2,3,4,5,6]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false,"lengthMenu":[10,20,25,50,100]}},"evals":["options.columnDefs.0.render","options.columnDefs.1.render","options.columnDefs.2.render","options.columnDefs.3.render","options.columnDefs.4.render"],"jsHooks":[]}</script>
+<table class="table table-sm table-striped small">
+<colgroup>
+<col style="width: 6%">
+<col style="width: 18%">
+<col style="width: 18%">
+<col style="width: 18%">
+<col style="width: 18%">
+<col style="width: 18%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: right;">年度</th>
+<th style="text-align: right;">正組合員（個人）</th>
+<th style="text-align: right;">正組合員（法人）</th>
+<th style="text-align: right;">正組合員（団体）</th>
+<th style="text-align: right;">准組合員（個人）</th>
+<th style="text-align: right;">准組合員（団体）</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">1,998</td>
+<td style="text-align: right;">5,335,636</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">8,567</td>
+<td style="text-align: right;">3,709,270</td>
+<td style="text-align: right;">75,003</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1,999</td>
+<td style="text-align: right;">5,287,799</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">8,453</td>
+<td style="text-align: right;">3,753,847</td>
+<td style="text-align: right;">75,168</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2,000</td>
+<td style="text-align: right;">5,240,785</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">8,714</td>
+<td style="text-align: right;">3,783,223</td>
+<td style="text-align: right;">75,874</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2,001</td>
+<td style="text-align: right;">5,202,171</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">9,040</td>
+<td style="text-align: right;">3,795,042</td>
+<td style="text-align: right;">76,282</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2,002</td>
+<td style="text-align: right;">5,149,940</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">8,822</td>
+<td style="text-align: right;">3,836,078</td>
+<td style="text-align: right;">77,054</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2,003</td>
+<td style="text-align: right;">5,098,862</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">9,080</td>
+<td style="text-align: right;">3,915,087</td>
+<td style="text-align: right;">77,043</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2,004</td>
+<td style="text-align: right;">5,045,472</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">9,471</td>
+<td style="text-align: right;">4,013,870</td>
+<td style="text-align: right;">77,043</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2,005</td>
+<td style="text-align: right;">4,988,029</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">9,768</td>
+<td style="text-align: right;">4,113,281</td>
+<td style="text-align: right;">77,075</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2,006</td>
+<td style="text-align: right;">4,931,853</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">10,347</td>
+<td style="text-align: right;">4,302,285</td>
+<td style="text-align: right;">77,946</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2,007</td>
+<td style="text-align: right;">4,877,364</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">11,085</td>
+<td style="text-align: right;">4,466,327</td>
+<td style="text-align: right;">78,033</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2,008</td>
+<td style="text-align: right;">4,816,570</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">11,622</td>
+<td style="text-align: right;">4,585,398</td>
+<td style="text-align: right;">80,744</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2,009</td>
+<td style="text-align: right;">4,762,961</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">12,243</td>
+<td style="text-align: right;">4,725,052</td>
+<td style="text-align: right;">79,185</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2,010</td>
+<td style="text-align: right;">4,707,348</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">12,926</td>
+<td style="text-align: right;">4,892,837</td>
+<td style="text-align: right;">80,744</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2,011</td>
+<td style="text-align: right;">4,655,215</td>
+<td style="text-align: right;">13,746</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">5,085,096</td>
+<td style="text-align: right;">79,974</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2,012</td>
+<td style="text-align: right;">4,599,727</td>
+<td style="text-align: right;">14,579</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">5,283,967</td>
+<td style="text-align: right;">79,694</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2,013</td>
+<td style="text-align: right;">4,546,050</td>
+<td style="text-align: right;">15,454</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">5,503,946</td>
+<td style="text-align: right;">79,913</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2,014</td>
+<td style="text-align: right;">4,478,620</td>
+<td style="text-align: right;">16,486</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">5,692,730</td>
+<td style="text-align: right;">79,778</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2,015</td>
+<td style="text-align: right;">4,415,549</td>
+<td style="text-align: right;">17,840</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">5,857,393</td>
+<td style="text-align: right;">79,390</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2,016</td>
+<td style="text-align: right;">4,348,560</td>
+<td style="text-align: right;">19,298</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">5,997,642</td>
+<td style="text-align: right;">78,926</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 <p>予想どおりのデータである。</p>

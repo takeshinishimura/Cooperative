@@ -215,7 +215,7 @@ unique(df3[, "組合員別内訳"])
 ```
 
 
-## データ整形
+## 作図
 
 作図のためには，ここまでで整形されたデータフレームから，作図に必要な行を抽出すればよい。
 まず，正組合員と准組合員の折れ線グラフを描くことにしよう。
@@ -284,21 +284,7 @@ ggsave(g, file = file.path(outdir, "number_of_ja_members_kojin_dantai.pdf"), wid
 ```{r}
 tmp <- reshape2::dcast(dfja2, 年度 ~ 組合員別内訳)
 
-caption <- "農業協同組合の組合員数（個人，法人，団体）の推移"
-DT::datatable(
-  tmp, caption = caption, rownames = TRUE,
-  extensions = c('Buttons', 'ColReorder'),
-  options = list(
-    pageLength = 20,
-    dom = 'Blfrtip',
-    buttons = list(
-      c('csv', 'excel'),
-      I('colvis')
-    ),
-    colReorder = TRUE
-  )
-) |>
-  DT::formatCurrency(c(2:ncol(tmp)), currency = "", interval = 3, mark = ",", digits = 0)
+knitr::kable(tmp, digits = 3, format.args = list(big.mark = ",", scientific = FALSE))
 ```
 
 予想どおりのデータである。
