@@ -37,7 +37,7 @@ r006-02-002.xlsという名前のファイルがダウンロードできる。
 ここでも同様のことが可能である。
 
 早速，次のコードを実行し，欲しいデータが取得しよう。
-なお，statsDataId = "0002003132"の数字は，e-Statの[農業協同組合等現在数統計 確報 令和３年度農業協同組合等現在数統計単位農協の部 1 都道府県別業種別現在数 総括表 出資組合（第２表）、非出資組合（第３表）](https://www.e-stat.go.jp/dbview?sid=0002003132){target="_blank"}のページを指すIDである。
+なお，statsDataId = "0002003132"の数字は，e-Statの[農業協同組合等現在数統計 確報 令和3年度農業協同組合等現在数統計](https://www.e-stat.go.jp/dbview?sid=0002003132){target="_blank"}のページを指すIDである。
 
 ```{r}
 library(httr)
@@ -218,7 +218,7 @@ stem(dfja2_en$Multifunctional, scale = 2)
 g <- ggplot(data = dfja2_en[dfja2_en[, "pref"] != "北海道",]) +
   geom_bar(aes(x = pref, y = Multifunctional), stat = "identity", fill = "gray", colour = "black") +
   geom_hline(yintercept = mean(dfja2_en[dfja2_en[, "pref"] != "北海道",]$Multifunctional), colour = "red", linetype = "dashed") +
-  labs(y = "総合農協の数", title = "都府県別総合農協数") +
+  labs(title = "都府県別総合農協数", y = "総合農協の数") +
   theme_minimal() +
   theme(axis.title.x = element_blank(),
         axis.text.x = element_text(angle = 90, hjust = 1, vjust = .5))
@@ -239,7 +239,7 @@ g <- ggplot(data = dfja2_en) +
   coord_flip() +
   scale_x_discrete(limits = rev(levels(dfja2_en$pref))) +
   geom_hline(yintercept = mean(dfja2_en$Multifunctional), colour = "red", linetype = "dashed") +
-  labs(y = "総合農協の数", title = "都道府県別総合農協数") +
+  labs(title = "都道府県別総合農協数", y = "総合農協の数") +
   theme_minimal() +
   theme(axis.title = element_blank())
 g + theme(text = element_text(family = "HiraKakuProN-W3"))
@@ -257,7 +257,7 @@ g <- ggplot(data = dfja2_en) +
   scale_y_discrete(limits = rev(levels(dfja2_en$pref))) +
   geom_vline(xintercept = mean(dfja2_en$Multifunctional), colour = "gray60", linetype = "dashed") +
 # geom_textvline(label = paste0("mean = ", round(mean(dfja2_en$Multifunctional), 1)), xintercept = mean(dfja2_en$Multifunctional), colour = "gray60", linetype = "dashed", hjust = 0, vjust = -.5) +
-  labs(y = "総合農協の数", title = "都道府県別総合農協数") +
+  labs(title = "都道府県別総合農協数", y = "総合農協の数", caption = "出所：農林水産省『農業協同組合等現在数統計 確報 令和3年度農業協同組合等現在数統計』\n（https://www.e-stat.go.jp/dbview?sid=0002003132）") +
   theme_minimal() +
   scale_color_brewer(palette = "Paired", direction = 1) +
 # scale_color_brewer(palette = "Paired", direction = -1) +
@@ -298,7 +298,7 @@ g <- ggplot(data = dfja2_en) +
   ) +
   scale_y_discrete(limits = pref[order(dfja2_en$Multifunctional)]) +
   geom_vline(xintercept = mean(dfja2_en$Multifunctional), colour = "gray60", linetype = "dashed") +
-  labs(y = "総合農協の数", title = "都道府県別総合農協数") +
+  labs(title = "都道府県別総合農協数", y = "総合農協の数", caption = "出所：農林水産省『農業協同組合等現在数統計 確報 令和3年度農業協同組合等現在数統計』\n（https://www.e-stat.go.jp/dbview?sid=0002003132）") +
   theme_minimal() +
 #  scale_color_brewer(palette = "Paired") +
   theme(legend.position = "none") +
@@ -370,8 +370,10 @@ g <- ggplot(data = japan_map_shrinked) +
   geom_sf(aes(fill = Multifunctional_q)) +
   guides(fill = guide_legend(title = "総合農協の数（4段階）", reverse = TRUE)) +
   theme_void() +
+  labs(title = "都道府県別総合農協の数", caption = "出所：農林水産省『農業協同組合等現在数統計 確報 令和3年度農業協同組合等現在数統計』\n（https://www.e-stat.go.jp/dbview?sid=0002003132）") +
 # ggthemes::theme_map() +
-  scale_fill_brewer(palette = "BuGn")
+  scale_fill_brewer(palette = "BuGn") +
+  theme(plot.caption = element_text(size = 5))
 g + theme(text = element_text(family = "HiraKakuProN-W3"))
 ```
 
@@ -485,10 +487,12 @@ g <- ggplot(data = japan_map2) +
 # facet_grid(~ JA) +
   facet_wrap(~ JA, ncol = 3) +
   scale_fill_distiller(name = "専門農協の数", palette = "YlOrRd", direction = 1) +
+  labs(title = "都道府県別専門農協の数", caption = "出所：農林水産省『農業協同組合等現在数統計 確報 令和3年度農業協同組合等現在数統計』\n（https://www.e-stat.go.jp/dbview?sid=0002003132）") +
   theme_classic() +
   theme(axis.line = element_blank(),
         axis.ticks = element_blank(),
-        axis.text = element_blank())
+        axis.text = element_blank(),
+        plot.caption = element_text(size = 5))
 g + theme(text = element_text(family = "HiraKakuProN-W3"))
 ```
 

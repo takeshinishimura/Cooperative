@@ -1,0 +1,354 @@
+---
+project:
+  type: website
+  output-dir: docs
+title: "データの整形"
+format:
+  html:
+    toc: true
+    toc-title: 目次
+    toc_float: true
+    toc-depth: 3
+    number-sections: true
+    theme: lumen
+lang: ja
+---
+
+ここでは，農業協同組合の組合員数の推移を把握することを試みる。
+
+::: {.callout-note collapse="true" icon="true"}
+## 農業協同組合及び同連合会一斉調査 確報 総合農協統計表
+
+[https://www.e-stat.go.jp/dbview?sid=0003406360](https://www.e-stat.go.jp/dbview?sid=0003406360){target="_blank"}
+:::
+
+これまで，e-Statから取得したデータをグラフにするまで，何の迷いもなくRのコードを書いているかのように，説明してきた。
+しかし実際には，図をどう描くか考える前に，データがどのような構造になっているのかを調べる必要がある。
+ここでは，統計データを取得した後，そのデータの構造を確認しながら，データを整形していく方法を紹介する。
+
+
+## e-Statからデータ取得
+
+[統計データを用いた作図：e-Stat（API）編](https://takeshinishimura.github.io/Cooperative/02_stats_estatapi.html){target="_blank"}の後半では，e-StatのAPIを使って，Rに統計データを取り込んだ。
+ここでも同様の手法でデータを取得する。
+
+早速，次のコードを実行し，欲しいデータが取得しよう。
+なお，statsDataId = "0003406360"の数字はアクセスしたい統計データのIDである。
+
+```{r}
+library(httr)
+
+response <- httr::GET(
+  url = "https://api.e-stat.go.jp/rest/2.1/app/getSimpleStatsData",
+  query = list(
+    appId = keyring::key_get("e-stat"),
+    statsDataId = "0003406360",
+    sectionHeaderFlg = 2
+  )
+)
+response <- httr::content(response)
+df <- read.csv(text = sub("^.*\\\"VALUE\\\"\n", "", response), header = TRUE, check.names = FALSE)
+```
+
+このデータはどういう構造になっているのか想像できない。
+そこで，データの構造を詳細に確認してみる。
+
+```{r}
+head(df)
+tail(df)
+str(df)
+```
+
+「都道府県」の列に「全国」があるのが見える。
+ここでは，都道府県別には検討しないため，"全国"の行だけ抽出すればよいことが分かる。
+おそらく，「area_code」が"0"である行は，"全国"に対応していると想像できる。
+
+次に，「時間軸（年度次）」列がそのまま年度が入力されていることが分かる。
+そして，"2016年度"，"2015年度"，"2014年度"となっていることから，"年度"を削除して，数値型に変換する必要があることまで見通せる。
+「time_code」列は，"2016100000"，"2015100000"，"2014100000"という値が入っており，整数型である。
+これが，「時間軸（年度次）」列と同じ情報かどうかは，これだけでは分からない。
+"2016"に続く"100000"は何を意味するのだろうか。
+
+「unit」列は単位であり作図には使わないが，数値の意味を確認する際に参照することを覚えておく。
+「value」は数値である。
+ただし，型が文字列であることから，気をつけなければならないことがありそうである。
+NAに "-" が入力されているかもしれない。
+この表はロングであるため，「value」の型を変更すれば，ggplot2に使えるかもしれない。
+
+これまでの疑問にひとつずつ答えていこう。
+それぞれの列にどういう値が入っているか確認するには，table()またはunique()を使えばよい。
+
+```{r}
+table(df[, "都道府県"])
+unique(df[, "都道府県"])
+```
+
+table()とunique()は似た結果が出力される。
+table()からはそれぞれのレコード数が分かり，unique()からは表にある順番が分かる。
+"全国"だけで314もある。
+必要なデータを抽出するのに苦労しそうである。
+「area_code」は確認してもよいが，仮に"0"が"全国"と1対1で対応していなかった場合，「area_code」の特定が難しくなるため，今回は調べないことにする。
+
+次に，"time_code"列を確認する。
+
+```{r}
+table(df[, "time_code"])
+```
+「time_code」列の"100000"は，ここでは意味がなく，sub()で削除できることが分かる。
+それでは，「時間軸（年度次）」と1対1で対応しているだろうか。
+これを確認する方法はいくらでもある。
+例えば，次のようにする。
+
+```{r}
+table(apply(df[, c("time_code", "時間軸（年度次）")], 1, paste, collapse = " "))
+```
+
+ただし，結果をいちいち確認しなければならないため，TRUEで返ってくるかどうかで判断した方がよいかもしれない。
+例えば，次のようにすればよい。
+
+```{r}
+x <- sapply(seq_len(nrow(df)), function(i) (df[i, "time_code"] / 1000000 - 0.1) == as.numeric(sub("年度", "", df[i, "時間軸（年度次）"])))
+table(x)
+```
+
+年度の入力ミスはなさそうなので，「時間軸（年度次）」列をいじれば，年度の数値が得られることが分かる。
+
+大幅に変更する前に，新しいデータフレームを作成しておく。
+以降は新しいデータフレームで作業し，もし間違った場合は，ここに戻ってくれば読み直さずにすむ。
+ここで，全国のみのデータを抽出する。
+
+```{r}
+df2 <- df
+
+df2 <- df2[df2[, "都道府県"] == "全国", ]
+df2$年度 <- as.double(sub("年度", "", df2[, "時間軸（年度次）"]))
+
+# 必要な列のみ抽出する
+df3 <- df2[, c("組合員別内訳", "都道府県", "年度", "unit", "value")]
+head(df3)
+```
+
+全国のみのデータなので，「value」列はすべて数値かもしれない。
+試しに変換してみる。
+
+```{r}
+as.double(df3$value)
+```
+
+エラーや警告が出ないため，次に進んで問題ない。
+
+```{r}
+df3$value <- as.double(df3$value)
+```
+
+いよいよ"組合員別内訳"に何が入っているか確認する。
+こういう予想できないものは，データフレームをある程度整理してからの方が理解しやすいであろう。
+
+```{r}
+unique(df3[, "組合員別内訳"])
+```
+
+ここで，正組合員と准組合員の内訳のデータがあることが分かる。
+念のため，ここで「unit」列との対応を確認しておく。
+
+```{r}
+table(apply(df3[, c("組合員別内訳", "unit")], 1, paste, collapse = " "))
+```
+
+法人も単位は「人」になっている。
+「組合」と「戸」だけ注意が必要である。
+
+ここで，見栄えだけのために，アンダーバーを括弧に変換しておく。
+
+```{r}
+# _を（）に変換する（factorではない場合）
+df3[, "組合員別内訳"] <- apply(df3[, "組合員別内訳", drop = FALSE], 1, function(x) {
+  if (length(grep("_", x)) > 0) {
+    x <- paste0(sub("_", "（", x), "）")
+  }
+  return(x)}
+)
+
+# _を2つ使っているケースに対応
+df3[, "組合員別内訳"] <- apply(df3[, "組合員別内訳", drop = FALSE], 1, function(x) {
+  if (length(grep("_", x)) > 0) {
+    x <- paste0(sub("_", "（", x), "）")
+  }
+  return(x)}
+)
+
+unique(df3[, "組合員別内訳"])
+```
+
+ここから，必要なデータを抽出sする。
+まず，"正組合員（計）"と"准組合員（計）"の折れ線グラフを描くことにしよう。
+その前に，これまでデータフレームに番号を振っており，どれが最新か分かりづらいため，最新のデータフレームを分かりやすいデータフレーム名に変更しておく。
+
+```{r}
+#| warning: false
+dfcoop <- df3
+
+library(ggplot2)
+library(ggsci)
+
+dfcoop1 <- dfcoop[grep("^正組合員（計）$|^准組合員（計）$", dfcoop[, "組合員別内訳"]), ]
+dfcoop1[, "組合員別内訳"] <- factor(dfcoop1[, "組合員別内訳"], levels = unique(dfcoop1[, "組合員別内訳"]))
+
+g <- ggplot(data = dfcoop1) +
+  geom_line(aes(x = 年度, y = value, group = 組合員別内訳, colour = 組合員別内訳)) +
+  geom_point(aes(x = 年度, y = value, group = 組合員別内訳, colour = 組合員別内訳)) +
+  scale_y_continuous(limits = c(0, NA), breaks = seq(0, 6000000, 1000000), labels = scales::comma_format(), name = "組合員数") +
+  ggtitle("農業協同組合の組合員数の推移") +
+  labs(caption = "出所：農林水産省『農業協同組合及び同連合会一斉調査 確報 総合農協統計表』\n（https://www.e-stat.go.jp/dbview?sid=0003406360）") +
+  theme_bw() +
+  scale_color_d3()
+g + theme(text = element_text(family = "HiraKakuProN-W3"))
+```
+
+```{r}
+#| include: false
+#| warning: false
+outdir <- "../fig"
+if (!file.exists(outdir)) {
+  dir.create(outdir)
+}
+
+ggsave(g, file = file.path(outdir, "number_of_ja_members.pdf"), width = 8, height = 4)
+```
+
+
+正組合員が准組合員が逆転する折れ線グラフが描けた。
+
+次に，個人以外の組合員についても見ていこう。
+
+```{r}
+#| warning: false
+dfcoop2 <- dfcoop[grep("^正組合員（個人）$|^正組合員（法人）$|^正組合員（団体）$|^准組合員（個人）$|^准組合員（団体）$", dfcoop[, "組合員別内訳"]), ]
+dfcoop2[, "組合員別内訳"] <- factor(dfcoop2[, "組合員別内訳"], levels = unique(dfcoop2[, "組合員別内訳"]))
+
+g <- ggplot(data = dfcoop2) +
+  geom_line(aes(x = 年度, y = value, group = 組合員別内訳, colour = 組合員別内訳)) +
+  geom_point(aes(x = 年度, y = value, group = 組合員別内訳, colour = 組合員別内訳)) +
+  scale_y_continuous(limits = c(0, NA), labels = scales::comma_format(), name = "組合員数") +
+  ggtitle("農業協同組合の組合員数（個人，法人，団体）の推移") +
+  labs(caption = "出所：農林水産省『農業協同組合及び同連合会一斉調査 確報 総合農協統計表』\n（https://www.e-stat.go.jp/dbview?sid=0003406360）") +
+  theme_bw() +
+  scale_color_d3()
+g + theme(text = element_text(family = "HiraKakuProN-W3"))
+
+ggsave(g, file = file.path(outdir, "number_of_ja_members_kojin_dantai.pdf"), width = 8, height = 4)
+```
+
+正組合員（団体）のグラフが途中で消え，正組合員（法人）のグラフが途中から現れていることが気になる。
+正組合員（団体）の値と正組合員（法人）の値が近いことから，統計の取り方が変わった可能性が考えられる。
+元のデータで，正組合員（団体）が途中から欠損値になっているかどうかを確認してみる。
+表を見る場合は，データをロングではなくワイドにした方が分かりやすい。
+
+```{r}
+tmp <- reshape2::dcast(dfcoop2, 年度 ~ 組合員別内訳)
+
+caption <- "農業協同組合の組合員数（個人，法人，団体）の推移"
+DT::datatable(
+  tmp, caption = caption, rownames = TRUE,
+  extensions = c('Buttons', 'ColReorder'),
+  options = list(
+    pageLength = 20,
+    dom = 'Blfrtip',
+    buttons = list(
+      c('csv', 'excel'),
+      I('colvis')
+    ),
+    colReorder = TRUE
+  )
+) |>
+  DT::formatCurrency(c(2:ncol(tmp)), currency = "", interval = 3, mark = ",", digits = 0)
+```
+
+予想どおりのデータである。
+
+次に，授業では女性の組合員が増えていることを説明した。
+このことを実際のデータで確認してみよう。
+
+
+```{r}
+#| warning: false
+dfcoop3 <- dfcoop[grep("^正組合員（個人（女性））$", dfcoop[, "組合員別内訳"]), ]
+dfcoop3[, "組合員別内訳"] <- factor(dfcoop3[, "組合員別内訳"], levels = unique(dfcoop3[, "組合員別内訳"]))
+
+g <- ggplot(data = dfcoop3) +
+  geom_line(aes(x = 年度, y = value, group = 組合員別内訳, colour = 組合員別内訳)) +
+  geom_point(aes(x = 年度, y = value, group = 組合員別内訳, colour = 組合員別内訳)) +
+  scale_y_continuous(limits = c(0, NA), labels = scales::comma_format(), name = "組合員数") +
+  ggtitle("農業協同組合の組合員数（女性）の推移") +
+  labs(caption = "出所：農林水産省『農業協同組合及び同連合会一斉調査 確報 総合農協統計表』\n（https://www.e-stat.go.jp/dbview?sid=0003406360）") +
+  theme_bw() +
+  scale_color_d3()
+g + theme(text = element_text(family = "HiraKakuProN-W3"))
+
+ggsave(g, file = file.path(outdir, "number_of_ja_members_female.pdf"), width = 8, height = 4)
+```
+
+確かに女性の組合員は増加していることが分かる。
+ただし，これだと組合員全体に占める女性の比率が分からないので，上述のグラフと重ねてもよいだろう。
+
+```{r}
+#| warning: false
+dfcoop4 <- dfcoop[grep("^正組合員（個人（女性））$|^正組合員（計）$|^准組合員（計）$", dfcoop[, "組合員別内訳"]), ]
+dfcoop4[, "組合員別内訳"] <- factor(dfcoop4[, "組合員別内訳"], levels = unique(dfcoop4[, "組合員別内訳"]))
+
+g <- ggplot(data = dfcoop4) +
+  geom_line(aes(x = 年度, y = value, group = 組合員別内訳, colour = 組合員別内訳)) +
+  geom_point(aes(x = 年度, y = value, group = 組合員別内訳, colour = 組合員別内訳)) +
+  scale_y_continuous(limits = c(0, NA), breaks = seq(0, 6000000, 1000000), labels = scales::comma_format(), name = "組合員数") +
+  ggtitle("農業協同組合の組合員数の推移") +
+  labs(caption = "出所：農林水産省『農業協同組合及び同連合会一斉調査 確報 総合農協統計表』\n（https://www.e-stat.go.jp/dbview?sid=0003406360）") +
+  theme_bw() +
+  scale_color_d3()
+g + theme(text = element_text(family = "HiraKakuProN-W3"))
+
+ggsave(g, file = file.path(outdir, "number_of_ja_members_female_vs_all.pdf"), width = 8, height = 4)
+```
+
+組合員戸数の推移はどうだろうか。
+
+```{r}
+#| warning: false
+dfcoop5 <- dfcoop[grep("^正組合員戸数$|^准組合員戸数$", dfcoop[, "組合員別内訳"]), ]
+dfcoop5[, "組合員別内訳"] <- factor(dfcoop5[, "組合員別内訳"], levels = unique(dfcoop5[, "組合員別内訳"]))
+
+g <- ggplot(data = dfcoop5) +
+  geom_line(aes(x = 年度, y = value, group = 組合員別内訳, colour = 組合員別内訳)) +
+  geom_point(aes(x = 年度, y = value, group = 組合員別内訳, colour = 組合員別内訳)) +
+  scale_y_continuous(limits = c(0, NA), labels = scales::comma_format(), name = "組合員戸数") +
+  ggtitle("農業協同組合の組合員戸数の推移") +
+  labs(caption = "出所：農林水産省『農業協同組合及び同連合会一斉調査 確報 総合農協統計表』\n（https://www.e-stat.go.jp/dbview?sid=0003406360）") +
+  theme_bw() +
+  scale_color_d3()
+g + theme(text = element_text(family = "HiraKakuProN-W3"))
+
+ggsave(g, file = file.path(outdir, "number_of_ja_members_hh.pdf"), width = 8, height = 4)
+```
+
+ここで扱っているのデータには，"一戸複数正組合員制実施組合数"の値も含まれている。
+授業を踏まえると，この組合数は減少している可能性が考えられる。
+
+```{r}
+#| warning: false
+dfcoop6 <- dfcoop[grep("^一戸複数正組合員制実施組合数$", dfcoop[, "組合員別内訳"]), ]
+dfcoop6[, "組合員別内訳"] <- factor(dfcoop6[, "組合員別内訳"], levels = unique(dfcoop6[, "組合員別内訳"]))
+
+g <- ggplot(data = dfcoop6) +
+  geom_line(aes(x = 年度, y = value, group = 組合員別内訳, colour = 組合員別内訳)) +
+  geom_point(aes(x = 年度, y = value, group = 組合員別内訳, colour = 組合員別内訳)) +
+  scale_y_continuous(limits = c(0, NA), labels = scales::comma_format(), name = "組合数") +
+  ggtitle("一戸複数正組合員制実施組合数の推移") +
+  labs(caption = "出所：農林水産省『農業協同組合及び同連合会一斉調査 確報 総合農協統計表』\n（https://www.e-stat.go.jp/dbview?sid=0003406360）") +
+  theme_bw() +
+  scale_color_d3()
+g + theme(text = element_text(family = "HiraKakuProN-W3"))
+
+ggsave(g, file = file.path(outdir, "number_of_ja_members_female_vs_all.pdf"), width = 8, height = 4)
+```
+
+実際にグラフを作成すると，一戸複数正組合員制実施組合数の現象が確認できる。
+ただし，農業協同組合の数が減少しているため，この数値の動きだけでは多くを語ることはできない。

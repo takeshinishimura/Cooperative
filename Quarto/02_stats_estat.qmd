@@ -246,13 +246,6 @@ names(dfcoop2)[2:3] <- c("消費生活協同組合", "組合数")
 
 # _を（）に変換する
 levels(dfcoop2[, "消費生活協同組合"])[grep("_", levels(dfcoop2[, "消費生活協同組合"]))] <- paste0(sub("_", "（", grep("_", levels(dfcoop2[, "消費生活協同組合"]), value = TRUE)), "）")
-# factorではない場合
-# dfcoop2[, "消費生活協同組合"] <- apply(dfcoop2[, "消費生活協同組合", drop = FALSE], 1, function(x) {
-# if (grep("_", x)) {
-#   x <- paste0(sub("_", "（", x), "）")
-# }
-# return(x)}
-# )
 
 g <- ggplot(data = dfcoop2) +
   geom_line(aes(x = 年度, y = 組合数, group = 消費生活協同組合, colour = 消費生活協同組合)) +
@@ -277,6 +270,7 @@ g <- ggplot(data = dfcoop2) +
 # scale_x_continuous(breaks = seq(1960, 2020, 10), minor_breaks = NULL) +
   scale_y_continuous(labels = scales::comma_format()) +
   ggtitle("消費生活協同組合の数の推移") +
+  labs(caption = "出所：厚生労働省『令和3年度消費生活協同組合（連合会）実態調査』\n（https://www.e-stat.go.jp/stat-search/files?stat_infid=000032203791）") +
   theme_bw() +
 # theme_minimal() +
 # theme_classic() +
@@ -310,6 +304,7 @@ g <- ggplot(data = dfcoop2) +
 # scale_x_continuous(breaks = seq(1960, 2020, 10), minor_breaks = NULL) +
   scale_y_continuous(labels = scales::comma_format(), name = "組合員数（万人）") +
   ggtitle("消費生活協同組合の組合員数の推移") +
+  labs(caption = "出所：厚生労働省『令和3年度消費生活協同組合（連合会）実態調査』\n（https://www.e-stat.go.jp/stat-search/files?stat_infid=000032203791）") +
   theme_bw() +
   scale_color_d3()
 g + theme(text = element_text(family = "HiraKakuProN-W3"))
@@ -383,6 +378,7 @@ g <- ggplot(data = dfcoop2) +
 # scale_x_continuous(breaks = seq(1960, 2020, 10), minor_breaks = NULL) +
   scale_y_continuous(labels = scales::comma_format()) +
   ggtitle("消費生活協同組合の事業種類別組合数の推移") +
+  labs(caption = "出所：厚生労働省『令和3年度消費生活協同組合（連合会）実態調査』\n（https://www.e-stat.go.jp/stat-search/files?stat_infid=000032203791）") +
   theme_bw() +
   scale_color_d3()
 

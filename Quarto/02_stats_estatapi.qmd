@@ -241,6 +241,7 @@ g <- ggplot(data = dfcoop2) +
 # scale_x_continuous(breaks = seq(1950, 2020, 10), minor_breaks = NULL) +
   scale_y_continuous(labels = scales::comma_format()) +
   ggtitle("単位農協数の推移") +
+  labs(caption = "出所：農林水産省『令和3年度農業協同組合等現在数統計』\n（https://www.e-stat.go.jp/stat-search/files?stat_infid=000032206155）") +
   theme_bw() +
 # theme_minimal() +
 # theme_classic() +
