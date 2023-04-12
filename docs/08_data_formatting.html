@@ -137,7 +137,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<p>これまで，e-Statから取得したデータをグラフにするまで，何の迷いもなくRのコードを書いているかのように，説明してきた。 しかし実際には，図をどう描くか考える前に，データがどのような構造になっているのかを調べる必要がある。 ここでは，統計データを取得した後，そのデータの構造を確認しながら，データを整形していく方法を紹介する。</p>
+<p>これまで，e-Statから取得したデータをグラフにするまで，何の迷いもなくRのコードを書いているかのように，説明してきた。 しかし実際には，図をどう描くか考える前に，データがどのような構造になっているのかを調べ，試行錯誤している。 ここでは，統計データを取得した後，そのデータの構造を確認しながら，データを整形していく方法を紹介する。</p>
 <section id="e-statからデータ取得" class="level2" data-number="1">
 <h2 data-number="1" class="anchored" data-anchor-id="e-statからデータ取得"><span class="header-section-number">1</span> e-Statからデータ取得</h2>
 <p><a href="https://takeshinishimura.github.io/Cooperative/02_stats_estatapi.html" target="_blank">統計データを用いた作図：e-Stat（API）編</a>の後半では，e-StatのAPIを使って，Rに統計データを取り込んだ。 ここでも同様の手法でデータを取得する。</p>
@@ -192,7 +192,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 14008         2004年度 組合     1
 14009         2003年度 組合     1</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(df)</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(df)</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 14009     8</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(df)</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>'data.frame':   14009 obs. of  8 variables:
  $ cat01_code      : int  110 110 110 110 110 110 110 110 110 110 ...
@@ -205,12 +209,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  $ value           : chr  "10444426" "10370172" "10267614" "10145363" ...</code></pre>
 </div>
 </div>
-<p>「都道府県」の列に「全国」があるのが見える。 ここでは，都道府県別には検討しないため，“全国”の行だけ抽出すればよいことが分かる。 おそらく，「area_code」が”0”である行は，“全国”に対応していると想像できる。</p>
+<p>「都道府県」の列に「全国」があるのが確認できる。 ここでは，都道府県別には検討しないため，“全国”の行だけ抽出すればよいことが分かる。 おそらく，「area_code」が”0”である行は，“全国”に対応していると想像できる。</p>
 <p>次に，「時間軸（年度次）」列がそのまま年度が入力されていることが分かる。 そして，“2016年度”，“2015年度”，“2014年度”となっていることから，“年度”を削除して，数値型に変換する必要があることまで見通せる。 「time_code」列は，“2016100000”，“2015100000”，“2014100000”という値が入っており，整数型である。 これが，「時間軸（年度次）」列と同じ情報かどうかは，これだけでは分からない。 “2016”に続く”100000”は何を意味するのだろうか。</p>
 <p>「unit」列は単位であり作図には使わないが，数値の意味を確認する際に参照することを覚えておく。 「value」は数値である。 ただし，型が文字列であることから，気をつけなければならないことがありそうである。 NAに “-” が入力されているかもしれない。 この表はロングであるため，「value」の型を変更すれば，ggplot2に使えるかもしれない。</p>
-<p>これまでの疑問にひとつずつ答えていこう。 それぞれの列にどういう値が入っているか確認するには，table()またはunique()を使えばよい。</p>
+<p>これまでの疑問にひとつずつ答えていこう。 それぞれの列にどういう値が入っているか確認するには，文字列型の場合，table()またはunique()を使えばよい。</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df[, <span class="st">"都道府県"</span>])</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df[, <span class="st">"都道府県"</span>])</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
     1組合当たり          愛知県          愛媛県          茨城県          岡山県 
@@ -238,7 +242,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
        和歌山県 
             249 </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">unique</span>(df[, <span class="st">"都道府県"</span>])</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">unique</span>(df[, <span class="st">"都道府県"</span>])</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code> [1] "全国"            "1組合当たり"     "北海道"          "東北_小計"      
  [5] "青森県"          "岩手県"          "宮城県"          "秋田県"         
@@ -256,10 +260,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 [53] "大分県"          "宮崎県"          "鹿児島県"        "沖縄県"         </code></pre>
 </div>
 </div>
-<p>table()とunique()は似た結果が出力される。 table()からはそれぞれのレコード数が分かり，unique()からは表にある順番が分かる。 “全国”だけで314もある。 必要なデータを抽出するのに苦労しそうである。 「area_code」は確認してもよいが，仮に”0”が”全国”と1対1で対応していなかった場合，「area_code」の特定が難しくなるため，今回は調べないことにする。</p>
-<p>次に，“time_code”列を確認する。</p>
+<p>table()とunique()は似た結果が出力される。 table()からはそれぞれのレコード数が分かり，unique()からは表にある順番が分かる。 “全国”だけで314もある。 年度の違い以外にも何かありそうなため，全国だけ抽出したとしても，どういうデータ構造になっているのか把握するのは容易ではなさそうである。 「area_code」は確認してもよいが，仮に”0”が”全国”と1対1で対応していなかった場合，「area_code」の特定が難しくなるため，今回は調べないことにする。</p>
+<p>なお，ここでデータフレームの列の指定方法について，簡単に説明しておく。 最も簡単かつ短い書き方は次のとおりである。</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df[, <span class="st">"time_code"</span>])</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>都道府県</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>これでもよいが，日本語の列名をそのまま使うのは不安である。 例えば，次のようにするとエラーが出る。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>時間軸（年度次）</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>なぜか。 Rを使い慣れている人だとこの理由が分かるはずである。 Rを使っていると，データフレームがこの列名を変えたがることに気づく。 こうしたエラーの回避策はある。 次のようにするとエラーが出ず，欲しい結果が得られる。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span><span class="st">'時間軸（年度次）'</span></span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>ただし，こういった書き方をするくらいであれば，このページで書いている方法に統一する方がスマートではないだろうか。 短く書きたいときのみ，$で指定すればよい。</p>
+<p>話を戻す。 次に，“time_code”列を確認する。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df[, <span class="st">"time_code"</span>])</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 1998100000 1999100000 2000100000 2001100000 2002100000 2003100000 2004100000 
@@ -272,7 +289,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>「time_code」列の”100000”は，ここでは意味がなく，sub()で削除できることが分かる。 それでは，「時間軸（年度次）」と1対1で対応しているだろうか。 これを確認する方法はいくらでもある。 例えば，次のようにする。</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(<span class="fu">apply</span>(df[, <span class="fu">c</span>(<span class="st">"time_code"</span>, <span class="st">"時間軸（年度次）"</span>)], <span class="dv">1</span>, paste, <span class="at">collapse =</span> <span class="st">" "</span>))</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(<span class="fu">apply</span>(df[, <span class="fu">c</span>(<span class="st">"time_code"</span>, <span class="st">"時間軸（年度次）"</span>)], <span class="dv">1</span>, paste, <span class="at">collapse =</span> <span class="st">" "</span>))</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 1998100000 1998年度 1999100000 1999年度 2000100000 2000年度 2001100000 2001年度 
@@ -289,8 +306,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>ただし，結果をいちいち確認しなければならないため，TRUEで返ってくるかどうかで判断した方がよいかもしれない。 例えば，次のようにすればよい。</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">sapply</span>(<span class="fu">seq_len</span>(<span class="fu">nrow</span>(df)), <span class="cf">function</span>(i) (df[i, <span class="st">"time_code"</span>] <span class="sc">/</span> <span class="dv">1000000</span> <span class="sc">-</span> <span class="fl">0.1</span>) <span class="sc">==</span> <span class="fu">as.numeric</span>(<span class="fu">sub</span>(<span class="st">"年度"</span>, <span class="st">""</span>, df[i, <span class="st">"時間軸（年度次）"</span>])))</span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(x)</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">sapply</span>(<span class="fu">seq_len</span>(<span class="fu">nrow</span>(df)), <span class="cf">function</span>(i) (df[i, <span class="st">"time_code"</span>] <span class="sc">/</span> <span class="dv">1000000</span> <span class="sc">-</span> <span class="fl">0.1</span>) <span class="sc">==</span> <span class="fu">as.numeric</span>(<span class="fu">sub</span>(<span class="st">"年度"</span>, <span class="st">""</span>, df[i, <span class="st">"時間軸（年度次）"</span>])))</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(x)</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>x
  TRUE 
@@ -300,14 +317,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>年度の入力ミスはなさそうなので，「時間軸（年度次）」列をいじれば，年度の数値が得られることが分かる。</p>
 <p>大幅に変更する前に，新しいデータフレームを作成しておく。 以降は新しいデータフレームで作業し，もし間違った場合は，ここに戻ってくれば読み直さずにすむ。 ここで，全国のみのデータを抽出する。</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>df2 <span class="ot">&lt;-</span> df</span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>df2 <span class="ot">&lt;-</span> df2[df2[, <span class="st">"都道府県"</span>] <span class="sc">==</span> <span class="st">"全国"</span>, ]</span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>df2<span class="sc">$</span>年度 <span class="ot">&lt;-</span> <span class="fu">as.double</span>(<span class="fu">sub</span>(<span class="st">"年度"</span>, <span class="st">""</span>, df2[, <span class="st">"時間軸（年度次）"</span>]))</span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 必要な列のみ抽出する</span></span>
-<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>df3 <span class="ot">&lt;-</span> df2[, <span class="fu">c</span>(<span class="st">"組合員別内訳"</span>, <span class="st">"都道府県"</span>, <span class="st">"年度"</span>, <span class="st">"unit"</span>, <span class="st">"value"</span>)]</span>
-<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(df3)</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>df2 <span class="ot">&lt;-</span> df</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>df2 <span class="ot">&lt;-</span> df2[df2[, <span class="st">"都道府県"</span>] <span class="sc">==</span> <span class="st">"全国"</span>, ]</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>df2<span class="sc">$</span>年度 <span class="ot">&lt;-</span> <span class="fu">as.double</span>(<span class="fu">sub</span>(<span class="st">"年度"</span>, <span class="st">""</span>, df2[, <span class="st">"時間軸（年度次）"</span>]))</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 必要な列のみ抽出する</span></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>df3 <span class="ot">&lt;-</span> df2[, <span class="fu">c</span>(<span class="st">"組合員別内訳"</span>, <span class="st">"都道府県"</span>, <span class="st">"年度"</span>, <span class="st">"unit"</span>, <span class="st">"value"</span>)]</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(df3)</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  組合員別内訳 都道府県 年度 unit    value
 1      合計_計     全国 2016   人 10444426
@@ -320,7 +337,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>全国のみのデータなので，「value」列はすべて数値かもしれない。 試しに変換してみる。</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">as.double</span>(df3<span class="sc">$</span>value)</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">as.double</span>(df3<span class="sc">$</span>value)</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  [1] 10444426 10370172 10267614 10145363  9977967  9834031  9693855  9579441
   [9]  9494334  9432809  9322431  9188153  9145856  9100072  9071894  9082535
@@ -366,11 +383,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>エラーや警告が出ないため，次に進んで問題ない。</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>df3<span class="sc">$</span>value <span class="ot">&lt;-</span> <span class="fu">as.double</span>(df3<span class="sc">$</span>value)</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>df3<span class="sc">$</span>value <span class="ot">&lt;-</span> <span class="fu">as.double</span>(df3<span class="sc">$</span>value)</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>いよいよ”組合員別内訳”に何が入っているか確認する。 こういう予想できないものは，データフレームをある程度整理してからの方が理解しやすいであろう。</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">unique</span>(df3[, <span class="st">"組合員別内訳"</span>])</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">unique</span>(df3[, <span class="st">"組合員別内訳"</span>])</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code> [1] "合計_計"                                 
  [2] "合計_個人"                               
@@ -403,7 +420,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>ここで，正組合員と准組合員の内訳のデータがあることが分かる。 念のため，ここで「unit」列との対応を確認しておく。</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(<span class="fu">apply</span>(df3[, <span class="fu">c</span>(<span class="st">"組合員別内訳"</span>, <span class="st">"unit"</span>)], <span class="dv">1</span>, paste, <span class="at">collapse =</span> <span class="st">" "</span>))</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(<span class="fu">apply</span>(df3[, <span class="fu">c</span>(<span class="st">"組合員別内訳"</span>, <span class="st">"unit"</span>)], <span class="dv">1</span>, paste, <span class="at">collapse =</span> <span class="st">" "</span>))</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
           一戸複数正組合員制実施組合数 組合 
@@ -465,23 +482,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>法人も単位は「人」になっている。 「組合」と「戸」だけ注意が必要である。</p>
 <p>ここで，見栄えだけのために，アンダーバーを括弧に変換しておく。</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _を（）に変換する（factorではない場合）</span></span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>df3[, <span class="st">"組合員別内訳"</span>] <span class="ot">&lt;-</span> <span class="fu">apply</span>(df3[, <span class="st">"組合員別内訳"</span>, <span class="at">drop =</span> <span class="cn">FALSE</span>], <span class="dv">1</span>, <span class="cf">function</span>(x) {</span>
-<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">length</span>(<span class="fu">grep</span>(<span class="st">"_"</span>, x)) <span class="sc">&gt;</span> <span class="dv">0</span>) {</span>
-<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>    x <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="fu">sub</span>(<span class="st">"_"</span>, <span class="st">"（"</span>, x), <span class="st">"）"</span>)</span>
-<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(x)}</span>
-<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a><span class="co"># _を2つ使っているケースに対応</span></span>
-<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a>df3[, <span class="st">"組合員別内訳"</span>] <span class="ot">&lt;-</span> <span class="fu">apply</span>(df3[, <span class="st">"組合員別内訳"</span>, <span class="at">drop =</span> <span class="cn">FALSE</span>], <span class="dv">1</span>, <span class="cf">function</span>(x) {</span>
-<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">length</span>(<span class="fu">grep</span>(<span class="st">"_"</span>, x)) <span class="sc">&gt;</span> <span class="dv">0</span>) {</span>
-<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a>    x <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="fu">sub</span>(<span class="st">"_"</span>, <span class="st">"（"</span>, x), <span class="st">"）"</span>)</span>
-<span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb27-14"><a href="#cb27-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(x)}</span>
-<span id="cb27-15"><a href="#cb27-15" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb27-16"><a href="#cb27-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-17"><a href="#cb27-17" aria-hidden="true" tabindex="-1"></a><span class="fu">unique</span>(df3[, <span class="st">"組合員別内訳"</span>])</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _を（）に変換する（factorではない場合）</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>df3[, <span class="st">"組合員別内訳"</span>] <span class="ot">&lt;-</span> <span class="fu">apply</span>(df3[, <span class="st">"組合員別内訳"</span>, <span class="at">drop =</span> <span class="cn">FALSE</span>], <span class="dv">1</span>, <span class="cf">function</span>(x) {</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">length</span>(<span class="fu">grep</span>(<span class="st">"_"</span>, x)) <span class="sc">&gt;</span> <span class="dv">0</span>) {</span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>    x <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="fu">sub</span>(<span class="st">"_"</span>, <span class="st">"（"</span>, x), <span class="st">"）"</span>)</span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(x)}</span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a><span class="co"># _を2つ使っているケースに対応</span></span>
+<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a>df3[, <span class="st">"組合員別内訳"</span>] <span class="ot">&lt;-</span> <span class="fu">apply</span>(df3[, <span class="st">"組合員別内訳"</span>, <span class="at">drop =</span> <span class="cn">FALSE</span>], <span class="dv">1</span>, <span class="cf">function</span>(x) {</span>
+<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">length</span>(<span class="fu">grep</span>(<span class="st">"_"</span>, x)) <span class="sc">&gt;</span> <span class="dv">0</span>) {</span>
+<span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a>    x <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="fu">sub</span>(<span class="st">"_"</span>, <span class="st">"（"</span>, x), <span class="st">"）"</span>)</span>
+<span id="cb32-13"><a href="#cb32-13" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb32-14"><a href="#cb32-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(x)}</span>
+<span id="cb32-15"><a href="#cb32-15" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb32-16"><a href="#cb32-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-17"><a href="#cb32-17" aria-hidden="true" tabindex="-1"></a><span class="fu">unique</span>(df3[, <span class="st">"組合員別内訳"</span>])</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code> [1] "合計（計）"                                    
  [2] "合計（個人）"                                  
@@ -514,102 +531,38 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>ここから，必要なデータを抽出sする。 まず，“正組合員（計）”と”准組合員（計）“の折れ線グラフを描くことにしよう。 その前に，これまでデータフレームに番号を振っており，どれが最新か分かりづらいため，最新のデータフレームを分かりやすいデータフレーム名に変更しておく。</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>dfcoop <span class="ot">&lt;-</span> df3</span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
-<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggsci)</span>
-<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>dfcoop1 <span class="ot">&lt;-</span> dfcoop[<span class="fu">grep</span>(<span class="st">"^正組合員（計）$|^准組合員（計）$"</span>, dfcoop[, <span class="st">"組合員別内訳"</span>]), ]</span>
-<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>dfcoop1[, <span class="st">"組合員別内訳"</span>] <span class="ot">&lt;-</span> <span class="fu">factor</span>(dfcoop1[, <span class="st">"組合員別内訳"</span>], <span class="at">levels =</span> <span class="fu">unique</span>(dfcoop1[, <span class="st">"組合員別内訳"</span>]))</span>
-<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data =</span> dfcoop1) <span class="sc">+</span></span>
-<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> 年度, <span class="at">y =</span> value, <span class="at">group =</span> 組合員別内訳, <span class="at">colour =</span> 組合員別内訳)) <span class="sc">+</span></span>
-<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> 年度, <span class="at">y =</span> value, <span class="at">group =</span> 組合員別内訳, <span class="at">colour =</span> 組合員別内訳)) <span class="sc">+</span></span>
-<span id="cb29-12"><a href="#cb29-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="cn">NA</span>), <span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">6000000</span>, <span class="dv">1000000</span>), <span class="at">labels =</span> scales<span class="sc">::</span><span class="fu">comma_format</span>(), <span class="at">name =</span> <span class="st">"組合員数"</span>) <span class="sc">+</span></span>
-<span id="cb29-13"><a href="#cb29-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"農業協同組合の組合員数の推移"</span>) <span class="sc">+</span></span>
-<span id="cb29-14"><a href="#cb29-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">caption =</span> <span class="st">"出所：農林水産省『農業協同組合及び同連合会一斉調査 確報 総合農協統計表』</span><span class="sc">\n</span><span class="st">（https://www.e-stat.go.jp/dbview?sid=0003406360）"</span>) <span class="sc">+</span></span>
-<span id="cb29-15"><a href="#cb29-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
-<span id="cb29-16"><a href="#cb29-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_d3</span>()</span>
-<span id="cb29-17"><a href="#cb29-17" aria-hidden="true" tabindex="-1"></a>g <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">text =</span> <span class="fu">element_text</span>(<span class="at">family =</span> <span class="st">"HiraKakuProN-W3"</span>))</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>dfcoop <span class="ot">&lt;-</span> df3</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggsci)</span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>dfcoop1 <span class="ot">&lt;-</span> dfcoop[<span class="fu">grep</span>(<span class="st">"^正組合員（計）$|^准組合員（計）$"</span>, dfcoop[, <span class="st">"組合員別内訳"</span>]), ]</span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>dfcoop1[, <span class="st">"組合員別内訳"</span>] <span class="ot">&lt;-</span> <span class="fu">factor</span>(dfcoop1[, <span class="st">"組合員別内訳"</span>], <span class="at">levels =</span> <span class="fu">unique</span>(dfcoop1[, <span class="st">"組合員別内訳"</span>]))</span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data =</span> dfcoop1) <span class="sc">+</span></span>
+<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> 年度, <span class="at">y =</span> value, <span class="at">group =</span> 組合員別内訳, <span class="at">colour =</span> 組合員別内訳)) <span class="sc">+</span></span>
+<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> 年度, <span class="at">y =</span> value, <span class="at">group =</span> 組合員別内訳, <span class="at">colour =</span> 組合員別内訳)) <span class="sc">+</span></span>
+<span id="cb34-12"><a href="#cb34-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="cn">NA</span>), <span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">6000000</span>, <span class="dv">1000000</span>), <span class="at">labels =</span> scales<span class="sc">::</span><span class="fu">comma_format</span>(), <span class="at">name =</span> <span class="st">"組合員数"</span>) <span class="sc">+</span></span>
+<span id="cb34-13"><a href="#cb34-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"農業協同組合の組合員数の推移"</span>) <span class="sc">+</span></span>
+<span id="cb34-14"><a href="#cb34-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">caption =</span> <span class="st">"出所：農林水産省『農業協同組合及び同連合会一斉調査 確報 総合農協統計表』</span><span class="sc">\n</span><span class="st">（https://www.e-stat.go.jp/dbview?sid=0003406360）"</span>) <span class="sc">+</span></span>
+<span id="cb34-15"><a href="#cb34-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb34-16"><a href="#cb34-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_d3</span>()</span>
+<span id="cb34-17"><a href="#cb34-17" aria-hidden="true" tabindex="-1"></a>g <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">text =</span> <span class="fu">element_text</span>(<span class="at">family =</span> <span class="st">"HiraKakuProN-W3"</span>))</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="08_data_formatting_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid" width="672"></p>
+<p><img src="08_data_formatting_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>正組合員が准組合員が逆転する折れ線グラフが描けた。</p>
 <p>次に，個人以外の組合員についても見ていこう。</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>dfcoop2 <span class="ot">&lt;-</span> dfcoop[<span class="fu">grep</span>(<span class="st">"^正組合員（個人）$|^正組合員（法人）$|^正組合員（団体）$|^准組合員（個人）$|^准組合員（団体）$"</span>, dfcoop[, <span class="st">"組合員別内訳"</span>]), ]</span>
-<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>dfcoop2[, <span class="st">"組合員別内訳"</span>] <span class="ot">&lt;-</span> <span class="fu">factor</span>(dfcoop2[, <span class="st">"組合員別内訳"</span>], <span class="at">levels =</span> <span class="fu">unique</span>(dfcoop2[, <span class="st">"組合員別内訳"</span>]))</span>
-<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data =</span> dfcoop2) <span class="sc">+</span></span>
-<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> 年度, <span class="at">y =</span> value, <span class="at">group =</span> 組合員別内訳, <span class="at">colour =</span> 組合員別内訳)) <span class="sc">+</span></span>
-<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> 年度, <span class="at">y =</span> value, <span class="at">group =</span> 組合員別内訳, <span class="at">colour =</span> 組合員別内訳)) <span class="sc">+</span></span>
-<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="cn">NA</span>), <span class="at">labels =</span> scales<span class="sc">::</span><span class="fu">comma_format</span>(), <span class="at">name =</span> <span class="st">"組合員数"</span>) <span class="sc">+</span></span>
-<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"農業協同組合の組合員数（個人，法人，団体）の推移"</span>) <span class="sc">+</span></span>
-<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">caption =</span> <span class="st">"出所：農林水産省『農業協同組合及び同連合会一斉調査 確報 総合農協統計表』</span><span class="sc">\n</span><span class="st">（https://www.e-stat.go.jp/dbview?sid=0003406360）"</span>) <span class="sc">+</span></span>
-<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
-<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_d3</span>()</span>
-<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a>g <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">text =</span> <span class="fu">element_text</span>(<span class="at">family =</span> <span class="st">"HiraKakuProN-W3"</span>))</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<p><img src="08_data_formatting_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid" width="672"></p>
-</div>
-<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(g, <span class="at">file =</span> <span class="fu">file.path</span>(outdir, <span class="st">"number_of_ja_members_kojin_dantai.pdf"</span>), <span class="at">width =</span> <span class="dv">8</span>, <span class="at">height =</span> <span class="dv">4</span>)</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>正組合員（団体）のグラフが途中で消え，正組合員（法人）のグラフが途中から現れていることが気になる。 正組合員（団体）の値と正組合員（法人）の値が近いことから，統計の取り方が変わった可能性が考えられる。 元のデータで，正組合員（団体）が途中から欠損値になっているかどうかを確認してみる。 表を見る場合は，データをロングではなくワイドにした方が分かりやすい。</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>tmp <span class="ot">&lt;-</span> reshape2<span class="sc">::</span><span class="fu">dcast</span>(dfcoop2, 年度 <span class="sc">~</span> 組合員別内訳)</span>
-<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>caption <span class="ot">&lt;-</span> <span class="st">"農業協同組合の組合員数（個人，法人，団体）の推移"</span></span>
-<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>DT<span class="sc">::</span><span class="fu">datatable</span>(</span>
-<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>  tmp, <span class="at">caption =</span> caption, <span class="at">rownames =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">extensions =</span> <span class="fu">c</span>(<span class="st">'Buttons'</span>, <span class="st">'ColReorder'</span>),</span>
-<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">options =</span> <span class="fu">list</span>(</span>
-<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">pageLength =</span> <span class="dv">20</span>,</span>
-<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">dom =</span> <span class="st">'Blfrtip'</span>,</span>
-<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">buttons =</span> <span class="fu">list</span>(</span>
-<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a>      <span class="fu">c</span>(<span class="st">'csv'</span>, <span class="st">'excel'</span>),</span>
-<span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a>      <span class="fu">I</span>(<span class="st">'colvis'</span>)</span>
-<span id="cb32-13"><a href="#cb32-13" aria-hidden="true" tabindex="-1"></a>    ),</span>
-<span id="cb32-14"><a href="#cb32-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">colReorder =</span> <span class="cn">TRUE</span></span>
-<span id="cb32-15"><a href="#cb32-15" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb32-16"><a href="#cb32-16" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
-<span id="cb32-17"><a href="#cb32-17" aria-hidden="true" tabindex="-1"></a>  DT<span class="sc">::</span><span class="fu">formatCurrency</span>(<span class="fu">c</span>(<span class="dv">2</span><span class="sc">:</span><span class="fu">ncol</span>(tmp)), <span class="at">currency =</span> <span class="st">""</span>, <span class="at">interval =</span> <span class="dv">3</span>, <span class="at">mark =</span> <span class="st">","</span>, <span class="at">digits =</span> <span class="dv">0</span>)</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-
-<div class="datatables html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-e271cea4288939330e36" style="width:100%;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-e271cea4288939330e36">{"x":{"filter":"none","vertical":false,"extensions":["Buttons","ColReorder"],"caption":"<caption>農業協同組合の組合員数（個人，法人，団体）の推移<\/caption>","data":[["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19"],[1998,1999,2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016],[5335636,5287799,5240785,5202171,5149940,5098862,5045472,4988029,4931853,4877364,4816570,4762961,4707348,4655215,4599727,4546050,4478620,4415549,4348560],[null,null,null,null,null,null,null,null,null,null,null,null,null,13746,14579,15454,16486,17840,19298],[8567,8453,8714,9040,8822,9080,9471,9768,10347,11085,11622,12243,12926,null,null,null,null,null,null],[3709270,3753847,3783223,3795042,3836078,3915087,4013870,4113281,4302285,4466327,4585398,4725052,4892837,5085096,5283967,5503946,5692730,5857393,5997642],[75003,75168,75874,76282,77054,77043,77043,77075,77946,78033,80744,79185,80744,79974,79694,79913,79778,79390,78926]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>年度<\/th>\n      <th>正組合員（個人）<\/th>\n      <th>正組合員（法人）<\/th>\n      <th>正組合員（団体）<\/th>\n      <th>准組合員（個人）<\/th>\n      <th>准組合員（団体）<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":20,"dom":"Blfrtip","buttons":[["csv","excel"],["colvis"]],"colReorder":true,"columnDefs":[{"targets":2,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatCurrency(data, \"\", 0, 3, \",\", \".\", true, null);\n  }"},{"targets":3,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatCurrency(data, \"\", 0, 3, \",\", \".\", true, null);\n  }"},{"targets":4,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatCurrency(data, \"\", 0, 3, \",\", \".\", true, null);\n  }"},{"targets":5,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatCurrency(data, \"\", 0, 3, \",\", \".\", true, null);\n  }"},{"targets":6,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatCurrency(data, \"\", 0, 3, \",\", \".\", true, null);\n  }"},{"className":"dt-right","targets":[1,2,3,4,5,6]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false,"lengthMenu":[10,20,25,50,100]}},"evals":["options.columnDefs.0.render","options.columnDefs.1.render","options.columnDefs.2.render","options.columnDefs.3.render","options.columnDefs.4.render"],"jsHooks":[]}</script>
-</div>
-</div>
-<p>予想どおりのデータである。</p>
-<p>次に，授業では女性の組合員が増えていることを説明した。 このことを実際のデータで確認してみよう。</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>dfcoop3 <span class="ot">&lt;-</span> dfcoop[<span class="fu">grep</span>(<span class="st">"^正組合員（個人（女性））$"</span>, dfcoop[, <span class="st">"組合員別内訳"</span>]), ]</span>
-<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>dfcoop3[, <span class="st">"組合員別内訳"</span>] <span class="ot">&lt;-</span> <span class="fu">factor</span>(dfcoop3[, <span class="st">"組合員別内訳"</span>], <span class="at">levels =</span> <span class="fu">unique</span>(dfcoop3[, <span class="st">"組合員別内訳"</span>]))</span>
-<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data =</span> dfcoop3) <span class="sc">+</span></span>
-<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> 年度, <span class="at">y =</span> value, <span class="at">group =</span> 組合員別内訳, <span class="at">colour =</span> 組合員別内訳)) <span class="sc">+</span></span>
-<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> 年度, <span class="at">y =</span> value, <span class="at">group =</span> 組合員別内訳, <span class="at">colour =</span> 組合員別内訳)) <span class="sc">+</span></span>
-<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="cn">NA</span>), <span class="at">labels =</span> scales<span class="sc">::</span><span class="fu">comma_format</span>(), <span class="at">name =</span> <span class="st">"組合員数"</span>) <span class="sc">+</span></span>
-<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"農業協同組合の組合員数（女性）の推移"</span>) <span class="sc">+</span></span>
-<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">caption =</span> <span class="st">"出所：農林水産省『農業協同組合及び同連合会一斉調査 確報 総合農協統計表』</span><span class="sc">\n</span><span class="st">（https://www.e-stat.go.jp/dbview?sid=0003406360）"</span>) <span class="sc">+</span></span>
-<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
-<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_d3</span>()</span>
-<span id="cb33-12"><a href="#cb33-12" aria-hidden="true" tabindex="-1"></a>g <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">text =</span> <span class="fu">element_text</span>(<span class="at">family =</span> <span class="st">"HiraKakuProN-W3"</span>))</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<p><img src="08_data_formatting_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid" width="672"></p>
-</div>
-<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(g, <span class="at">file =</span> <span class="fu">file.path</span>(outdir, <span class="st">"number_of_ja_members_female.pdf"</span>), <span class="at">width =</span> <span class="dv">8</span>, <span class="at">height =</span> <span class="dv">4</span>)</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>確かに女性の組合員は増加していることが分かる。 ただし，これだと組合員全体に占める女性の比率が分からないので，上述のグラフと重ねてもよいだろう。</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>dfcoop4 <span class="ot">&lt;-</span> dfcoop[<span class="fu">grep</span>(<span class="st">"^正組合員（個人（女性））$|^正組合員（計）$|^准組合員（計）$"</span>, dfcoop[, <span class="st">"組合員別内訳"</span>]), ]</span>
-<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>dfcoop4[, <span class="st">"組合員別内訳"</span>] <span class="ot">&lt;-</span> <span class="fu">factor</span>(dfcoop4[, <span class="st">"組合員別内訳"</span>], <span class="at">levels =</span> <span class="fu">unique</span>(dfcoop4[, <span class="st">"組合員別内訳"</span>]))</span>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>dfcoop2 <span class="ot">&lt;-</span> dfcoop[<span class="fu">grep</span>(<span class="st">"^正組合員（個人）$|^正組合員（法人）$|^正組合員（団体）$|^准組合員（個人）$|^准組合員（団体）$"</span>, dfcoop[, <span class="st">"組合員別内訳"</span>]), ]</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>dfcoop2[, <span class="st">"組合員別内訳"</span>] <span class="ot">&lt;-</span> <span class="fu">factor</span>(dfcoop2[, <span class="st">"組合員別内訳"</span>], <span class="at">levels =</span> <span class="fu">unique</span>(dfcoop2[, <span class="st">"組合員別内訳"</span>]))</span>
 <span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data =</span> dfcoop4) <span class="sc">+</span></span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data =</span> dfcoop2) <span class="sc">+</span></span>
 <span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> 年度, <span class="at">y =</span> value, <span class="at">group =</span> 組合員別内訳, <span class="at">colour =</span> 組合員別内訳)) <span class="sc">+</span></span>
 <span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> 年度, <span class="at">y =</span> value, <span class="at">group =</span> 組合員別内訳, <span class="at">colour =</span> 組合員別内訳)) <span class="sc">+</span></span>
-<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="cn">NA</span>), <span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">6000000</span>, <span class="dv">1000000</span>), <span class="at">labels =</span> scales<span class="sc">::</span><span class="fu">comma_format</span>(), <span class="at">name =</span> <span class="st">"組合員数"</span>) <span class="sc">+</span></span>
-<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"農業協同組合の組合員数の推移"</span>) <span class="sc">+</span></span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="cn">NA</span>), <span class="at">labels =</span> scales<span class="sc">::</span><span class="fu">comma_format</span>(), <span class="at">name =</span> <span class="st">"組合員数"</span>) <span class="sc">+</span></span>
+<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"農業協同組合の組合員数（個人，法人，団体）の推移"</span>) <span class="sc">+</span></span>
 <span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">caption =</span> <span class="st">"出所：農林水産省『農業協同組合及び同連合会一斉調査 確報 総合農協統計表』</span><span class="sc">\n</span><span class="st">（https://www.e-stat.go.jp/dbview?sid=0003406360）"</span>) <span class="sc">+</span></span>
 <span id="cb35-10"><a href="#cb35-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
 <span id="cb35-11"><a href="#cb35-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_d3</span>()</span>
@@ -617,45 +570,109 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output-display">
 <p><img src="08_data_formatting_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid" width="672"></p>
 </div>
-<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(g, <span class="at">file =</span> <span class="fu">file.path</span>(outdir, <span class="st">"number_of_ja_members_female_vs_all.pdf"</span>), <span class="at">width =</span> <span class="dv">8</span>, <span class="at">height =</span> <span class="dv">4</span>)</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(g, <span class="at">file =</span> <span class="fu">file.path</span>(outdir, <span class="st">"number_of_ja_members_kojin_dantai.pdf"</span>), <span class="at">width =</span> <span class="dv">8</span>, <span class="at">height =</span> <span class="dv">4</span>)</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>組合員戸数の推移はどうだろうか。</p>
+<p>正組合員（団体）のグラフが途中で消え，正組合員（法人）のグラフが途中から現れていることが気になる。 正組合員（団体）の値と正組合員（法人）の値が近いことから，統計の取り方が変わった可能性が考えられる。 元のデータで，正組合員（団体）が途中から欠損値になっているかどうかを確認してみる。 表を見る場合は，データをロングではなくワイドにした方が分かりやすい。</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>dfcoop5 <span class="ot">&lt;-</span> dfcoop[<span class="fu">grep</span>(<span class="st">"^正組合員戸数$|^准組合員戸数$"</span>, dfcoop[, <span class="st">"組合員別内訳"</span>]), ]</span>
-<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>dfcoop5[, <span class="st">"組合員別内訳"</span>] <span class="ot">&lt;-</span> <span class="fu">factor</span>(dfcoop5[, <span class="st">"組合員別内訳"</span>], <span class="at">levels =</span> <span class="fu">unique</span>(dfcoop5[, <span class="st">"組合員別内訳"</span>]))</span>
-<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data =</span> dfcoop5) <span class="sc">+</span></span>
-<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> 年度, <span class="at">y =</span> value, <span class="at">group =</span> 組合員別内訳, <span class="at">colour =</span> 組合員別内訳)) <span class="sc">+</span></span>
-<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> 年度, <span class="at">y =</span> value, <span class="at">group =</span> 組合員別内訳, <span class="at">colour =</span> 組合員別内訳)) <span class="sc">+</span></span>
-<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="cn">NA</span>), <span class="at">labels =</span> scales<span class="sc">::</span><span class="fu">comma_format</span>(), <span class="at">name =</span> <span class="st">"組合員戸数"</span>) <span class="sc">+</span></span>
-<span id="cb37-8"><a href="#cb37-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"農業協同組合の組合員戸数の推移"</span>) <span class="sc">+</span></span>
-<span id="cb37-9"><a href="#cb37-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">caption =</span> <span class="st">"出所：農林水産省『農業協同組合及び同連合会一斉調査 確報 総合農協統計表』</span><span class="sc">\n</span><span class="st">（https://www.e-stat.go.jp/dbview?sid=0003406360）"</span>) <span class="sc">+</span></span>
-<span id="cb37-10"><a href="#cb37-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
-<span id="cb37-11"><a href="#cb37-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_d3</span>()</span>
-<span id="cb37-12"><a href="#cb37-12" aria-hidden="true" tabindex="-1"></a>g <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">text =</span> <span class="fu">element_text</span>(<span class="at">family =</span> <span class="st">"HiraKakuProN-W3"</span>))</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>tmp <span class="ot">&lt;-</span> reshape2<span class="sc">::</span><span class="fu">dcast</span>(dfcoop2, 年度 <span class="sc">~</span> 組合員別内訳)</span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>caption <span class="ot">&lt;-</span> <span class="st">"農業協同組合の組合員数（個人，法人，団体）の推移"</span></span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>DT<span class="sc">::</span><span class="fu">datatable</span>(</span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>  tmp, <span class="at">caption =</span> caption, <span class="at">rownames =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">extensions =</span> <span class="fu">c</span>(<span class="st">'Buttons'</span>, <span class="st">'ColReorder'</span>),</span>
+<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">options =</span> <span class="fu">list</span>(</span>
+<span id="cb37-8"><a href="#cb37-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">pageLength =</span> <span class="dv">20</span>,</span>
+<span id="cb37-9"><a href="#cb37-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">dom =</span> <span class="st">'Blfrtip'</span>,</span>
+<span id="cb37-10"><a href="#cb37-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">buttons =</span> <span class="fu">list</span>(</span>
+<span id="cb37-11"><a href="#cb37-11" aria-hidden="true" tabindex="-1"></a>      <span class="fu">c</span>(<span class="st">'csv'</span>, <span class="st">'excel'</span>),</span>
+<span id="cb37-12"><a href="#cb37-12" aria-hidden="true" tabindex="-1"></a>      <span class="fu">I</span>(<span class="st">'colvis'</span>)</span>
+<span id="cb37-13"><a href="#cb37-13" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb37-14"><a href="#cb37-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">colReorder =</span> <span class="cn">TRUE</span></span>
+<span id="cb37-15"><a href="#cb37-15" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb37-16"><a href="#cb37-16" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb37-17"><a href="#cb37-17" aria-hidden="true" tabindex="-1"></a>  DT<span class="sc">::</span><span class="fu">formatCurrency</span>(<span class="fu">c</span>(<span class="dv">2</span><span class="sc">:</span><span class="fu">ncol</span>(tmp)), <span class="at">currency =</span> <span class="st">""</span>, <span class="at">interval =</span> <span class="dv">3</span>, <span class="at">mark =</span> <span class="st">","</span>, <span class="at">digits =</span> <span class="dv">0</span>)</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="08_data_formatting_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid" width="672"></p>
+
+<div class="datatables html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-e62816743a3eb828c600" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-e62816743a3eb828c600">{"x":{"filter":"none","vertical":false,"extensions":["Buttons","ColReorder"],"caption":"<caption>農業協同組合の組合員数（個人，法人，団体）の推移<\/caption>","data":[["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19"],[1998,1999,2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016],[5335636,5287799,5240785,5202171,5149940,5098862,5045472,4988029,4931853,4877364,4816570,4762961,4707348,4655215,4599727,4546050,4478620,4415549,4348560],[null,null,null,null,null,null,null,null,null,null,null,null,null,13746,14579,15454,16486,17840,19298],[8567,8453,8714,9040,8822,9080,9471,9768,10347,11085,11622,12243,12926,null,null,null,null,null,null],[3709270,3753847,3783223,3795042,3836078,3915087,4013870,4113281,4302285,4466327,4585398,4725052,4892837,5085096,5283967,5503946,5692730,5857393,5997642],[75003,75168,75874,76282,77054,77043,77043,77075,77946,78033,80744,79185,80744,79974,79694,79913,79778,79390,78926]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>年度<\/th>\n      <th>正組合員（個人）<\/th>\n      <th>正組合員（法人）<\/th>\n      <th>正組合員（団体）<\/th>\n      <th>准組合員（個人）<\/th>\n      <th>准組合員（団体）<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":20,"dom":"Blfrtip","buttons":[["csv","excel"],["colvis"]],"colReorder":true,"columnDefs":[{"targets":2,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatCurrency(data, \"\", 0, 3, \",\", \".\", true, null);\n  }"},{"targets":3,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatCurrency(data, \"\", 0, 3, \",\", \".\", true, null);\n  }"},{"targets":4,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatCurrency(data, \"\", 0, 3, \",\", \".\", true, null);\n  }"},{"targets":5,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatCurrency(data, \"\", 0, 3, \",\", \".\", true, null);\n  }"},{"targets":6,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatCurrency(data, \"\", 0, 3, \",\", \".\", true, null);\n  }"},{"className":"dt-right","targets":[1,2,3,4,5,6]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false,"lengthMenu":[10,20,25,50,100]}},"evals":["options.columnDefs.0.render","options.columnDefs.1.render","options.columnDefs.2.render","options.columnDefs.3.render","options.columnDefs.4.render"],"jsHooks":[]}</script>
 </div>
-<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(g, <span class="at">file =</span> <span class="fu">file.path</span>(outdir, <span class="st">"number_of_ja_members_hh.pdf"</span>), <span class="at">width =</span> <span class="dv">8</span>, <span class="at">height =</span> <span class="dv">4</span>)</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>ここで扱っているのデータには，“一戸複数正組合員制実施組合数”の値も含まれている。 授業を踏まえると，この組合数は減少している可能性が考えられる。</p>
+<p>予想どおりのデータである。</p>
+<p>次に，授業では女性の組合員が増えていることを説明した。 このことを実際のデータで確認してみよう。</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>dfcoop6 <span class="ot">&lt;-</span> dfcoop[<span class="fu">grep</span>(<span class="st">"^一戸複数正組合員制実施組合数$"</span>, dfcoop[, <span class="st">"組合員別内訳"</span>]), ]</span>
-<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>dfcoop6[, <span class="st">"組合員別内訳"</span>] <span class="ot">&lt;-</span> <span class="fu">factor</span>(dfcoop6[, <span class="st">"組合員別内訳"</span>], <span class="at">levels =</span> <span class="fu">unique</span>(dfcoop6[, <span class="st">"組合員別内訳"</span>]))</span>
-<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data =</span> dfcoop6) <span class="sc">+</span></span>
-<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> 年度, <span class="at">y =</span> value, <span class="at">group =</span> 組合員別内訳, <span class="at">colour =</span> 組合員別内訳)) <span class="sc">+</span></span>
-<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> 年度, <span class="at">y =</span> value, <span class="at">group =</span> 組合員別内訳, <span class="at">colour =</span> 組合員別内訳)) <span class="sc">+</span></span>
-<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="cn">NA</span>), <span class="at">labels =</span> scales<span class="sc">::</span><span class="fu">comma_format</span>(), <span class="at">name =</span> <span class="st">"組合数"</span>) <span class="sc">+</span></span>
-<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"一戸複数正組合員制実施組合数の推移"</span>) <span class="sc">+</span></span>
-<span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">caption =</span> <span class="st">"出所：農林水産省『農業協同組合及び同連合会一斉調査 確報 総合農協統計表』</span><span class="sc">\n</span><span class="st">（https://www.e-stat.go.jp/dbview?sid=0003406360）"</span>) <span class="sc">+</span></span>
-<span id="cb39-10"><a href="#cb39-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
-<span id="cb39-11"><a href="#cb39-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_d3</span>()</span>
-<span id="cb39-12"><a href="#cb39-12" aria-hidden="true" tabindex="-1"></a>g <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">text =</span> <span class="fu">element_text</span>(<span class="at">family =</span> <span class="st">"HiraKakuProN-W3"</span>))</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>dfcoop3 <span class="ot">&lt;-</span> dfcoop[<span class="fu">grep</span>(<span class="st">"^正組合員（個人（女性））$"</span>, dfcoop[, <span class="st">"組合員別内訳"</span>]), ]</span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>dfcoop3[, <span class="st">"組合員別内訳"</span>] <span class="ot">&lt;-</span> <span class="fu">factor</span>(dfcoop3[, <span class="st">"組合員別内訳"</span>], <span class="at">levels =</span> <span class="fu">unique</span>(dfcoop3[, <span class="st">"組合員別内訳"</span>]))</span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data =</span> dfcoop3) <span class="sc">+</span></span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> 年度, <span class="at">y =</span> value, <span class="at">group =</span> 組合員別内訳, <span class="at">colour =</span> 組合員別内訳)) <span class="sc">+</span></span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> 年度, <span class="at">y =</span> value, <span class="at">group =</span> 組合員別内訳, <span class="at">colour =</span> 組合員別内訳)) <span class="sc">+</span></span>
+<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="cn">NA</span>), <span class="at">labels =</span> scales<span class="sc">::</span><span class="fu">comma_format</span>(), <span class="at">name =</span> <span class="st">"組合員数"</span>) <span class="sc">+</span></span>
+<span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"農業協同組合の組合員数（女性）の推移"</span>) <span class="sc">+</span></span>
+<span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">caption =</span> <span class="st">"出所：農林水産省『農業協同組合及び同連合会一斉調査 確報 総合農協統計表』</span><span class="sc">\n</span><span class="st">（https://www.e-stat.go.jp/dbview?sid=0003406360）"</span>) <span class="sc">+</span></span>
+<span id="cb38-10"><a href="#cb38-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb38-11"><a href="#cb38-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_d3</span>()</span>
+<span id="cb38-12"><a href="#cb38-12" aria-hidden="true" tabindex="-1"></a>g <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">text =</span> <span class="fu">element_text</span>(<span class="at">family =</span> <span class="st">"HiraKakuProN-W3"</span>))</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="08_data_formatting_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid" width="672"></p>
 </div>
-<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(g, <span class="at">file =</span> <span class="fu">file.path</span>(outdir, <span class="st">"number_of_ja_members_female_vs_all.pdf"</span>), <span class="at">width =</span> <span class="dv">8</span>, <span class="at">height =</span> <span class="dv">4</span>)</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(g, <span class="at">file =</span> <span class="fu">file.path</span>(outdir, <span class="st">"number_of_ja_members_female.pdf"</span>), <span class="at">width =</span> <span class="dv">8</span>, <span class="at">height =</span> <span class="dv">4</span>)</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>確かに女性の組合員は増加していることが分かる。 ただし，これだと組合員全体に占める女性の比率が分からないので，上述のグラフと重ねてもよいだろう。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>dfcoop4 <span class="ot">&lt;-</span> dfcoop[<span class="fu">grep</span>(<span class="st">"^正組合員（個人（女性））$|^正組合員（計）$|^准組合員（計）$"</span>, dfcoop[, <span class="st">"組合員別内訳"</span>]), ]</span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>dfcoop4[, <span class="st">"組合員別内訳"</span>] <span class="ot">&lt;-</span> <span class="fu">factor</span>(dfcoop4[, <span class="st">"組合員別内訳"</span>], <span class="at">levels =</span> <span class="fu">unique</span>(dfcoop4[, <span class="st">"組合員別内訳"</span>]))</span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data =</span> dfcoop4) <span class="sc">+</span></span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> 年度, <span class="at">y =</span> value, <span class="at">group =</span> 組合員別内訳, <span class="at">colour =</span> 組合員別内訳)) <span class="sc">+</span></span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> 年度, <span class="at">y =</span> value, <span class="at">group =</span> 組合員別内訳, <span class="at">colour =</span> 組合員別内訳)) <span class="sc">+</span></span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="cn">NA</span>), <span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">6000000</span>, <span class="dv">1000000</span>), <span class="at">labels =</span> scales<span class="sc">::</span><span class="fu">comma_format</span>(), <span class="at">name =</span> <span class="st">"組合員数"</span>) <span class="sc">+</span></span>
+<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"農業協同組合の組合員数の推移"</span>) <span class="sc">+</span></span>
+<span id="cb40-9"><a href="#cb40-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">caption =</span> <span class="st">"出所：農林水産省『農業協同組合及び同連合会一斉調査 確報 総合農協統計表』</span><span class="sc">\n</span><span class="st">（https://www.e-stat.go.jp/dbview?sid=0003406360）"</span>) <span class="sc">+</span></span>
+<span id="cb40-10"><a href="#cb40-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb40-11"><a href="#cb40-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_d3</span>()</span>
+<span id="cb40-12"><a href="#cb40-12" aria-hidden="true" tabindex="-1"></a>g <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">text =</span> <span class="fu">element_text</span>(<span class="at">family =</span> <span class="st">"HiraKakuProN-W3"</span>))</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="08_data_formatting_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(g, <span class="at">file =</span> <span class="fu">file.path</span>(outdir, <span class="st">"number_of_ja_members_female_vs_all.pdf"</span>), <span class="at">width =</span> <span class="dv">8</span>, <span class="at">height =</span> <span class="dv">4</span>)</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>組合員戸数の推移はどうだろうか。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>dfcoop5 <span class="ot">&lt;-</span> dfcoop[<span class="fu">grep</span>(<span class="st">"^正組合員戸数$|^准組合員戸数$"</span>, dfcoop[, <span class="st">"組合員別内訳"</span>]), ]</span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>dfcoop5[, <span class="st">"組合員別内訳"</span>] <span class="ot">&lt;-</span> <span class="fu">factor</span>(dfcoop5[, <span class="st">"組合員別内訳"</span>], <span class="at">levels =</span> <span class="fu">unique</span>(dfcoop5[, <span class="st">"組合員別内訳"</span>]))</span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data =</span> dfcoop5) <span class="sc">+</span></span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> 年度, <span class="at">y =</span> value, <span class="at">group =</span> 組合員別内訳, <span class="at">colour =</span> 組合員別内訳)) <span class="sc">+</span></span>
+<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> 年度, <span class="at">y =</span> value, <span class="at">group =</span> 組合員別内訳, <span class="at">colour =</span> 組合員別内訳)) <span class="sc">+</span></span>
+<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="cn">NA</span>), <span class="at">labels =</span> scales<span class="sc">::</span><span class="fu">comma_format</span>(), <span class="at">name =</span> <span class="st">"組合員戸数"</span>) <span class="sc">+</span></span>
+<span id="cb42-8"><a href="#cb42-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"農業協同組合の組合員戸数の推移"</span>) <span class="sc">+</span></span>
+<span id="cb42-9"><a href="#cb42-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">caption =</span> <span class="st">"出所：農林水産省『農業協同組合及び同連合会一斉調査 確報 総合農協統計表』</span><span class="sc">\n</span><span class="st">（https://www.e-stat.go.jp/dbview?sid=0003406360）"</span>) <span class="sc">+</span></span>
+<span id="cb42-10"><a href="#cb42-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb42-11"><a href="#cb42-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_d3</span>()</span>
+<span id="cb42-12"><a href="#cb42-12" aria-hidden="true" tabindex="-1"></a>g <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">text =</span> <span class="fu">element_text</span>(<span class="at">family =</span> <span class="st">"HiraKakuProN-W3"</span>))</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="08_data_formatting_files/figure-html/unnamed-chunk-22-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(g, <span class="at">file =</span> <span class="fu">file.path</span>(outdir, <span class="st">"number_of_ja_members_hh.pdf"</span>), <span class="at">width =</span> <span class="dv">8</span>, <span class="at">height =</span> <span class="dv">4</span>)</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>ここで扱っているのデータには，“一戸複数正組合員制実施組合数”の値も含まれている。 授業を踏まえると，この組合数は減少している可能性が考えられる。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>dfcoop6 <span class="ot">&lt;-</span> dfcoop[<span class="fu">grep</span>(<span class="st">"^一戸複数正組合員制実施組合数$"</span>, dfcoop[, <span class="st">"組合員別内訳"</span>]), ]</span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>dfcoop6[, <span class="st">"組合員別内訳"</span>] <span class="ot">&lt;-</span> <span class="fu">factor</span>(dfcoop6[, <span class="st">"組合員別内訳"</span>], <span class="at">levels =</span> <span class="fu">unique</span>(dfcoop6[, <span class="st">"組合員別内訳"</span>]))</span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data =</span> dfcoop6) <span class="sc">+</span></span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> 年度, <span class="at">y =</span> value, <span class="at">group =</span> 組合員別内訳, <span class="at">colour =</span> 組合員別内訳)) <span class="sc">+</span></span>
+<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> 年度, <span class="at">y =</span> value, <span class="at">group =</span> 組合員別内訳, <span class="at">colour =</span> 組合員別内訳)) <span class="sc">+</span></span>
+<span id="cb44-7"><a href="#cb44-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="cn">NA</span>), <span class="at">labels =</span> scales<span class="sc">::</span><span class="fu">comma_format</span>(), <span class="at">name =</span> <span class="st">"組合数"</span>) <span class="sc">+</span></span>
+<span id="cb44-8"><a href="#cb44-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"一戸複数正組合員制実施組合数の推移"</span>) <span class="sc">+</span></span>
+<span id="cb44-9"><a href="#cb44-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">caption =</span> <span class="st">"出所：農林水産省『農業協同組合及び同連合会一斉調査 確報 総合農協統計表』</span><span class="sc">\n</span><span class="st">（https://www.e-stat.go.jp/dbview?sid=0003406360）"</span>) <span class="sc">+</span></span>
+<span id="cb44-10"><a href="#cb44-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb44-11"><a href="#cb44-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_d3</span>()</span>
+<span id="cb44-12"><a href="#cb44-12" aria-hidden="true" tabindex="-1"></a>g <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">text =</span> <span class="fu">element_text</span>(<span class="at">family =</span> <span class="st">"HiraKakuProN-W3"</span>))</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="08_data_formatting_files/figure-html/unnamed-chunk-23-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(g, <span class="at">file =</span> <span class="fu">file.path</span>(outdir, <span class="st">"number_of_ja_members_female_vs_all.pdf"</span>), <span class="at">width =</span> <span class="dv">8</span>, <span class="at">height =</span> <span class="dv">4</span>)</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>実際にグラフを作成すると，一戸複数正組合員制実施組合数の現象が確認できる。 ただし，農業協同組合の数が減少しているため，この数値の動きだけでは多くを語ることはできない。</p>
 </section>
