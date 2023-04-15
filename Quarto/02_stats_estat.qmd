@@ -328,6 +328,7 @@ Rの前処理に慣れるまでは，ダウンロードしたExcelファイル�
 とくに，セル結合をなくし，不要な行や列を削除しておくとよい。
 Excel形式ではなく，CSVで保存するのもよいかもしれない。
 ただし，再現可能性の観点から，ダウンロードしたExcelファイルは変更せずに，変更後のファイルとは別に残しておくことが望ましい。
+このページの一番下の表の左上のボタンをクリックすると，CSVファイルをダウンロードできるので，ダウンロードしたCSVファイルの読み込みを試すことができる。
 
 以下のようにすると，欲しいPDFファイルが得られる。
 
@@ -383,4 +384,23 @@ g <- ggplot(data = dfcoop2) +
   scale_color_d3()
 
 ggsave(g, file = file.path(outdir, "number_of_coop_types.pdf"), width = 8, height = 4)
+```
+
+```{r}
+#| echo: false
+library(DT) 
+
+caption <- "消費生活協同組合の事業種類別組合数の推移"
+DT::datatable(
+  dfcoop, caption = caption, rownames = TRUE,
+  extensions = 'Buttons',
+  options = list(
+    pageLength = 10,
+    dom = 'Blfrtip',
+    buttons = list(
+      c('csv', 'excel')
+    )
+  )
+) |>
+  DT::formatCurrency(c(2:ncol(dfcoop)), currency = "", interval = 3, mark = ",", digits = 0)
 ```
