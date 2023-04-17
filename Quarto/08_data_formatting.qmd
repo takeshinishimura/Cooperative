@@ -218,6 +218,9 @@ unique(df3[, "組合員別内訳"])
 ## 作図
 
 作図のためには，ここまでで整形されたデータフレームから，作図に必要な行を抽出すればよい。
+
+### 作図1
+
 まず，正組合員と准組合員の折れ線グラフを描くことにしよう。
 その前に，これまでデータフレームに番号を振っており，どれが最新か分かりづらいため，最新のデータフレームを分かりやすいデータフレーム名に変更しておく。
 
@@ -231,9 +234,9 @@ library(ggsci)
 dfja1 <- dfja[grep("^正組合員（計）$|^准組合員（計）$", dfja[, "組合員別内訳"]), ]
 dfja1[, "組合員別内訳"] <- factor(dfja1[, "組合員別内訳"], levels = unique(dfja1[, "組合員別内訳"]))
 
-g <- ggplot(data = dfja1) +
-  geom_line(aes(x = 年度, y = value, group = 組合員別内訳, colour = 組合員別内訳)) +
-  geom_point(aes(x = 年度, y = value, group = 組合員別内訳, colour = 組合員別内訳)) +
+g <- ggplot(data = dfja1, aes(x = 年度, y = value, group = 組合員別内訳, colour = 組合員別内訳)) +
+  geom_line() +
+  geom_point() +
   scale_y_continuous(limits = c(0, NA), breaks = seq(0, 6000000, 1000000), labels = scales::comma_format(), name = "組合員数") +
   ggtitle("農業協同組合の組合員数の推移") +
   labs(caption = "出所：農林水産省『農業協同組合及び同連合会一斉調査 確報 総合農協統計表』\n（https://www.e-stat.go.jp/dbview?sid=0003406360）") +
@@ -253,8 +256,9 @@ if (!file.exists(outdir)) {
 ggsave(g, file = file.path(outdir, "number_of_ja_members.pdf"), width = 8, height = 4)
 ```
 
-
 正組合員が准組合員が逆転する折れ線グラフが描けた。
+
+### 作図2
 
 次に，個人以外の組合員についても見ていこう。
 
@@ -263,9 +267,9 @@ ggsave(g, file = file.path(outdir, "number_of_ja_members.pdf"), width = 8, heigh
 dfja2 <- dfja[grep("^正組合員（個人）$|^正組合員（法人）$|^正組合員（団体）$|^准組合員（個人）$|^准組合員（団体）$", dfja[, "組合員別内訳"]), ]
 dfja2[, "組合員別内訳"] <- factor(dfja2[, "組合員別内訳"], levels = unique(dfja2[, "組合員別内訳"]))
 
-g <- ggplot(data = dfja2) +
-  geom_line(aes(x = 年度, y = value, group = 組合員別内訳, colour = 組合員別内訳)) +
-  geom_point(aes(x = 年度, y = value, group = 組合員別内訳, colour = 組合員別内訳)) +
+g <- ggplot(data = dfja2, aes(x = 年度, y = value, group = 組合員別内訳, colour = 組合員別内訳)) +
+  geom_line() +
+  geom_point() +
   scale_y_continuous(limits = c(0, NA), labels = scales::comma_format(), name = "組合員数") +
   ggtitle("農業協同組合の組合員数（個人，法人，団体）の推移") +
   labs(caption = "出所：農林水産省『農業協同組合及び同連合会一斉調査 確報 総合農協統計表』\n（https://www.e-stat.go.jp/dbview?sid=0003406360）") +
@@ -289,18 +293,19 @@ knitr::kable(tmp, digits = 3, format.args = list(big.mark = ",", scientific = FA
 
 予想どおりのデータである。
 
+### 作図3
+
 次に，授業では女性の組合員が増えていることを説明した。
 このことを実際のデータで確認してみよう。
-
 
 ```{r}
 #| warning: false
 dfja3 <- dfja[grep("^正組合員（個人（女性））$", dfja[, "組合員別内訳"]), ]
 dfja3[, "組合員別内訳"] <- factor(dfja3[, "組合員別内訳"], levels = unique(dfja3[, "組合員別内訳"]))
 
-g <- ggplot(data = dfja3) +
-  geom_line(aes(x = 年度, y = value, group = 組合員別内訳, colour = 組合員別内訳)) +
-  geom_point(aes(x = 年度, y = value, group = 組合員別内訳, colour = 組合員別内訳)) +
+g <- ggplot(data = dfja3, aes(x = 年度, y = value, group = 組合員別内訳, colour = 組合員別内訳)) +
+  geom_line() +
+  geom_point() +
   scale_y_continuous(limits = c(0, NA), labels = scales::comma_format(), name = "組合員数") +
   ggtitle("農業協同組合の組合員数（女性）の推移") +
   labs(caption = "出所：農林水産省『農業協同組合及び同連合会一斉調査 確報 総合農協統計表』\n（https://www.e-stat.go.jp/dbview?sid=0003406360）") +
@@ -316,12 +321,12 @@ ggsave(g, file = file.path(outdir, "number_of_ja_members_female.pdf"), width = 8
 
 ```{r}
 #| warning: false
-dfja4 <- dfja[grep("^正組合員（個人（女性））$|^正組合員（計）$|^准組合員（計）$", dfja[, "組合員別内訳"]), ]
-dfja4[, "組合員別内訳"] <- factor(dfja4[, "組合員別内訳"], levels = unique(dfja4[, "組合員別内訳"]))
+dfja3 <- dfja[grep("^正組合員（個人（女性））$|^正組合員（計）$|^准組合員（計）$", dfja[, "組合員別内訳"]), ]
+dfja3[, "組合員別内訳"] <- factor(dfja3[, "組合員別内訳"], levels = unique(dfja3[, "組合員別内訳"]))
 
-g <- ggplot(data = dfja4) +
-  geom_line(aes(x = 年度, y = value, group = 組合員別内訳, colour = 組合員別内訳)) +
-  geom_point(aes(x = 年度, y = value, group = 組合員別内訳, colour = 組合員別内訳)) +
+g <- ggplot(data = dfja3, aes(x = 年度, y = value, group = 組合員別内訳, colour = 組合員別内訳)) +
+  geom_line() +
+  geom_point() +
   scale_y_continuous(limits = c(0, NA), breaks = seq(0, 6000000, 1000000), labels = scales::comma_format(), name = "組合員数") +
   ggtitle("農業協同組合の組合員数の推移") +
   labs(caption = "出所：農林水産省『農業協同組合及び同連合会一斉調査 確報 総合農協統計表』\n（https://www.e-stat.go.jp/dbview?sid=0003406360）") +
@@ -329,19 +334,21 @@ g <- ggplot(data = dfja4) +
   scale_color_d3()
 g + theme(text = element_text(family = "HiraKakuProN-W3"))
 
-ggsave(g, file = file.path(outdir, "number_of_ja_members_female_vs_all.pdf"), width = 8, height = 4)
+ggsave(g, file = file.path(outdir, "number_of_ja_members_female_with_all.pdf"), width = 8, height = 4)
 ```
+
+### 作図4
 
 組合員戸数の推移はどうだろうか。
 
 ```{r}
 #| warning: false
-dfja5 <- dfja[grep("^正組合員戸数$|^准組合員戸数$", dfja[, "組合員別内訳"]), ]
-dfja5[, "組合員別内訳"] <- factor(dfja5[, "組合員別内訳"], levels = unique(dfja5[, "組合員別内訳"]))
+dfja4 <- dfja[grep("^正組合員戸数$|^准組合員戸数$", dfja[, "組合員別内訳"]), ]
+dfja4[, "組合員別内訳"] <- factor(dfja4[, "組合員別内訳"], levels = unique(dfja4[, "組合員別内訳"]))
 
-g <- ggplot(data = dfja5) +
-  geom_line(aes(x = 年度, y = value, group = 組合員別内訳, colour = 組合員別内訳)) +
-  geom_point(aes(x = 年度, y = value, group = 組合員別内訳, colour = 組合員別内訳)) +
+g <- ggplot(data = dfja4, aes(x = 年度, y = value, group = 組合員別内訳, colour = 組合員別内訳)) +
+  geom_line() +
+  geom_point() +
   scale_y_continuous(limits = c(0, NA), labels = scales::comma_format(), name = "組合員戸数") +
   ggtitle("農業協同組合の組合員戸数の推移") +
   labs(caption = "出所：農林水産省『農業協同組合及び同連合会一斉調査 確報 総合農協統計表』\n（https://www.e-stat.go.jp/dbview?sid=0003406360）") +
@@ -349,20 +356,22 @@ g <- ggplot(data = dfja5) +
   scale_color_d3()
 g + theme(text = element_text(family = "HiraKakuProN-W3"))
 
-ggsave(g, file = file.path(outdir, "number_of_ja_members_hh.pdf"), width = 8, height = 4)
+ggsave(g, file = file.path(outdir, "number_of_ja_members_household.pdf"), width = 8, height = 4)
 ```
+
+### 作図5
 
 ここで扱っているのデータには，"一戸複数正組合員制実施組合数"の値も含まれている。
 授業を踏まえると，この組合数は減少している可能性が考えられる。
 
 ```{r}
 #| warning: false
-dfja6 <- dfja[grep("^一戸複数正組合員制実施組合数$", dfja[, "組合員別内訳"]), ]
-dfja6[, "組合員別内訳"] <- factor(dfja6[, "組合員別内訳"], levels = unique(dfja6[, "組合員別内訳"]))
+dfja5 <- dfja[grep("^一戸複数正組合員制実施組合数$", dfja[, "組合員別内訳"]), ]
+dfja5[, "組合員別内訳"] <- factor(dfja5[, "組合員別内訳"], levels = unique(dfja5[, "組合員別内訳"]))
 
-g <- ggplot(data = dfja6) +
-  geom_line(aes(x = 年度, y = value, group = 組合員別内訳, colour = 組合員別内訳)) +
-  geom_point(aes(x = 年度, y = value, group = 組合員別内訳, colour = 組合員別内訳)) +
+g <- ggplot(data = dfja5, aes(x = 年度, y = value, group = 組合員別内訳, colour = 組合員別内訳)) +
+  geom_line() +
+  geom_point() +
   scale_y_continuous(limits = c(0, NA), labels = scales::comma_format(), name = "組合数") +
   ggtitle("一戸複数正組合員制実施組合数の推移") +
   labs(caption = "出所：農林水産省『農業協同組合及び同連合会一斉調査 確報 総合農協統計表』\n（https://www.e-stat.go.jp/dbview?sid=0003406360）") +
@@ -370,8 +379,42 @@ g <- ggplot(data = dfja6) +
   scale_color_d3()
 g + theme(text = element_text(family = "HiraKakuProN-W3"))
 
-ggsave(g, file = file.path(outdir, "number_of_ja_members_female_vs_all.pdf"), width = 8, height = 4)
+ggsave(g, file = file.path(outdir, "number_of_ja_multiple_members_per_household.pdf"), width = 8, height = 4)
 ```
 
 実際にグラフを作成すると，一戸複数正組合員制実施組合数の現象が確認できる。
 ただし，農業協同組合の数が減少しているため，この数値の解釈には注意が必要である。
+
+### 作図6
+
+また，"正組合員（個人（組合員たる地位を失わない者））"は何だろうか。
+授業を踏まえると，これは土地持ち非農家の数を反映したものかもしれない。
+定義については，統計データではなく，別の方法で調べる。
+例えば，以下のような資料がある。
+
+::: {.callout-note collapse="true" icon="true"}
+## 農林水産省「農地を所有している非農家の組合員資格保有という農協法の理念に違反している状況の解消」2012年1月
+
+[https://www.cao.go.jp/sasshin/kisei-seido/meeting/2012/togi/agri/121127/item1.pdf](https://www.cao.go.jp/sasshin/kisei-seido/meeting/2012/togi/agri/121127/item1.pdf){target="_blank"}
+:::
+
+```{r}
+#| warning: false
+dfja6 <- dfja[grep("^正組合員（個人（組合員たる地位を失わない者））$", dfja[, "組合員別内訳"]), ]
+dfja6[, "組合員別内訳"] <- factor(dfja6[, "組合員別内訳"], levels = unique(dfja6[, "組合員別内訳"]))
+
+g <- ggplot(data = dfja6, aes(x = 年度, y = value, group = 組合員別内訳, colour = 組合員別内訳)) +
+  geom_line() +
+  geom_point() +
+  scale_y_continuous(limits = c(0, NA), labels = scales::comma_format(), name = "組合数") +
+  ggtitle("正組合員（個人（組合員たる地位を失わない者））") +
+  labs(caption = "出所：農林水産省『農業協同組合及び同連合会一斉調査 確報 総合農協統計表』\n（https://www.e-stat.go.jp/dbview?sid=0003406360）") +
+  theme_bw() +
+  theme(legend.title = element_text(size = 8),
+        legend.text = element_text(size = 8),
+        plot.caption =  element_text(size = 7)) +
+  scale_color_d3()
+g + theme(text = element_text(family = "HiraKakuProN-W3"))
+
+ggsave(g, file = file.path(outdir, "number_of_ja_members_nonfarmer.pdf"), width = 8, height = 4)
+```
