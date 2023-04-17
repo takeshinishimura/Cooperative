@@ -406,7 +406,7 @@ dfja6[, "組合員別内訳"] <- factor(dfja6[, "組合員別内訳"], levels = 
 g <- ggplot(data = dfja6, aes(x = 年度, y = value, group = 組合員別内訳, colour = 組合員別内訳)) +
   geom_line() +
   geom_point() +
-  scale_y_continuous(limits = c(0, NA), labels = scales::comma_format(), name = "組合数") +
+  scale_y_continuous(limits = c(0, NA), labels = scales::comma_format(), name = "組合員数") +
   ggtitle("正組合員（個人（組合員たる地位を失わない者））") +
   labs(caption = "出所：農林水産省『農業協同組合及び同連合会一斉調査 確報 総合農協統計表』\n（https://www.e-stat.go.jp/dbview?sid=0003406360）") +
   theme_bw() +
