@@ -292,6 +292,7 @@ knitr::kable(tmp, digits = 3, format.args = list(big.mark = ",", scientific = FA
 ```
 
 予想どおりのデータである。
+ちなみに，年度のコンマは不要だが，消し方が分からない。
 
 ### 作図3
 
@@ -301,7 +302,6 @@ knitr::kable(tmp, digits = 3, format.args = list(big.mark = ",", scientific = FA
 ```{r}
 #| warning: false
 dfja3 <- dfja[grep("^正組合員（個人（女性））$", dfja[, "組合員別内訳"]), ]
-dfja3[, "組合員別内訳"] <- factor(dfja3[, "組合員別内訳"], levels = unique(dfja3[, "組合員別内訳"]))
 
 g <- ggplot(data = dfja3, aes(x = 年度, y = value, group = 組合員別内訳, colour = 組合員別内訳)) +
   geom_line() +
@@ -310,6 +310,8 @@ g <- ggplot(data = dfja3, aes(x = 年度, y = value, group = 組合員別内訳,
   ggtitle("農業協同組合の組合員数（女性）の推移") +
   labs(caption = "出所：農林水産省『農業協同組合及び同連合会一斉調査 確報 総合農協統計表』\n（https://www.e-stat.go.jp/dbview?sid=0003406360）") +
   theme_bw() +
+  theme(legend.position = c(.85, .15),
+        legend.background = element_rect(fill = "transparent")) +
   scale_color_d3()
 g + theme(text = element_text(family = "HiraKakuProN-W3"))
 
@@ -336,6 +338,34 @@ g + theme(text = element_text(family = "HiraKakuProN-W3"))
 
 ggsave(g, file = file.path(outdir, "number_of_ja_members_female_with_all.pdf"), width = 8, height = 4)
 ```
+
+正組合員全体が減少している中で，女性が増加していることが1つのグラフでわかる。
+女性の増加に焦点を当てたければ，女性比率を計算するとよい。
+ここで，法人と団体は除いて計算することに気をつけよう。
+
+```{r}
+#| warning: false
+dfja3 <- dfja[grep("^正組合員（個人（女性））$|^正組合員（個人）$", dfja[, "組合員別内訳"]), ]
+dfja3 <- reshape2::dcast(dfja3, 年度 ~ 組合員別内訳)
+dfja3[, "女性比率"] <- dfja3[, "正組合員（個人（女性））"] / dfja3[, "正組合員（個人）"]
+
+g <- ggplot(data = dfja3, aes(x = 年度, y = 女性比率)) +
+  geom_line() +
+  geom_point() +
+  scale_y_continuous(limits = c(0, 1), name = "女性比率") +
+  ggtitle("農業協同組合の正組合員に占める女性比率の推移") +
+  labs(caption = "出所：農林水産省『農業協同組合及び同連合会一斉調査 確報 総合農協統計表』\n（https://www.e-stat.go.jp/dbview?sid=0003406360）") +
+  theme_bw() +
+  theme(legend.position = "bottom") +
+  scale_color_d3()
+g + theme(text = element_text(family = "HiraKakuProN-W3"))
+
+ggsave(g, file = file.path(outdir, "number_of_ja_members_female_ratio.pdf"), width = 8, height = 4)
+```
+
+凡例がなく，線と点の色が黒い。
+ここで描画に用いているデータフレームはワイドである。
+ggplot2で凡例を付け，色分けするためには，groupを使わなければならず，そのためにはデータをワイドではなくロングにする必要がある。
 
 ### 作図4
 
@@ -367,7 +397,6 @@ ggsave(g, file = file.path(outdir, "number_of_ja_members_household.pdf"), width 
 ```{r}
 #| warning: false
 dfja5 <- dfja[grep("^一戸複数正組合員制実施組合数$", dfja[, "組合員別内訳"]), ]
-dfja5[, "組合員別内訳"] <- factor(dfja5[, "組合員別内訳"], levels = unique(dfja5[, "組合員別内訳"]))
 
 g <- ggplot(data = dfja5, aes(x = 年度, y = value, group = 組合員別内訳, colour = 組合員別内訳)) +
   geom_line() +
@@ -376,6 +405,7 @@ g <- ggplot(data = dfja5, aes(x = 年度, y = value, group = 組合員別内訳,
   ggtitle("一戸複数正組合員制実施組合数の推移") +
   labs(caption = "出所：農林水産省『農業協同組合及び同連合会一斉調査 確報 総合農協統計表』\n（https://www.e-stat.go.jp/dbview?sid=0003406360）") +
   theme_bw() +
+  theme(legend.position = "bottom") +
   scale_color_d3()
 g + theme(text = element_text(family = "HiraKakuProN-W3"))
 
@@ -401,7 +431,6 @@ ggsave(g, file = file.path(outdir, "number_of_ja_multiple_members_per_household.
 ```{r}
 #| warning: false
 dfja6 <- dfja[grep("^正組合員（個人（組合員たる地位を失わない者））$", dfja[, "組合員別内訳"]), ]
-dfja6[, "組合員別内訳"] <- factor(dfja6[, "組合員別内訳"], levels = unique(dfja6[, "組合員別内訳"]))
 
 g <- ggplot(data = dfja6, aes(x = 年度, y = value, group = 組合員別内訳, colour = 組合員別内訳)) +
   geom_line() +
