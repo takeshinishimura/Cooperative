@@ -25,7 +25,7 @@ lang: ja
 [https://www.e-stat.go.jp/stat-search/files?stat_infid=000032206155](https://www.e-stat.go.jp/stat-search/files?stat_infid=000032206155){target="_blank"}
 :::
 
-上述のサイトから，r006-02-001.xlsという名前のExcel形式のファイルをダウンロードできる。
+上述のサイトから，`r006-02-001.xls` という名前のExcel形式のファイルをダウンロードできる。
 あとは，Microsoft Officeを構成するアプリケーションのひとつであるExcelを起動して，ファイルを開き，Excelの機能を使って折れ線グラフを作成することができる。
 Excelの図で満足できる人はこれで終わりである。
 ちまちまとマウスをクリックしながら，はたまた数値を別のセルに移動させながら，折れ線グラフを作成するとよい。
@@ -83,7 +83,7 @@ head(dfcoop)
 ```
 
 このようになっていれば，作図や分析に使えるデータであるといえる。
-なお，NAというのはNAという文字があるのではなく，そこには何もないという意味で理解するとよい。
+なお，`NA` というのは `NA` という文字があるのではなく，そこには何もないという意味で理解するとよい。
 
 ### 折れ線グラフ {#sec-simpleplot}
 
@@ -141,7 +141,7 @@ keyring::key_set("e-stat")
 e-Statから欲しいデータを取得してみよう。
 
 次のコードを実行することで，欲しいデータが取得できる。
-statsDataId = "0002003131"の数字は，e-Statの[農業協同組合等現在数統計 確報 令和３年度農業協同組合等現在数統計総括の部 1 農業協同組合、同連合会及び農事組合法人数の推移（第１表）](https://www.e-stat.go.jp/dbview?sid=0002003131){target="_blank"}のページを指すIDである。
+`statsDataId = "0002003131"` にある数字は，e-Statの[農業協同組合等現在数統計 確報 令和３年度農業協同組合等現在数統計総括の部 1 農業協同組合、同連合会及び農事組合法人数の推移（第１表）](https://www.e-stat.go.jp/dbview?sid=0002003131){target="_blank"}のページを指すIDである。
 
 ```{r}
 library(httr)
@@ -226,7 +226,7 @@ g <- ggplot(data = dfcoop2) +
 g + theme(text = element_text(family = "HiraKakuProN-W3"))
 ```
 
-最後のところでエラーが出る場合は，gだけにして，プラス以降を入力しない。
+最後のところでエラーが出る場合は，`g` だけにして，プラス以降を入力しない。
 文字化けするかもしれないが，気にする必要はない（文字化けを修正するのは大変）。
 
 次のように，少し工夫するだけで見栄えは劇的に改善する。
@@ -274,7 +274,7 @@ ggsave(g, file = file.path(outdir, "number_of_ja.pdf"), width = 8, height = 4)
 
 ## e-Statの検索
 
-@sec-estat では，statsDataId = “0002003131”とIDを指定した。
+@sec-estat では，`statsDataId = “0002003131”` とIDを指定した。
 しかし，通常はデータを探すところから始める必要がある。
 以下に探し方の一例を示す。
 
