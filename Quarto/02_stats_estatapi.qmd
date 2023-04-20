@@ -312,7 +312,17 @@ head(df)
 nrow(df)
 
 library(DT)
-DT::datatable(df)
+DT::datatable(
+  df, caption = searchword, rownames = TRUE,
+  extensions = 'Buttons',
+  options = list(
+    pageLength = 10,
+    dom = 'Blfrtip',
+    buttons = list(
+      c('csv', 'excel')
+    )
+  )
+)
 ```
 
 ここで示した方法は，[Rからe-Stat APIを使う - Qiita](https://qiita.com/nozma/items/f88f5cc60ab63461deae){target="_blank"}が大変参考になった。
