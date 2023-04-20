@@ -309,6 +309,10 @@ df <- response$GET_STATS_LIST$DATALIST_INF$TABLE_INF |>
   rlist::list.stack()
 
 head(df)
+nrow(df)
+
+library(DT)
+DT::datatable(df)
 ```
 
 ここで示した方法は，[Rからe-Stat APIを使う - Qiita](https://qiita.com/nozma/items/f88f5cc60ab63461deae){target="_blank"}が大変参考になった。
