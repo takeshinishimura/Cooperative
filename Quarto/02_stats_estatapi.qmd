@@ -299,13 +299,12 @@ listviewer::jsonedit(response)
 df <- response$GET_STATS_LIST$DATALIST_INF$TABLE_INF |>
   rlist::list.select(
     id = `@id`,
-    stat_name = STAT_NAME$`$`,
-    gov_org = GOV_ORG$`$`,
-    statistics_name = STATISTICS_NAME,
-#   title = TITLE$`$`, # Error in TITLE$`$` : $ operator is invalid for atomic vectors
-    survey_date = SURVEY_DATE,
-    table_name = TITLE_SPEC$TABLE_NAME
-  ) |>
+    STAT_NAME = STAT_NAME$`$`,
+    GOV_ORG = GOV_ORG$`$`,
+    STATISTICS_NAME = STATISTICS_NAME,
+    SURVEY_DATE = SURVEY_DATE,
+    TABLE_NAME = TITLE_SPEC$TABLE_NAME
+) |>
   rlist::list.stack()
 
 head(df)
