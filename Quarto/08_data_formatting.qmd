@@ -222,7 +222,7 @@ unique(df3[, "組合員別内訳"])
 
 ### 作図1
 
-まず，正組合員と准組合員の折れ線グラフを描くことにしよう。
+組合員の合計の折れ線グラフを描くことにしよう。
 その前に，これまでデータフレームに番号を振っており，どれが最新か分かりづらいため，最新のデータフレームを分かりやすいデータフレーム名に変更しておく。
 
 ```{r}
@@ -232,6 +232,49 @@ dfja <- df3
 library(ggplot2)
 library(ggsci)
 
+dfja1 <- dfja[grep("^合計（計）$", dfja[, "組合員別内訳"]), ]
+
+g <- ggplot(data = dfja1, aes(x = 年度, y = value, group = 組合員別内訳, colour = 組合員別内訳)) +
+  geom_line() +
+  geom_point() +
+  scale_y_continuous(labels = scales::comma_format(), name = "組合員数") +
+  ggtitle("農業協同組合の組合員数の推移") +
+  labs(caption = "出所：農林水産省『農業協同組合及び同連合会一斉調査 確報 総合農協統計表』\n（https://www.e-stat.go.jp/dbview?sid=0003406360）") +
+  theme_bw() +
+  scale_color_d3()
+g + theme(text = element_text(family = "HiraKakuProN-W3"))
+```
+
+組合員数が極端に増加しているように見えるのが気になるようなら，縦軸が0から始まるようにするとよい。
+
+```{r}
+#| warning: false
+g <- ggplot(data = dfja1, aes(x = 年度, y = value, group = 組合員別内訳, colour = 組合員別内訳)) +
+  geom_line() +
+  geom_point() +
+  scale_y_continuous(limits = c(0, NA), breaks = seq(0, 11000000, 1000000), labels = scales::comma_format(), name = "組合員数") +
+  ggtitle("農業協同組合の組合員数の推移") +
+  labs(caption = "出所：農林水産省『農業協同組合及び同連合会一斉調査 確報 総合農協統計表』\n（https://www.e-stat.go.jp/dbview?sid=0003406360）") +
+  theme_bw() +
+  scale_color_d3()
+g + theme(text = element_text(family = "HiraKakuProN-W3"))
+```
+
+```{r}
+#| include: false
+#| warning: false
+outdir <- "../fig"
+if (!file.exists(outdir)) {
+  dir.create(outdir)
+}
+
+ggsave(g, file = file.path(outdir, "number_of_ja_members.pdf"), width = 8, height = 4)
+```
+
+続いて，正組合員と准組合員の折れ線グラフを描いてみる。
+
+```{r}
+#| warning: false
 dfja1 <- dfja[grep("^正組合員（計）$|^准組合員（計）$", dfja[, "組合員別内訳"]), ]
 dfja1[, "組合員別内訳"] <- factor(dfja1[, "組合員別内訳"], levels = unique(dfja1[, "組合員別内訳"]))
 
@@ -254,7 +297,7 @@ if (!file.exists(outdir)) {
   dir.create(outdir)
 }
 
-ggsave(g, file = file.path(outdir, "number_of_ja_members.pdf"), width = 8, height = 4)
+ggsave(g, file = file.path(outdir, "number_of_ja_members_sei_vs_jun.pdf"), width = 8, height = 4)
 ```
 
 正組合員が准組合員が逆転する折れ線グラフが描けた。
