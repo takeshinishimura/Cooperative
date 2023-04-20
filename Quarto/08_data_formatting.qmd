@@ -232,7 +232,7 @@ unique(df3[, "組合員別内訳"])
 
 ### 作図1
 
-組合員の合計の折れ線グラフを描くことにしよう。
+まず，組合員の合計の折れ線グラフを描くことにしよう。
 その前に，これまでデータフレームに番号を振っており，どれが最新か分かりづらいため，最新のデータフレームを分かりやすいデータフレーム名に変更しておく。
 
 ```{r}
@@ -262,7 +262,7 @@ g + theme(text = element_text(family = "HiraKakuProN-W3"))
 g <- ggplot(data = dfja1, aes(x = 年度, y = value, group = 組合員別内訳, colour = 組合員別内訳)) +
   geom_line() +
   geom_point() +
-  scale_y_continuous(limits = c(0, NA), breaks = seq(0, 11000000, 1000000), labels = scales::comma_format(), name = "組合員数") +
+  scale_y_continuous(limits = c(0, NA), breaks = seq(0, 11000000, 2000000), labels = scales::comma_format(), name = "組合員数") +
   ggtitle("農業協同組合の組合員数の推移") +
   labs(caption = "出所：農林水産省『農業協同組合及び同連合会一斉調査 確報 総合農協統計表』\n（https://www.e-stat.go.jp/dbview?sid=0003406360）") +
   theme_bw() +
