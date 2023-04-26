@@ -119,21 +119,21 @@ Wikipediaは整理されて書かれているため，効率的に学習でき�
 このサイトに書かれていることを実行するためには，あなたのパソコンでRとPythonが使える環境を構築しなければなりません。
 基本的にスマートフォンは対応していないため，必ずパソコンを使ってください。
 
-Rは [The Comprehensive R Archive Network](https://cran.r-project.org/banner.shtml){target="_blank"} から自分のパソコンのOSに対応したものをダウンロードし，インストールしてください。
-RStudioは必要ありませんが，インストールしても構いません。
+Rは [The Comprehensive R Archive Network](https://cran.r-project.org/){target="_blank"} から自分のパソコンのOSに対応したものをダウンロードし，インストールしてください。
+Rの準備はこれだけです。
+もしRStudioを使いたければ，インストールしても構いません。
+RStudioが何をするためのものかを知ってからインストールしても遅くありませんので，Rに慣れてからインストールすることをおすすめします。
 Rコマンダー等，他のツールはインストールする必要はありません。
 
 Pythonは，あなたのパソコンがmacOSの場合，最初からインストールされています。
 Windowsの場合，最初からインストールされていないため，インストールする必要があります。
-ただし，OSとは無関係に，[Google Colaboratory](https://colab.research.google.com/){target="_blank"} を使う場合，パソコンにPythonがインストールされていなくても大丈夫です。
-このサイトでは，Google Colaboratoryだけでも再現できるものが多いです。
-
-しかし，自分のパソコンにPythonが入っている方が便利です。
-また，その方が，プログラミングの仕組みを理解しやすいです。
-そこで，Windowsの場合，[Python.org](https://www.python.org/){target="_blank"} から自分のOSに対応したものをダウンロードし，インストールしてください（macOSではインストールする必要はありませんが，インストールしても問題ありません）。
+[Python.org](https://www.python.org/){target="_blank"} から自分のOSに対応したものをダウンロードし，インストールしてください（macOSではインストールする必要はありませんが，最新のバージョンを使いたいという特別な理由があればインストールしてください）。
 どれをダウンロードしたらいいか分からないときは，「Latest Python 3 Release」と書かれているものをダウンロードしてください。
 
-自分のパソコンにPythonをインストールした後は，[Jupyter Notebook](https://jupyter.org/){target="_blank"} をインストールしてください。
+OSとは無関係に，[Google Colaboratory](https://colab.research.google.com/){target="_blank"} を使う場合，パソコンにPythonがインストールされていなくても大丈夫です。
+このサイトでは，Google Colaboratoryだけでも再現できるものが多いです。
+
+自分のパソコンでPythonが使えるようにした後は，[Jupyter Notebook](https://jupyter.org/){target="_blank"} をインストールしてください（macOSにも初めからインストールされていません）。
 インストールの仕方は説明しませんので，自分で調べてください。
 Jupyter Notebookは絶対必要というわけではないので，不安な人は，Pythonに慣れてから，インストールしても構いません。
 
