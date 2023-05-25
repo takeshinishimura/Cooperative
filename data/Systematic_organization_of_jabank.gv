@@ -26,7 +26,8 @@ digraph ja_bank {
   subgraph cluster2 {
     label = "JAバンク"
     fontname = Helvetica
-    bgcolor = orange
+    fontcolor = white
+    bgcolor = "#008000"
     style = rounded
     JA（単協）; JA信連; 農林中金
   }

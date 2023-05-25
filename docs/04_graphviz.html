@@ -105,14 +105,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 <p>概念を整理するときなどに，フローチャートやネットワーク図といったダイアグラムを描きたくなることがあるだろう。 このとき，ダイアグラムを効率的に描くツールはなかなか見当たらないのではないだろうか。</p>
-<p>現状では，<a href="https://www.omnigroup.com/omnigraffle" target="_blank">OmniGraffle</a>を使うのが一番よい選択肢だろう。 <del>ワードアートは使いたくない。</del> ただし，OmniGraffleは<a href="https://www.adobe.com/jp/products/illustrator.html" target="_blank">Adobe Illustrator</a>のお手軽版という位置づけであり，より汎用的なイラスト制作ツールのひとつとして位置づけられる。 ダイアグラム作成に，そこまで多様な機能は求めていない。 また，Adobe IllustratorもOmniGraffleもいずれも図の作成において有益ではあるが，ダイヤグラム時にデザインを決めなければならないことが個人的には面倒だと感じる。 また，いずれのソフトウェアも構造を理解しながらダイアグラムを描くには不向きである</p>
-<p>こうした不満を解決するためのツールに，<a href="https://graphviz.org/" target="_blank">Graphviz</a>がある。 Graphvizは，DOT言語で記述されたグラフ構造を描画するためのツールである。 ノードとエッジを定義するだけで，自動で最適なレイアウトを考えてくれる。 似たようなツールとして，<a href="https://mermaid.js.org/" target="_blank">Mermaid</a>がある。</p>
+<p>現状では，<a href="https://www.omnigroup.com/omnigraffle" target="_blank">OmniGraffle</a>を使うのが一番よい選択肢だろう。 <del>ワードアートは使いたくない。</del> ただし，OmniGraffleは<a href="https://www.adobe.com/jp/products/illustrator.html" target="_blank">Adobe Illustrator</a>のお手軽版という位置づけであり，より汎用的なイラスト制作ツールのひとつとして位置づけられる。 ダイアグラム作成に，そこまで多様な機能は求めていないこともある。 また，Adobe IllustratorもOmniGraffleもいずれも有益なツールではあるが，ダイヤグラム作成時にデザインを決めなければならないことが個人的には面倒だと感じる。 また，いずれのソフトウェアも描きたい対象の構造を理解しながらダイアグラムを描くには不向きである</p>
+<p>こうした不満を解決するためのツールに<a href="https://graphviz.org/" target="_blank">Graphviz</a>がある。 Graphvizは，DOT言語で記述されたグラフ構造を描画するためのツールである。 ノードとエッジを定義するだけで，自動で最適なレイアウトを考えてくれる。 同様のツールに，<a href="https://mermaid.js.org/" target="_blank">Mermaid</a>がある。</p>
 <p>ここでは，Graphvizを使って農協の全国組織の図を作成することにする。</p>
 <section id="graphvizのインストール" class="level2" data-number="1">
 <h2 data-number="1" class="anchored" data-anchor-id="graphvizのインストール"><span class="header-section-number">1</span> Graphvizのインストール</h2>
-<p>macOSの場合，Terminalに以下のようなコマンドを打ち込むことで，<a href="https://brew.sh/" target="_blank">Homebrew</a>を使ってインストールできる。</p>
+<p>macOSの場合，Terminalに以下のコマンドを打ち込むことで，<a href="https://brew.sh/" target="_blank">Homebrew</a>を使ってインストールできる。</p>
 <pre><code>$ brew install graphviz</code></pre>
-<p>Windowsの場合は，以下から最新の64-bit版をダウンロードして，インストールすればよい。</p>
+<p>Windowsの場合は，以下から最新の64-bit版をダウンロードして，インストールする。</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="true" aria-label="Toggle callout">
 <div class="callout-icon-container">
@@ -174,7 +174,6 @@ Graphviz
     {rank = same; JA全農; JA全共連; 農林中金; JA全中}
   }
 }</code></pre>
-<p>それぞれの<code>subgraph</code>内で中央会に向かうエッジを描いているため，若干複雑になっている。 系統組織であることを表現するにあたって，これらのエッジは不要かもしれない。</p>
 <p>これを，任意のテキストエディタにコピー＆ペーストして，<code>ja1.gv</code>というファイル名で保存しておく。 DOT言語の拡張子としては，<code>.dot</code>あるいは<code>.gv</code>が使われる。 前者はMicrosoft Wordのテンプレートファイルとして用いられており，OSがこの拡張子のついたファイルを自動的にWordと関連付けてしまうため，後者を使うことにする。</p>
 <p>Terminalで以下のように打ち込むと，必要なPDFファイルが得られる。</p>
 <pre><code>$ dot -Tpdf ja1.gv &gt; ja1.pdf</code></pre>
@@ -301,7 +300,8 @@ JA全共連-&gt;JA全中
 </div>
 </div>
 </div>
-<p>Terminalがよくわからない場合は，<a href="https://posit.co/download/rstudio-desktop/" target="_blank">RStudio</a>を使うか，<a href="https://dreampuf.github.io/GraphvizOnline" target="_blank">GraphvizOnline</a>を使うと便利である。</p>
+<p>それぞれの<code>subgraph</code>内で中央会に向かうエッジを描いているため，若干複雑になっている。 系統組織であることを表現するにあたって，これらのエッジは不要かもしれない。</p>
+<p>もしTerminalがよくわからない場合は，<a href="https://posit.co/download/rstudio-desktop/" target="_blank">RStudio</a>を使うか，<a href="https://dreampuf.github.io/GraphvizOnline" target="_blank">GraphvizOnline</a>を使うと便利である。</p>
 <p>同様のことは，<a href="https://cran.r-project.org/web/packages/DiagrammeR/index.html" target="_blank">DiagrammeR</a>を用いて，Rからを実行することもできる。</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(DiagrammeR)</span>
@@ -312,7 +312,7 @@ JA全共連-&gt;JA全中
 <div class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>DiagrammeR<span class="sc">::</span><span class="fu">export_graph</span>(graph, <span class="at">file_name =</span> <span class="st">"ja1.pdf"</span>)</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>これでうまくいくはずであるが，なぜかこのやり方ではエラーが出てしまい，解決策がわからない。 ひとまず，Rは使わずに，TerminalからPDFファイルを出力する。 あるいは，RStudioで <code>graph</code> と入力して図を表示してから，図のパネルのExportからPNGファイルで保存するしてもよい（ただし，この方法は本質的な解決策ではないため，非推奨である）。</p>
+<p>この方法でうまくいくはずであるが，なぜかエラーが出てしまい，解決策がわからない。 ひとまず，Rは使わずに，TerminalからPDFファイルを出力する。 あるいは，RStudioで <code>graph</code> と入力して図を表示してから，図のパネルのExportからPNGファイルで保存するしてもよい（ただし，この方法は本質的な解決策ではないため，非推奨である）。</p>
 </section>
 <section id="県1農協を踏まえた農協の全国組織" class="level2" data-number="3">
 <h2 data-number="3" class="anchored" data-anchor-id="県1農協を踏まえた農協の全国組織"><span class="header-section-number">3</span> 1県1農協を踏まえた農協の全国組織</h2>
@@ -535,7 +535,7 @@ ja_bank
 <title>
 cluster2
 </title>
-<path fill="orange" stroke="black" d="M105,-154C105,-154 564.01,-154 564.01,-154 570.01,-154 576.01,-160 576.01,-166 576.01,-166 576.01,-219 576.01,-219 576.01,-225 570.01,-231 564.01,-231 564.01,-231 105,-231 105,-231 99,-231 93,-225 93,-219 93,-219 93,-166 93,-166 93,-160 99,-154 105,-154"></path> <text text-anchor="middle" x="334.51" y="-214.4" font-family="Helvetica,sans-Serif" font-size="14.00">JAバンク</text> </g> <!-- 組合員 --> <g id="node1" class="node">
+<path fill="#008000" stroke="black" d="M105,-154C105,-154 564.01,-154 564.01,-154 570.01,-154 576.01,-160 576.01,-166 576.01,-166 576.01,-219 576.01,-219 576.01,-225 570.01,-231 564.01,-231 564.01,-231 105,-231 105,-231 99,-231 93,-225 93,-219 93,-219 93,-166 93,-166 93,-160 99,-154 105,-154"></path> <text text-anchor="middle" x="334.51" y="-214.4" font-family="Helvetica,sans-Serif" font-size="14.00" fill="white">JAバンク</text> </g> <!-- 組合員 --> <g id="node1" class="node">
 <title>
 組合員
 </title>

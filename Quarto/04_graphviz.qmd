@@ -20,27 +20,27 @@ lang: ja
 現状では，[OmniGraffle](https://www.omnigroup.com/omnigraffle){target="_blank"}を使うのが一番よい選択肢だろう。
 ~~ワードアートは使いたくない。~~
 ただし，OmniGraffleは[Adobe Illustrator](https://www.adobe.com/jp/products/illustrator.html){target="_blank"}のお手軽版という位置づけであり，より汎用的なイラスト制作ツールのひとつとして位置づけられる。
-ダイアグラム作成に，そこまで多様な機能は求めていない。
-また，Adobe IllustratorもOmniGraffleもいずれも図の作成において有益ではあるが，ダイヤグラム時にデザインを決めなければならないことが個人的には面倒だと感じる。
-また，いずれのソフトウェアも構造を理解しながらダイアグラムを描くには不向きである
+ダイアグラム作成に，そこまで多様な機能は求めていないこともある。
+また，Adobe IllustratorもOmniGraffleもいずれも有益なツールではあるが，ダイヤグラム作成時にデザインを決めなければならないことが個人的には面倒だと感じる。
+また，いずれのソフトウェアも描きたい対象の構造を理解しながらダイアグラムを描くには不向きである
 
-こうした不満を解決するためのツールに，[Graphviz](https://graphviz.org/){target="_blank"}がある。
+こうした不満を解決するためのツールに[Graphviz](https://graphviz.org/){target="_blank"}がある。
 Graphvizは，DOT言語で記述されたグラフ構造を描画するためのツールである。
 ノードとエッジを定義するだけで，自動で最適なレイアウトを考えてくれる。
-似たようなツールとして，[Mermaid](https://mermaid.js.org/){target="_blank"}がある。
+同様のツールに，[Mermaid](https://mermaid.js.org/){target="_blank"}がある。
 
 ここでは，Graphvizを使って農協の全国組織の図を作成することにする。
 
 
 ## Graphvizのインストール
 
-macOSの場合，Terminalに以下のようなコマンドを打ち込むことで，[Homebrew](https://brew.sh/){target="_blank"}を使ってインストールできる。
+macOSの場合，Terminalに以下のコマンドを打ち込むことで，[Homebrew](https://brew.sh/){target="_blank"}を使ってインストールできる。
 
 ```
 $ brew install graphviz
 ```
 
-Windowsの場合は，以下から最新の64-bit版をダウンロードして，インストールすればよい。
+Windowsの場合は，以下から最新の64-bit版をダウンロードして，インストールする。
 
 ::: {.callout-note collapse="false" icon="true"}
 ## Graphviz
@@ -181,7 +181,7 @@ DiagrammeR::export_graph(graph, file_name = "ja1.pdf")
 DiagrammeR::export_graph(graph, file_name = "../fig/Systematic_organization_of_ja1.pdf")
 ```
 
-これでうまくいくはずであるが，なぜかこのやり方ではエラーが出てしまい，解決策がわからない。
+この方法でうまくいくはずであるが，なぜかエラーが出てしまい，解決策がわからない。
 ひとまず，Rは使わずに，TerminalからPDFファイルを出力する。
 あるいは，RStudioで `graph` と入力して図を表示してから，図のパネルのExportからPNGファイルで保存するしてもよい（ただし，この方法は本質的な解決策ではないため，非推奨である）。
 
@@ -322,7 +322,8 @@ digraph ja_bank {
   subgraph cluster2 {
     label = "JAバンク"
     fontname = Helvetica
-    bgcolor = orange
+    fontcolor = white
+    bgcolor = "#008000"
     style = rounded
     JA（単協）; JA信連; 農林中金
   }
