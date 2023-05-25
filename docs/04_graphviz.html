@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.353">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>ダイアグラム</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="04_graphviz_files/libs/clipboard/clipboard.min.js"></script>
+<script src="04_graphviz_files/libs/quarto-html/quarto.js"></script>
+<script src="04_graphviz_files/libs/quarto-html/popper.min.js"></script>
+<script src="04_graphviz_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="04_graphviz_files/libs/quarto-html/anchor.min.js"></script>
+<link href="04_graphviz_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="04_graphviz_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="04_graphviz_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="04_graphviz_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="04_graphviz_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body>
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">目次</h2>
+   
+  <ul>
+  <li><a href="#graphvizのインストール" id="toc-graphvizのインストール" class="nav-link active" data-scroll-target="#graphvizのインストール"><span class="header-section-number">1</span> Graphvizのインストール</a></li>
+  <li><a href="#農協の全国組織" id="toc-農協の全国組織" class="nav-link" data-scroll-target="#農協の全国組織"><span class="header-section-number">2</span> 農協の全国組織</a></li>
+  <li><a href="#県1農協を踏まえた農協の全国組織" id="toc-県1農協を踏まえた農協の全国組織" class="nav-link" data-scroll-target="#県1農協を踏まえた農協の全国組織"><span class="header-section-number">3</span> 1県1農協を踏まえた農協の全国組織</a></li>
+  </ul>
+</nav>
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">ダイアグラム</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<p>概念を整理するときなどに，フローチャートやネットワーク図といったダイアグラムを描きたくなることがあるだろう。 このとき，ダイアグラムを効率的に描くツールはなかなか見当たらないのではないだろうか。</p>
+<p>現状では，<a href="https://www.omnigroup.com/omnigraffle" target="_blank">OmniGraffle</a>を使うのが一番よい選択肢だろう。 <del>ワードアートは使いたくない。</del> ただし，OmniGraffleは<a href="https://www.adobe.com/jp/products/illustrator.html" target="_blank">Adobe Illustrator</a>のお手軽版という位置づけであり，より汎用的なイラスト制作ツールのひとつとして位置づけられる。 ダイアグラム作成に，そこまで多様な機能は求めていない。 また，Adobe IllustratorもOmniGraffleもいずれも図の作成において有益ではあるが，ダイヤグラム時にデザインを決めなければならないことが個人的には面倒だと感じる。 また，いずれのソフトウェアも構造を理解しながらダイアグラムを描くには不向きである</p>
+<p>こうした不満を解決するためのツールに，<a href="https://graphviz.org/" target="_blank">Graphviz</a>がある。 Graphvizは，DOT言語で記述されたグラフ構造を描画するためのツールである。 ノードとエッジを定義するだけで，自動で最適なレイアウトを考えてくれる。 似たようなツールとして，<a href="https://mermaid.js.org/" target="_blank">Mermaid</a>がある。</p>
+<p>ここでは，Graphvizを使って農協の全国組織の図を作成することにする。</p>
+<section id="graphvizのインストール" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="graphvizのインストール"><span class="header-section-number">1</span> Graphvizのインストール</h2>
+<p>macOSの場合，Terminalに以下のようなコマンドを打ち込むことで，<a href="https://brew.sh/" target="_blank">Homebrew</a>を使ってインストールできる。</p>
+<pre><code>$ brew install graphviz</code></pre>
+<p>Windowsの場合は，以下から最新の64-bit版をダウンロードして，インストールすればよい。</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="true" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Graphviz
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse show">
+<div class="callout-body-container callout-body">
+<p><a href="https://graphviz.org/download/" target="_blank">Download | Graphviz</a></p>
+</div>
+</div>
+</div>
+</section>
+<section id="農協の全国組織" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="農協の全国組織"><span class="header-section-number">2</span> 農協の全国組織</h2>
+<p>DOT言語とGraphviz属性について知りたい場合は，<a href="https://r-beginner.hatenadiary.jp/entry/2018/03/11/081150" target="_blank">DiagrammeR　〜RでGraphvizを使う~ - Ｒ言語による電子カルテデータの二次利用</a>を参照するとよい。</p>
+<p>細かい説明抜きに，農協の全国組織をGraphvizで書くと，以下のようになる。</p>
+<pre><code>digraph ja1 {
+  graph [rankdir = LR]
+  node [fontname = Helvetica,
+    shape = box,
+    fixedsize = false,
+    style = filled,
+    fillcolor = white]
+  組合員 [shape = circle, width = 0.9]
+  JA（単協）
+  node [width = 2.2]
+  JA経済連; JA共済連; JA信連; JA都道府県中央会; JA全農; JA全共連; 農林中金; JA全中
+
+  edge []
+  組合員-&gt;JA（単協）
+  JA（単協）-&gt;JA経済連-&gt;JA全農
+  JA（単協）-&gt;JA共済連-&gt;JA全共連
+  JA（単協）-&gt;JA信連-&gt;農林中金
+  JA（単協）-&gt;JA都道府県中央会-&gt;JA全中
+  JA経済連-&gt;JA都道府県中央会
+  JA共済連-&gt;JA都道府県中央会
+  JA信連-&gt;JA都道府県中央会
+  JA全農-&gt;JA全中
+  JA全共連-&gt;JA全中
+  農林中金-&gt;JA全中
+
+  subgraph cluster1 {
+    label = "都道府県段階"
+    fontname = Helvetica
+    bgcolor = ivory
+    style = rounded
+    {rank = same; JA経済連; JA共済連; JA信連; JA都道府県中央会}
+  }
+  subgraph cluster0 {
+    label = "全国段階"
+    fontname = Helvetica
+    bgcolor = honeydew
+    style = rounded
+    {rank = same; JA全農; JA全共連; 農林中金; JA全中}
+  }
+}</code></pre>
+<p>それぞれの<code>subgraph</code>内で中央会に向かうエッジを描いているため，若干複雑になっている。 系統組織であることを表現するにあたって，これらのエッジは不要かもしれない。</p>
+<p>これを，任意のテキストエディタにコピー＆ペーストして，<code>ja1.gv</code>というファイル名で保存しておく。 DOT言語の拡張子としては，<code>.dot</code>あるいは<code>.gv</code>が使われる。 前者はMicrosoft Wordのテンプレートファイルとして用いられており，OSがこの拡張子のついたファイルを自動的にWordと関連付けてしまうため，後者を使うことにする。</p>
+<p>Terminalで以下のように打ち込むと，必要なPDFファイルが得られる。</p>
+<pre><code>$ dot -Tpdf ja1.gv &gt; ja1.pdf</code></pre>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<div>
+<svg width="672" height="480" viewbox="0.00 0.00 592.01 263.00" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" style="; max-width: none; max-height: none">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 259)">
+<title>
+ja1
+</title>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-259 588.01,-259 588.01,4 -4,4"></polygon> <g id="clust1" class="cluster">
+<title>
+cluster1
+</title>
+<path fill="ivory" stroke="black" d="M220.01,-8C220.01,-8 370.01,-8 370.01,-8 376.01,-8 382.01,-14 382.01,-20 382.01,-20 382.01,-235 382.01,-235 382.01,-241 376.01,-247 370.01,-247 370.01,-247 220.01,-247 220.01,-247 214.01,-247 208.01,-241 208.01,-235 208.01,-235 208.01,-20 208.01,-20 208.01,-14 214.01,-8 220.01,-8"></path> <text text-anchor="middle" x="295.01" y="-230.4" font-family="Helvetica,sans-Serif" font-size="14.00">都道府県段階</text> </g> <g id="clust3" class="cluster">
+<title>
+cluster0
+</title>
+<path fill="honeydew" stroke="black" d="M414.01,-8C414.01,-8 564.01,-8 564.01,-8 570.01,-8 576.01,-14 576.01,-20 576.01,-20 576.01,-235 576.01,-235 576.01,-241 570.01,-247 564.01,-247 564.01,-247 414.01,-247 414.01,-247 408.01,-247 402.01,-241 402.01,-235 402.01,-235 402.01,-20 402.01,-20 402.01,-14 408.01,-8 414.01,-8"></path> <text text-anchor="middle" x="489.01" y="-230.4" font-family="Helvetica,sans-Serif" font-size="14.00">全国段階</text> </g> <!-- 組合員 --> <g id="node1" class="node">
+<title>
+組合員
+</title>
+<ellipse fill="white" stroke="black" cx="32.5" cy="-115" rx="32.5" ry="32.5"></ellipse> <text text-anchor="middle" x="32.5" y="-110.8" font-family="Helvetica,sans-Serif" font-size="14.00">組合員</text> </g> <!-- JA（単協） --> <g id="node2" class="node">
+<title>
+JA（単協）
+</title>
+<polygon fill="white" stroke="black" points="180.02,-133 100.99,-133 100.99,-97 180.02,-97 180.02,-133"></polygon> <text text-anchor="middle" x="140.51" y="-110.8" font-family="Helvetica,sans-Serif" font-size="14.00">JA（単協）</text> </g> <!-- 組合員&#45;&gt;JA（単協） --> <g id="edge1" class="edge">
+<title>
+組合員-&gt;JA（単協）
+</title>
+<path fill="none" stroke="black" d="M65.02,-115C73.09,-115 81.96,-115 90.68,-115"></path> <polygon fill="black" stroke="black" points="90.79,-118.5 100.79,-115 90.79,-111.5 90.79,-118.5"></polygon> </g> <!-- JA経済連 --> <g id="node3" class="node">
+<title>
+JA経済連
+</title>
+<polygon fill="white" stroke="black" points="374.01,-160 216.01,-160 216.01,-124 374.01,-124 374.01,-160"></polygon> <text text-anchor="middle" x="295.01" y="-137.8" font-family="Helvetica,sans-Serif" font-size="14.00">JA経済連</text> </g> <!-- JA（単協）&#45;&gt;JA経済連 --> <g id="edge2" class="edge">
+<title>
+JA（単協）-&gt;JA経済連
+</title>
+<path fill="none" stroke="black" d="M180.39,-121.88C188.34,-123.29 197.01,-124.83 205.9,-126.4"></path> <polygon fill="black" stroke="black" points="205.55,-129.89 216,-128.19 206.77,-123 205.55,-129.89"></polygon> </g> <!-- JA共済連 --> <g id="node4" class="node">
+<title>
+JA共済連
+</title>
+<polygon fill="white" stroke="black" points="374.01,-106 216.01,-106 216.01,-70 374.01,-70 374.01,-106"></polygon> <text text-anchor="middle" x="295.01" y="-83.8" font-family="Helvetica,sans-Serif" font-size="14.00">JA共済連</text> </g> <!-- JA（単協）&#45;&gt;JA共済連 --> <g id="edge4" class="edge">
+<title>
+JA（単協）-&gt;JA共済連
+</title>
+<path fill="none" stroke="black" d="M180.39,-108.12C188.34,-106.71 197.01,-105.17 205.9,-103.6"></path> <polygon fill="black" stroke="black" points="206.77,-107 216,-101.81 205.55,-100.11 206.77,-107"></polygon> </g> <!-- JA信連 --> <g id="node5" class="node">
+<title>
+JA信連
+</title>
+<polygon fill="white" stroke="black" points="374.01,-52 216.01,-52 216.01,-16 374.01,-16 374.01,-52"></polygon> <text text-anchor="middle" x="295.01" y="-29.8" font-family="Helvetica,sans-Serif" font-size="14.00">JA信連</text> </g> <!-- JA（単協）&#45;&gt;JA信連 --> <g id="edge6" class="edge">
+<title>
+JA（単協）-&gt;JA信連
+</title>
+<path fill="none" stroke="black" d="M159.9,-96.84C172.54,-85.22 190.2,-70.57 208.01,-61 211.24,-59.27 214.59,-57.63 218.02,-56.08"></path> <polygon fill="black" stroke="black" points="219.39,-59.29 227.24,-52.18 216.67,-52.85 219.39,-59.29"></polygon> </g> <!-- JA都道府県中央会 --> <g id="node6" class="node">
+<title>
+JA都道府県中央会
+</title>
+<polygon fill="white" stroke="black" points="374.01,-214 216.01,-214 216.01,-178 374.01,-178 374.01,-214"></polygon> <text text-anchor="middle" x="295.01" y="-191.8" font-family="Helvetica,sans-Serif" font-size="14.00">JA都道府県中央会</text> </g> <!-- JA（単協）&#45;&gt;JA都道府県中央会 --> <g id="edge8" class="edge">
+<title>
+JA（単協）-&gt;JA都道府県中央会
+</title>
+<path fill="none" stroke="black" d="M159.9,-133.16C172.54,-144.78 190.2,-159.43 208.01,-169 211.24,-170.73 214.59,-172.37 218.02,-173.92"></path> <polygon fill="black" stroke="black" points="216.67,-177.15 227.24,-177.82 219.39,-170.71 216.67,-177.15"></polygon> </g> <!-- JA経済連&#45;&gt;JA都道府県中央会 --> <g id="edge10" class="edge">
+<title>
+JA経済連-&gt;JA都道府県中央会
+</title>
+<path fill="none" stroke="black" d="M295.01,-160.14C295.01,-162.62 295.01,-165.1 295.01,-167.59"></path> <polygon fill="black" stroke="black" points="291.51,-167.79 295.01,-177.79 298.51,-167.79 291.51,-167.79"></polygon> </g> <!-- JA全農 --> <g id="node7" class="node">
+<title>
+JA全農
+</title>
+<polygon fill="white" stroke="black" points="568.01,-160 410.01,-160 410.01,-124 568.01,-124 568.01,-160"></polygon> <text text-anchor="middle" x="489.01" y="-137.8" font-family="Helvetica,sans-Serif" font-size="14.00">JA全農</text> </g> <!-- JA経済連&#45;&gt;JA全農 --> <g id="edge3" class="edge">
+<title>
+JA経済連-&gt;JA全農
+</title>
+<path fill="none" stroke="black" d="M374.11,-142C382.61,-142 391.32,-142 399.93,-142"></path> <polygon fill="black" stroke="black" points="399.99,-145.5 409.99,-142 399.99,-138.5 399.99,-145.5"></polygon> </g> <!-- JA共済連&#45;&gt;JA都道府県中央会 --> <g id="edge11" class="edge">
+<title>
+JA共済連-&gt;JA都道府県中央会
+</title>
+<path fill="none" stroke="black" d="M215.54,-102.83C206.65,-107.98 199.01,-114.85 194.01,-124 186.35,-138.04 186.35,-145.96 194.01,-160 197.37,-166.15 201.92,-171.27 207.24,-175.52"></path> <polygon fill="black" stroke="black" points="205.31,-178.44 215.54,-181.17 209.24,-172.65 205.31,-178.44"></polygon> </g> <!-- JA全共連 --> <g id="node8" class="node">
+<title>
+JA全共連
+</title>
+<polygon fill="white" stroke="black" points="568.01,-106 410.01,-106 410.01,-70 568.01,-70 568.01,-106"></polygon> <text text-anchor="middle" x="489.01" y="-83.8" font-family="Helvetica,sans-Serif" font-size="14.00">JA全共連</text> </g> <!-- JA共済連&#45;&gt;JA全共連 --> <g id="edge5" class="edge">
+<title>
+JA共済連-&gt;JA全共連
+</title>
+<path fill="none" stroke="black" d="M374.11,-88C382.61,-88 391.32,-88 399.93,-88"></path> <polygon fill="black" stroke="black" points="399.99,-91.5 409.99,-88 399.99,-84.5 399.99,-91.5"></polygon> </g> <!-- JA信連&#45;&gt;JA都道府県中央会 --> <g id="edge12" class="edge">
+<title>
+JA信連-&gt;JA都道府県中央会
+</title>
+<path fill="none" stroke="black" d="M215.54,-48.83C206.65,-53.98 199.01,-60.85 194.01,-70 184.43,-87.55 184.43,-142.45 194.01,-160 197.37,-166.15 201.92,-171.27 207.24,-175.52"></path> <polygon fill="black" stroke="black" points="205.31,-178.44 215.54,-181.17 209.24,-172.65 205.31,-178.44"></polygon> </g> <!-- 農林中金 --> <g id="node9" class="node">
+<title>
+農林中金
+</title>
+<polygon fill="white" stroke="black" points="568.01,-52 410.01,-52 410.01,-16 568.01,-16 568.01,-52"></polygon> <text text-anchor="middle" x="489.01" y="-29.8" font-family="Helvetica,sans-Serif" font-size="14.00">農林中金</text> </g> <!-- JA信連&#45;&gt;農林中金 --> <g id="edge7" class="edge">
+<title>
+JA信連-&gt;農林中金
+</title>
+<path fill="none" stroke="black" d="M374.11,-34C382.61,-34 391.32,-34 399.93,-34"></path> <polygon fill="black" stroke="black" points="399.99,-37.5 409.99,-34 399.99,-30.5 399.99,-37.5"></polygon> </g> <!-- JA全中 --> <g id="node10" class="node">
+<title>
+JA全中
+</title>
+<polygon fill="white" stroke="black" points="568.01,-214 410.01,-214 410.01,-178 568.01,-178 568.01,-214"></polygon> <text text-anchor="middle" x="489.01" y="-191.8" font-family="Helvetica,sans-Serif" font-size="14.00">JA全中</text> </g> <!-- JA都道府県中央会&#45;&gt;JA全中 --> <g id="edge9" class="edge">
+<title>
+JA都道府県中央会-&gt;JA全中
+</title>
+<path fill="none" stroke="black" d="M374.11,-196C382.61,-196 391.32,-196 399.93,-196"></path> <polygon fill="black" stroke="black" points="399.99,-199.5 409.99,-196 399.99,-192.5 399.99,-199.5"></polygon> </g> <!-- JA全農&#45;&gt;JA全中 --> <g id="edge13" class="edge">
+<title>
+JA全農-&gt;JA全中
+</title>
+<path fill="none" stroke="black" d="M489.01,-160.14C489.01,-162.62 489.01,-165.1 489.01,-167.59"></path> <polygon fill="black" stroke="black" points="485.51,-167.79 489.01,-177.79 492.51,-167.79 485.51,-167.79"></polygon> </g> <!-- JA全共連&#45;&gt;JA全中 --> <g id="edge14" class="edge">
+<title>
+JA全共連-&gt;JA全中
+</title>
+<path fill="none" stroke="black" d="M409.63,-103.89C402.07,-108.92 395.81,-115.47 392.01,-124 383.68,-142.72 384.2,-158.88 402.01,-169 404.9,-170.64 407.9,-172.19 410.97,-173.66"></path> <polygon fill="black" stroke="black" points="409.81,-176.98 420.38,-177.82 412.65,-170.58 409.81,-176.98"></polygon> </g> <!-- 農林中金&#45;&gt;JA全中 --> <g id="edge15" class="edge">
+<title>
+農林中金-&gt;JA全中
+</title>
+<path fill="none" stroke="black" d="M409.63,-49.89C402.07,-54.92 395.81,-61.47 392.01,-70 383.88,-88.27 383.88,-141.73 392.01,-160 394.39,-165.33 397.72,-169.89 401.74,-173.79"></path> <polygon fill="black" stroke="black" points="399.64,-176.59 409.63,-180.11 404.01,-171.13 399.64,-176.59"></polygon> </g> </g>
+</svg>
+</div>
+</div>
+</div>
+</div>
+<p>Terminalがよくわからない場合は，<a href="https://posit.co/download/rstudio-desktop/" target="_blank">RStudio</a>を使うか，<a href="https://dreampuf.github.io/GraphvizOnline" target="_blank">GraphvizOnline</a>を使うと便利である。</p>
+<p>同様のことは，<a href="https://cran.r-project.org/web/packages/DiagrammeR/index.html" target="_blank">DiagrammeR</a>を用いて，Rからを実行することもできる。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(DiagrammeR)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>graph <span class="ot">&lt;-</span> DiagrammeR<span class="sc">::</span><span class="fu">grViz</span>(<span class="at">diagram =</span> <span class="st">"ja1.gv"</span>)</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>PDFで保存したい場合は，以下のようにする。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>DiagrammeR<span class="sc">::</span><span class="fu">export_graph</span>(graph, <span class="at">file_name =</span> <span class="st">"ja1.pdf"</span>)</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>これでうまくいくはずであるが，なぜかこのやり方ではエラーが出てしまい，解決策がわからない。 ひとまず，Rは使わずに，TerminalからPDFファイルを出力する。 あるいは，RStudioで <code>graph</code> と入力して図を表示してから，図のパネルのExportからPNGファイルで保存するしてもよい（ただし，この方法は本質的な解決策ではないため，非推奨である）。</p>
+</section>
+<section id="県1農協を踏まえた農協の全国組織" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="県1農協を踏まえた農協の全国組織"><span class="header-section-number">3</span> 1県1農協を踏まえた農協の全国組織</h2>
+<p>現在，農協合併が進んで1県1農協となることにより，都道府県段階の農協が存在しない場合がある。 このことを踏まえると，図は以下のように表現できる。</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<div>
+<svg width="672" height="480" viewbox="0.00 0.00 592.01 263.00" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" style="; max-width: none; max-height: none">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 259)">
+<title>
+ja2
+</title>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-259 588.01,-259 588.01,4 -4,4"></polygon> <g id="clust1" class="cluster">
+<title>
+cluster1
+</title>
+<path fill="ivory" stroke="black" d="M220.01,-8C220.01,-8 370.01,-8 370.01,-8 376.01,-8 382.01,-14 382.01,-20 382.01,-20 382.01,-181 382.01,-181 382.01,-187 376.01,-193 370.01,-193 370.01,-193 220.01,-193 220.01,-193 214.01,-193 208.01,-187 208.01,-181 208.01,-181 208.01,-20 208.01,-20 208.01,-14 214.01,-8 220.01,-8"></path> <text text-anchor="middle" x="295.01" y="-176.4" font-family="Helvetica,sans-Serif" font-size="14.00">都道府県段階</text> </g> <g id="clust3" class="cluster">
+<title>
+cluster0
+</title>
+<path fill="honeydew" stroke="black" d="M414.01,-8C414.01,-8 564.01,-8 564.01,-8 570.01,-8 576.01,-14 576.01,-20 576.01,-20 576.01,-235 576.01,-235 576.01,-241 570.01,-247 564.01,-247 564.01,-247 414.01,-247 414.01,-247 408.01,-247 402.01,-241 402.01,-235 402.01,-235 402.01,-20 402.01,-20 402.01,-14 408.01,-8 414.01,-8"></path> <text text-anchor="middle" x="489.01" y="-230.4" font-family="Helvetica,sans-Serif" font-size="14.00">全国段階</text> </g> <!-- 組合員 --> <g id="node1" class="node">
+<title>
+組合員
+</title>
+<ellipse fill="white" stroke="black" cx="32.5" cy="-115" rx="32.5" ry="32.5"></ellipse> <text text-anchor="middle" x="32.5" y="-110.8" font-family="Helvetica,sans-Serif" font-size="14.00">組合員</text> </g> <!-- JA（単協） --> <g id="node2" class="node">
+<title>
+JA（単協）
+</title>
+<polygon fill="white" stroke="black" points="180.02,-133 100.99,-133 100.99,-97 180.02,-97 180.02,-133"></polygon> <text text-anchor="middle" x="140.51" y="-110.8" font-family="Helvetica,sans-Serif" font-size="14.00">JA（単協）</text> </g> <!-- 組合員&#45;&gt;JA（単協） --> <g id="edge1" class="edge">
+<title>
+組合員-&gt;JA（単協）
+</title>
+<path fill="none" stroke="black" d="M65.02,-115C73.09,-115 81.96,-115 90.68,-115"></path> <polygon fill="black" stroke="black" points="90.79,-118.5 100.79,-115 90.79,-111.5 90.79,-118.5"></polygon> </g> <!-- JA共済連 --> <g id="node3" class="node">
+<title>
+JA共済連
+</title>
+<polygon fill="white" stroke="black" points="568.01,-214 410.01,-214 410.01,-178 568.01,-178 568.01,-214"></polygon> <text text-anchor="middle" x="489.01" y="-191.8" font-family="Helvetica,sans-Serif" font-size="14.00">JA共済連</text> </g> <!-- JA（単協）&#45;&gt;JA共済連 --> <g id="edge4" class="edge">
+<title>
+JA（単協）-&gt;JA共済連
+</title>
+<path fill="none" stroke="black" d="M150.01,-133.07C160.5,-152.95 180.38,-183.83 208.01,-197 267.42,-225.31 342.29,-223.4 399.67,-215.31"></path> <polygon fill="black" stroke="black" points="400.43,-218.74 409.8,-213.79 399.4,-211.81 400.43,-218.74"></polygon> </g> <!-- JA都道府県中央会 --> <g id="node4" class="node">
+<title>
+JA都道府県中央会
+</title>
+<polygon fill="white" stroke="black" points="374.01,-106 216.01,-106 216.01,-70 374.01,-70 374.01,-106"></polygon> <text text-anchor="middle" x="295.01" y="-83.8" font-family="Helvetica,sans-Serif" font-size="14.00">JA都道府県中央会</text> </g> <!-- JA（単協）&#45;&gt;JA都道府県中央会 --> <g id="edge7" class="edge">
+<title>
+JA（単協）-&gt;JA都道府県中央会
+</title>
+<path fill="none" stroke="black" d="M180.39,-108.12C188.34,-106.71 197.01,-105.17 205.9,-103.6"></path> <polygon fill="black" stroke="black" points="206.77,-107 216,-101.81 205.55,-100.11 206.77,-107"></polygon> </g> <!-- JA経済連 --> <g id="node8" class="node">
+<title>
+JA経済連
+</title>
+<polygon fill="white" stroke="black" stroke-dasharray="5,2" points="374.01,-52 216.01,-52 216.01,-16 374.01,-16 374.01,-52"></polygon> <text text-anchor="middle" x="295.01" y="-29.8" font-family="Helvetica,sans-Serif" font-size="14.00">JA経済連</text> </g> <!-- JA（単協）&#45;&gt;JA経済連 --> <g id="edge2" class="edge">
+<title>
+JA（単協）-&gt;JA経済連
+</title>
+<path fill="none" stroke="black" d="M159.9,-96.84C172.54,-85.22 190.2,-70.57 208.01,-61 211.24,-59.27 214.59,-57.63 218.02,-56.08"></path> <polygon fill="black" stroke="black" points="219.39,-59.29 227.24,-52.18 216.67,-52.85 219.39,-59.29"></polygon> </g> <!-- JA信連 --> <g id="node9" class="node">
+<title>
+JA信連
+</title>
+<polygon fill="white" stroke="black" stroke-dasharray="5,2" points="374.01,-160 216.01,-160 216.01,-124 374.01,-124 374.01,-160"></polygon> <text text-anchor="middle" x="295.01" y="-137.8" font-family="Helvetica,sans-Serif" font-size="14.00">JA信連</text> </g> <!-- JA（単協）&#45;&gt;JA信連 --> <g id="edge5" class="edge">
+<title>
+JA（単協）-&gt;JA信連
+</title>
+<path fill="none" stroke="black" d="M180.39,-121.88C188.34,-123.29 197.01,-124.83 205.9,-126.4"></path> <polygon fill="black" stroke="black" points="205.55,-129.89 216,-128.19 206.77,-123 205.55,-129.89"></polygon> </g> <!-- JA全中 --> <g id="node7" class="node">
+<title>
+JA全中
+</title>
+<polygon fill="white" stroke="black" points="568.01,-106 410.01,-106 410.01,-70 568.01,-70 568.01,-106"></polygon> <text text-anchor="middle" x="489.01" y="-83.8" font-family="Helvetica,sans-Serif" font-size="14.00">JA全中</text> </g> <!-- JA共済連&#45;&gt;JA全中 --> <g id="edge12" class="edge">
+<title>
+JA共済連-&gt;JA全中
+</title>
+<path fill="none" stroke="black" d="M420.38,-177.82C414.01,-175.21 407.79,-172.28 402.01,-169 384.2,-158.88 383.68,-142.72 392.01,-124 394.39,-118.67 397.72,-114.11 401.74,-110.21"></path> <polygon fill="black" stroke="black" points="404.01,-112.87 409.63,-103.89 399.64,-107.41 404.01,-112.87"></polygon> </g> <!-- JA都道府県中央会&#45;&gt;JA全中 --> <g id="edge8" class="edge">
+<title>
+JA都道府県中央会-&gt;JA全中
+</title>
+<path fill="none" stroke="black" d="M374.11,-88C382.61,-88 391.32,-88 399.93,-88"></path> <polygon fill="black" stroke="black" points="399.99,-91.5 409.99,-88 399.99,-84.5 399.99,-91.5"></polygon> </g> <!-- JA全農 --> <g id="node5" class="node">
+<title>
+JA全農
+</title>
+<polygon fill="white" stroke="black" points="568.01,-52 410.01,-52 410.01,-16 568.01,-16 568.01,-52"></polygon> <text text-anchor="middle" x="489.01" y="-29.8" font-family="Helvetica,sans-Serif" font-size="14.00">JA全農</text> </g> <!-- JA全農&#45;&gt;JA全中 --> <g id="edge11" class="edge">
+<title>
+JA全農-&gt;JA全中
+</title>
+<path fill="none" stroke="black" d="M489.01,-52.14C489.01,-54.62 489.01,-57.1 489.01,-59.59"></path> <polygon fill="black" stroke="black" points="485.51,-59.79 489.01,-69.79 492.51,-59.79 485.51,-59.79"></polygon> </g> <!-- 農林中金 --> <g id="node6" class="node">
+<title>
+農林中金
+</title>
+<polygon fill="white" stroke="black" points="568.01,-160 410.01,-160 410.01,-124 568.01,-124 568.01,-160"></polygon> <text text-anchor="middle" x="489.01" y="-137.8" font-family="Helvetica,sans-Serif" font-size="14.00">農林中金</text> </g> <!-- 農林中金&#45;&gt;JA全中 --> <g id="edge13" class="edge">
+<title>
+農林中金-&gt;JA全中
+</title>
+<path fill="none" stroke="black" d="M489.01,-123.79C489.01,-121.31 489.01,-118.83 489.01,-116.34"></path> <polygon fill="black" stroke="black" points="492.51,-116.14 489.01,-106.14 485.51,-116.14 492.51,-116.14"></polygon> </g> <!-- JA経済連&#45;&gt;JA都道府県中央会 --> <g id="edge9" class="edge">
+<title>
+JA経済連-&gt;JA都道府県中央会
+</title>
+<path fill="none" stroke="black" d="M295.01,-52.14C295.01,-54.62 295.01,-57.1 295.01,-59.59"></path> <polygon fill="black" stroke="black" points="291.51,-59.79 295.01,-69.79 298.51,-59.79 291.51,-59.79"></polygon> </g> <!-- JA経済連&#45;&gt;JA全農 --> <g id="edge3" class="edge">
+<title>
+JA経済連-&gt;JA全農
+</title>
+<path fill="none" stroke="black" d="M374.11,-34C382.61,-34 391.32,-34 399.93,-34"></path> <polygon fill="black" stroke="black" points="399.99,-37.5 409.99,-34 399.99,-30.5 399.99,-37.5"></polygon> </g> <!-- JA信連&#45;&gt;JA都道府県中央会 --> <g id="edge10" class="edge">
+<title>
+JA信連-&gt;JA都道府県中央会
+</title>
+<path fill="none" stroke="black" d="M295.01,-123.79C295.01,-121.31 295.01,-118.83 295.01,-116.34"></path> <polygon fill="black" stroke="black" points="298.51,-116.14 295.01,-106.14 291.51,-116.14 298.51,-116.14"></polygon> </g> <!-- JA信連&#45;&gt;農林中金 --> <g id="edge6" class="edge">
+<title>
+JA信連-&gt;農林中金
+</title>
+<path fill="none" stroke="black" d="M374.11,-142C382.61,-142 391.32,-142 399.93,-142"></path> <polygon fill="black" stroke="black" points="399.99,-145.5 409.99,-142 399.99,-138.5 399.99,-145.5"></polygon> </g> </g>
+</svg>
+</div>
+</div>
+</div>
+</div>
+<p>この図のソースコードは掲載しないので，各自で考えてほしい。</p>
+<p>先ほどの図と比べると，中央会の位置が微妙なところに来てしまっている。 これらノードの位置は自動で決まるため，細かな調整はできない。 こうした調整をしないと割り切ることがGraphvizの使用にあたって必要な心構えとなる。 もし細部までこだわりたいのであれば，OmniGraffleやAdobe Illustratorを使えばよい。 ただし，この図に限って言えば，中央会に向かうエッジを減らすと一応改善される。</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<div>
+<svg width="672" height="480" viewbox="0.00 0.00 592.01 263.00" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" style="; max-width: none; max-height: none">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 259)">
+<title>
+ja2
+</title>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-259 588.01,-259 588.01,4 -4,4"></polygon> <g id="clust3" class="cluster">
+<title>
+cluster0
+</title>
+<path fill="honeydew" stroke="black" d="M414.01,-8C414.01,-8 564.01,-8 564.01,-8 570.01,-8 576.01,-14 576.01,-20 576.01,-20 576.01,-235 576.01,-235 576.01,-241 570.01,-247 564.01,-247 564.01,-247 414.01,-247 414.01,-247 408.01,-247 402.01,-241 402.01,-235 402.01,-235 402.01,-20 402.01,-20 402.01,-14 408.01,-8 414.01,-8"></path> <text text-anchor="middle" x="489.01" y="-230.4" font-family="Helvetica,sans-Serif" font-size="14.00">全国段階</text> </g> <g id="clust1" class="cluster">
+<title>
+cluster1
+</title>
+<path fill="ivory" stroke="black" d="M220.01,-8C220.01,-8 370.01,-8 370.01,-8 376.01,-8 382.01,-14 382.01,-20 382.01,-20 382.01,-181 382.01,-181 382.01,-187 376.01,-193 370.01,-193 370.01,-193 220.01,-193 220.01,-193 214.01,-193 208.01,-187 208.01,-181 208.01,-181 208.01,-20 208.01,-20 208.01,-14 214.01,-8 220.01,-8"></path> <text text-anchor="middle" x="295.01" y="-176.4" font-family="Helvetica,sans-Serif" font-size="14.00">都道府県段階</text> </g> <!-- 組合員 --> <g id="node1" class="node">
+<title>
+組合員
+</title>
+<ellipse fill="white" stroke="black" cx="32.5" cy="-115" rx="32.5" ry="32.5"></ellipse> <text text-anchor="middle" x="32.5" y="-110.8" font-family="Helvetica,sans-Serif" font-size="14.00">組合員</text> </g> <!-- JA（単協） --> <g id="node2" class="node">
+<title>
+JA（単協）
+</title>
+<polygon fill="white" stroke="black" points="180.02,-133 100.99,-133 100.99,-97 180.02,-97 180.02,-133"></polygon> <text text-anchor="middle" x="140.51" y="-110.8" font-family="Helvetica,sans-Serif" font-size="14.00">JA（単協）</text> </g> <!-- 組合員&#45;&gt;JA（単協） --> <g id="edge1" class="edge">
+<title>
+組合員-&gt;JA（単協）
+</title>
+<path fill="none" stroke="black" d="M65.02,-115C73.09,-115 81.96,-115 90.68,-115"></path> <polygon fill="black" stroke="black" points="90.79,-118.5 100.79,-115 90.79,-111.5 90.79,-118.5"></polygon> </g> <!-- JA共済連 --> <g id="node3" class="node">
+<title>
+JA共済連
+</title>
+<polygon fill="white" stroke="black" points="568.01,-214 410.01,-214 410.01,-178 568.01,-178 568.01,-214"></polygon> <text text-anchor="middle" x="489.01" y="-191.8" font-family="Helvetica,sans-Serif" font-size="14.00">JA共済連</text> </g> <!-- JA（単協）&#45;&gt;JA共済連 --> <g id="edge4" class="edge">
+<title>
+JA（単協）-&gt;JA共済連
+</title>
+<path fill="none" stroke="black" d="M150.01,-133.07C160.5,-152.95 180.38,-183.83 208.01,-197 267.42,-225.31 342.29,-223.4 399.67,-215.31"></path> <polygon fill="black" stroke="black" points="400.43,-218.74 409.8,-213.79 399.4,-211.81 400.43,-218.74"></polygon> </g> <!-- JA都道府県中央会 --> <g id="node4" class="node">
+<title>
+JA都道府県中央会
+</title>
+<polygon fill="white" stroke="black" points="374.01,-52 216.01,-52 216.01,-16 374.01,-16 374.01,-52"></polygon> <text text-anchor="middle" x="295.01" y="-29.8" font-family="Helvetica,sans-Serif" font-size="14.00">JA都道府県中央会</text> </g> <!-- JA（単協）&#45;&gt;JA都道府県中央会 --> <g id="edge7" class="edge">
+<title>
+JA（単協）-&gt;JA都道府県中央会
+</title>
+<path fill="none" stroke="black" d="M159.9,-96.84C172.54,-85.22 190.2,-70.57 208.01,-61 211.24,-59.27 214.59,-57.63 218.02,-56.08"></path> <polygon fill="black" stroke="black" points="219.39,-59.29 227.24,-52.18 216.67,-52.85 219.39,-59.29"></polygon> </g> <!-- JA経済連 --> <g id="node8" class="node">
+<title>
+JA経済連
+</title>
+<polygon fill="white" stroke="black" stroke-dasharray="5,2" points="374.01,-160 216.01,-160 216.01,-124 374.01,-124 374.01,-160"></polygon> <text text-anchor="middle" x="295.01" y="-137.8" font-family="Helvetica,sans-Serif" font-size="14.00">JA経済連</text> </g> <!-- JA（単協）&#45;&gt;JA経済連 --> <g id="edge2" class="edge">
+<title>
+JA（単協）-&gt;JA経済連
+</title>
+<path fill="none" stroke="black" d="M180.39,-121.88C188.34,-123.29 197.01,-124.83 205.9,-126.4"></path> <polygon fill="black" stroke="black" points="205.55,-129.89 216,-128.19 206.77,-123 205.55,-129.89"></polygon> </g> <!-- JA信連 --> <g id="node9" class="node">
+<title>
+JA信連
+</title>
+<polygon fill="white" stroke="black" stroke-dasharray="5,2" points="374.01,-106 216.01,-106 216.01,-70 374.01,-70 374.01,-106"></polygon> <text text-anchor="middle" x="295.01" y="-83.8" font-family="Helvetica,sans-Serif" font-size="14.00">JA信連</text> </g> <!-- JA（単協）&#45;&gt;JA信連 --> <g id="edge5" class="edge">
+<title>
+JA（単協）-&gt;JA信連
+</title>
+<path fill="none" stroke="black" d="M180.39,-108.12C188.34,-106.71 197.01,-105.17 205.9,-103.6"></path> <polygon fill="black" stroke="black" points="206.77,-107 216,-101.81 205.55,-100.11 206.77,-107"></polygon> </g> <!-- JA全中 --> <g id="node7" class="node">
+<title>
+JA全中
+</title>
+<polygon fill="white" stroke="black" points="568.01,-52 410.01,-52 410.01,-16 568.01,-16 568.01,-52"></polygon> <text text-anchor="middle" x="489.01" y="-29.8" font-family="Helvetica,sans-Serif" font-size="14.00">JA全中</text> </g> <!-- JA都道府県中央会&#45;&gt;JA全中 --> <g id="edge8" class="edge">
+<title>
+JA都道府県中央会-&gt;JA全中
+</title>
+<path fill="none" stroke="black" d="M374.11,-34C382.61,-34 391.32,-34 399.93,-34"></path> <polygon fill="black" stroke="black" points="399.99,-37.5 409.99,-34 399.99,-30.5 399.99,-37.5"></polygon> </g> <!-- JA全農 --> <g id="node5" class="node">
+<title>
+JA全農
+</title>
+<polygon fill="white" stroke="black" points="568.01,-160 410.01,-160 410.01,-124 568.01,-124 568.01,-160"></polygon> <text text-anchor="middle" x="489.01" y="-137.8" font-family="Helvetica,sans-Serif" font-size="14.00">JA全農</text> </g> <!-- 農林中金 --> <g id="node6" class="node">
+<title>
+農林中金
+</title>
+<polygon fill="white" stroke="black" points="568.01,-106 410.01,-106 410.01,-70 568.01,-70 568.01,-106"></polygon> <text text-anchor="middle" x="489.01" y="-83.8" font-family="Helvetica,sans-Serif" font-size="14.00">農林中金</text> </g> <!-- JA経済連&#45;&gt;JA全農 --> <g id="edge3" class="edge">
+<title>
+JA経済連-&gt;JA全農
+</title>
+<path fill="none" stroke="black" d="M374.11,-142C382.61,-142 391.32,-142 399.93,-142"></path> <polygon fill="black" stroke="black" points="399.99,-145.5 409.99,-142 399.99,-138.5 399.99,-145.5"></polygon> </g> <!-- JA信連&#45;&gt;農林中金 --> <g id="edge6" class="edge">
+<title>
+JA信連-&gt;農林中金
+</title>
+<path fill="none" stroke="black" d="M374.11,-88C382.61,-88 391.32,-88 399.93,-88"></path> <polygon fill="black" stroke="black" points="399.99,-91.5 409.99,-88 399.99,-84.5 399.99,-91.5"></polygon> </g> </g>
+</svg>
+</div>
+</div>
+</div>
+</div>
+<p>この図に，JAバンクを枠で囲みたいと思っても，このままではうまくいかない。 同じノードに2つ以上の<code>subgraph</code>を設定できないためである。 こうした複雑な図は，Graphvizの将来のアップデートにより対応可能となるかもしれない。 現時点では，多少の工夫により，以下のような図を描くことができる。</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<div>
+<svg width="672" height="480" viewbox="0.00 0.00 592.01 247.00" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" style="; max-width: none; max-height: none">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 243)">
+<title>
+ja_bank
+</title>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-243 588.01,-243 588.01,4 -4,4"></polygon> <g id="clust2" class="cluster">
+<title>
+cluster2
+</title>
+<path fill="orange" stroke="black" d="M105,-154C105,-154 564.01,-154 564.01,-154 570.01,-154 576.01,-160 576.01,-166 576.01,-166 576.01,-219 576.01,-219 576.01,-225 570.01,-231 564.01,-231 564.01,-231 105,-231 105,-231 99,-231 93,-225 93,-219 93,-219 93,-166 93,-166 93,-160 99,-154 105,-154"></path> <text text-anchor="middle" x="334.51" y="-214.4" font-family="Helvetica,sans-Serif" font-size="14.00">JAバンク</text> </g> <!-- 組合員 --> <g id="node1" class="node">
+<title>
+組合員
+</title>
+<ellipse fill="white" stroke="black" cx="32.5" cy="-180" rx="32.5" ry="32.5"></ellipse> <text text-anchor="middle" x="32.5" y="-175.8" font-family="Helvetica,sans-Serif" font-size="14.00">組合員</text> </g> <!-- JA（単協） --> <g id="node2" class="node">
+<title>
+JA（単協）
+</title>
+<polygon fill="white" stroke="black" points="180.02,-198 100.99,-198 100.99,-162 180.02,-162 180.02,-198"></polygon> <text text-anchor="middle" x="140.51" y="-175.8" font-family="Helvetica,sans-Serif" font-size="14.00">JA（単協）</text> </g> <!-- 組合員&#45;&gt;JA（単協） --> <g id="edge1" class="edge">
+<title>
+組合員-&gt;JA（単協）
+</title>
+<path fill="none" stroke="black" d="M65.02,-180C73.09,-180 81.96,-180 90.68,-180"></path> <polygon fill="black" stroke="black" points="90.79,-183.5 100.79,-180 90.79,-176.5 90.79,-183.5"></polygon> </g> <!-- JA共済連 --> <g id="node3" class="node">
+<title>
+JA共済連
+</title>
+<polygon fill="white" stroke="black" points="568.01,-144 410.01,-144 410.01,-108 568.01,-108 568.01,-144"></polygon> <text text-anchor="middle" x="489.01" y="-121.8" font-family="Helvetica,sans-Serif" font-size="14.00">JA共済連</text> </g> <!-- JA（単協）&#45;&gt;JA共済連 --> <g id="edge4" class="edge">
+<title>
+JA（単協）-&gt;JA共済連
+</title>
+<path fill="none" stroke="black" d="M180.01,-163.98C191.43,-159.8 204.07,-155.71 216.01,-153 276.44,-139.28 346,-132.53 399.64,-129.21"></path> <polygon fill="black" stroke="black" points="400.03,-132.69 409.81,-128.61 399.62,-125.71 400.03,-132.69"></polygon> </g> <!-- JA都道府県中央会 --> <g id="node4" class="node">
+<title>
+JA都道府県中央会
+</title>
+<polygon fill="white" stroke="black" points="374.01,-96 216.01,-96 216.01,-60 374.01,-60 374.01,-96"></polygon> <text text-anchor="middle" x="295.01" y="-73.8" font-family="Helvetica,sans-Serif" font-size="14.00">JA都道府県中央会</text> </g> <!-- JA（単協）&#45;&gt;JA都道府県中央会 --> <g id="edge7" class="edge">
+<title>
+JA（単協）-&gt;JA都道府県中央会
+</title>
+<path fill="none" stroke="black" d="M158.2,-161.73C172.47,-146.91 194.12,-126.2 216.01,-112 222.46,-107.82 229.51,-103.93 236.65,-100.39"></path> <polygon fill="black" stroke="black" points="238.17,-103.55 245.7,-96.1 235.17,-97.22 238.17,-103.55"></polygon> </g> <!-- JA経済連 --> <g id="node8" class="node">
+<title>
+JA経済連
+</title>
+<polygon fill="white" stroke="black" stroke-dasharray="5,2" points="374.01,-38 216.01,-38 216.01,-2 374.01,-2 374.01,-38"></polygon> <text text-anchor="middle" x="295.01" y="-15.8" font-family="Helvetica,sans-Serif" font-size="14.00">JA経済連</text> </g> <!-- JA（単協）&#45;&gt;JA経済連 --> <g id="edge2" class="edge">
+<title>
+JA（単協）-&gt;JA経済連
+</title>
+<path fill="none" stroke="black" d="M147.66,-161.61C157.77,-133.99 180.4,-81.78 216.01,-51 219.39,-48.08 223.08,-45.42 226.95,-42.99"></path> <polygon fill="black" stroke="black" points="228.71,-46.01 235.68,-38.04 225.26,-39.92 228.71,-46.01"></polygon> </g> <!-- JA信連 --> <g id="node9" class="node">
+<title>
+JA信連
+</title>
+<polygon fill="white" stroke="black" stroke-dasharray="5,2" points="374.01,-198 216.01,-198 216.01,-162 374.01,-162 374.01,-198"></polygon> <text text-anchor="middle" x="295.01" y="-175.8" font-family="Helvetica,sans-Serif" font-size="14.00">JA信連</text> </g> <!-- JA（単協）&#45;&gt;JA信連 --> <g id="edge5" class="edge">
+<title>
+JA（単協）-&gt;JA信連
+</title>
+<path fill="none" stroke="black" d="M180.39,-180C188.34,-180 197.01,-180 205.9,-180"></path> <polygon fill="black" stroke="black" points="206,-183.5 216,-180 206,-176.5 206,-183.5"></polygon> </g> <!-- JA全中 --> <g id="node7" class="node">
+<title>
+JA全中
+</title>
+<polygon fill="white" stroke="black" points="568.01,-90 410.01,-90 410.01,-54 568.01,-54 568.01,-90"></polygon> <text text-anchor="middle" x="489.01" y="-67.8" font-family="Helvetica,sans-Serif" font-size="14.00">JA全中</text> </g> <!-- JA都道府県中央会&#45;&gt;JA全中 --> <g id="edge8" class="edge">
+<title>
+JA都道府県中央会-&gt;JA全中
+</title>
+<path fill="none" stroke="black" d="M374.11,-75.56C382.61,-75.29 391.32,-75.02 399.93,-74.75"></path> <polygon fill="black" stroke="black" points="400.1,-78.25 409.99,-74.44 399.88,-71.25 400.1,-78.25"></polygon> </g> <!-- JA全農 --> <g id="node5" class="node">
+<title>
+JA全農
+</title>
+<polygon fill="white" stroke="black" points="568.01,-36 410.01,-36 410.01,0 568.01,0 568.01,-36"></polygon> <text text-anchor="middle" x="489.01" y="-13.8" font-family="Helvetica,sans-Serif" font-size="14.00">JA全農</text> </g> <!-- 農林中金 --> <g id="node6" class="node">
+<title>
+農林中金
+</title>
+<polygon fill="white" stroke="black" points="568.01,-198 410.01,-198 410.01,-162 568.01,-162 568.01,-198"></polygon> <text text-anchor="middle" x="489.01" y="-175.8" font-family="Helvetica,sans-Serif" font-size="14.00">農林中金</text> </g> <!-- JA経済連&#45;&gt;JA全農 --> <g id="edge3" class="edge">
+<title>
+JA経済連-&gt;JA全農
+</title>
+<path fill="none" stroke="black" d="M374.11,-19.19C382.61,-19.1 391.32,-19.01 399.93,-18.92"></path> <polygon fill="black" stroke="black" points="400.03,-22.42 409.99,-18.81 399.95,-15.42 400.03,-22.42"></polygon> </g> <!-- JA信連&#45;&gt;農林中金 --> <g id="edge6" class="edge">
+<title>
+JA信連-&gt;農林中金
+</title>
+<path fill="none" stroke="black" d="M374.11,-180C382.61,-180 391.32,-180 399.93,-180"></path> <polygon fill="black" stroke="black" points="399.99,-183.5 409.99,-180 399.99,-176.5 399.99,-183.5"></polygon> </g> </g>
+</svg>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "コピーしました");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "コピーしました");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

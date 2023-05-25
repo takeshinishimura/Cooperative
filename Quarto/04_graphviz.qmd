@@ -1,0 +1,330 @@
+---
+project:
+  type: website
+  output-dir: docs
+title: "ダイアグラム"
+format:
+  html:
+    toc: true
+    toc-title: 目次
+    toc_float: true
+    toc-depth: 3
+    number-sections: true
+    theme: lumen
+lang: ja
+---
+
+概念を整理するときなどに，フローチャートやネットワーク図といったダイアグラムを描きたくなることがあるだろう。
+このとき，ダイアグラムを効率的に描くツールはなかなか見当たらないのではないだろうか。
+
+現状では，[OmniGraffle](https://www.omnigroup.com/omnigraffle){target="_blank"}を使うのが一番よい選択肢だろう。
+~~ワードアートは使いたくない。~~
+ただし，OmniGraffleは[Adobe Illustrator](https://www.adobe.com/jp/products/illustrator.html){target="_blank"}のお手軽版という位置づけであり，より汎用的なイラスト制作ツールのひとつとして位置づけられる。
+ダイアグラム作成に，そこまで多様な機能は求めていない。
+また，Adobe IllustratorもOmniGraffleもいずれも図の作成において有益ではあるが，ダイヤグラム時にデザインを決めなければならないことが個人的には面倒だと感じる。
+また，いずれのソフトウェアも構造を理解しながらダイアグラムを描くには不向きである
+
+こうした不満を解決するためのツールに，[Graphviz](https://graphviz.org/){target="_blank"}がある。
+Graphvizは，DOT言語で記述されたグラフ構造を描画するためのツールである。
+ノードとエッジを定義するだけで，自動で最適なレイアウトを考えてくれる。
+似たようなツールとして，[Mermaid](https://mermaid.js.org/){target="_blank"}がある。
+
+ここでは，Graphvizを使って農協の全国組織の図を作成することにする。
+
+
+## Graphvizのインストール
+
+macOSの場合，Terminalに以下のようなコマンドを打ち込むことで，[Homebrew](https://brew.sh/){target="_blank"}を使ってインストールできる。
+
+```
+$ brew install graphviz
+```
+
+Windowsの場合は，以下から最新の64-bit版をダウンロードして，インストールすればよい。
+
+::: {.callout-note collapse="false" icon="true"}
+## Graphviz
+
+[Download | Graphviz](https://graphviz.org/download/){target="_blank"}
+:::
+
+
+## 農協の全国組織
+
+DOT言語とGraphviz属性について知りたい場合は，[DiagrammeR　〜RでGraphvizを使う~ - Ｒ言語による電子カルテデータの二次利用](https://r-beginner.hatenadiary.jp/entry/2018/03/11/081150){target="_blank"}を参照するとよい。
+
+細かい説明抜きに，農協の全国組織をGraphvizで書くと，以下のようになる。
+
+```
+digraph ja1 {
+  graph [rankdir = LR]
+  node [fontname = Helvetica,
+    shape = box,
+    fixedsize = false,
+    style = filled,
+    fillcolor = white]
+  組合員 [shape = circle, width = 0.9]
+  JA（単協）
+  node [width = 2.2]
+  JA経済連; JA共済連; JA信連; JA都道府県中央会; JA全農; JA全共連; 農林中金; JA全中
+
+  edge []
+  組合員->JA（単協）
+  JA（単協）->JA経済連->JA全農
+  JA（単協）->JA共済連->JA全共連
+  JA（単協）->JA信連->農林中金
+  JA（単協）->JA都道府県中央会->JA全中
+  JA経済連->JA都道府県中央会
+  JA共済連->JA都道府県中央会
+  JA信連->JA都道府県中央会
+  JA全農->JA全中
+  JA全共連->JA全中
+  農林中金->JA全中
+
+  subgraph cluster1 {
+    label = "都道府県段階"
+    fontname = Helvetica
+    bgcolor = ivory
+    style = rounded
+    {rank = same; JA経済連; JA共済連; JA信連; JA都道府県中央会}
+  }
+  subgraph cluster0 {
+    label = "全国段階"
+    fontname = Helvetica
+    bgcolor = honeydew
+    style = rounded
+    {rank = same; JA全農; JA全共連; 農林中金; JA全中}
+  }
+}
+```
+
+これを，任意のテキストエディタにコピー＆ペーストして，`ja1.gv`というファイル名で保存しておく。
+DOT言語の拡張子としては，`.dot`あるいは`.gv`が使われる。
+前者はMicrosoft Wordのテンプレートファイルとして用いられており，OSがこの拡張子のついたファイルを自動的にWordと関連付けてしまうため，後者を使うことにする。
+
+Terminalで以下のように打ち込むと，必要なPDFファイルが得られる。
+```
+$ dot -Tpdf ja1.gv > ja1.pdf
+```
+```{dot}
+digraph ja1 {
+  graph [rankdir = LR]
+  node [fontname = Helvetica,
+    shape = box,
+    fixedsize = false,
+    style = filled,
+    fillcolor = white]
+  組合員 [shape = circle, width = 0.9]
+  JA（単協）
+  node [width = 2.2]
+  JA経済連; JA共済連; JA信連; JA都道府県中央会; JA全農; JA全共連; 農林中金; JA全中
+
+  edge []
+  組合員->JA（単協）
+  JA（単協）->JA経済連->JA全農
+  JA（単協）->JA共済連->JA全共連
+  JA（単協）->JA信連->農林中金
+  JA（単協）->JA都道府県中央会->JA全中
+  JA経済連->JA都道府県中央会
+  JA共済連->JA都道府県中央会
+  JA信連->JA都道府県中央会
+  JA全農->JA全中
+  JA全共連->JA全中
+  農林中金->JA全中
+
+  subgraph cluster1 {
+    label = "都道府県段階"
+    fontname = Helvetica
+    bgcolor = ivory
+    style = rounded
+    {rank = same; JA経済連; JA共済連; JA信連; JA都道府県中央会}
+  }
+  subgraph cluster0 {
+    label = "全国段階"
+    fontname = Helvetica
+    bgcolor = honeydew
+    style = rounded
+    {rank = same; JA全農; JA全共連; 農林中金; JA全中}
+  }
+}
+```
+
+それぞれの`subgraph`内で中央会に向かうエッジを描いているため，若干複雑になっている。
+系統組織であることを表現するにあたって，これらのエッジは不要かもしれない。
+
+もしTerminalがよくわからない場合は，[RStudio](https://posit.co/download/rstudio-desktop/){target="_blank"}を使うか，[GraphvizOnline](https://dreampuf.github.io/GraphvizOnline){target="_blank"}を使うと便利である。
+
+同様のことは，[DiagrammeR](https://cran.r-project.org/web/packages/DiagrammeR/index.html){target="_blank"}を用いて，Rからを実行することもできる。
+
+```{r}
+#| eval: false
+library(DiagrammeR)
+
+graph <- DiagrammeR::grViz(diagram = "ja1.gv")
+```
+```{r}
+#| include: false
+library(DiagrammeR)
+
+graph <- DiagrammeR::grViz(diagram = "../data/Systematic_organization_of_ja1.gv")
+```
+
+PDFで保存したい場合は，以下のようにする。
+
+```{r}
+#| eval: false
+DiagrammeR::export_graph(graph, file_name = "ja1.pdf")
+```
+```{r}
+#| include: false
+#| eval: false
+DiagrammeR::export_graph(graph, file_name = "../fig/Systematic_organization_of_ja1.pdf")
+```
+
+これでうまくいくはずであるが，なぜかこのやり方ではエラーが出てしまい，解決策がわからない。
+ひとまず，Rは使わずに，TerminalからPDFファイルを出力する。
+あるいは，RStudioで `graph` と入力して図を表示してから，図のパネルのExportからPNGファイルで保存するしてもよい（ただし，この方法は本質的な解決策ではないため，非推奨である）。
+
+
+## 1県1農協を踏まえた農協の全国組織
+
+現在，農協合併が進んで1県1農協となることにより，都道府県段階の農協が存在しない場合がある。
+このことを踏まえると，図は以下のように表現できる。
+
+```{dot}
+digraph ja2 {
+  graph [rankdir = LR]
+
+  node [fontname = Helvetica,
+    shape = box,
+    fixedsize = false,
+    style = filled,
+    fillcolor = white]
+  組合員 [shape = circle, width = 0.9]
+  JA（単協）
+  node [width = 2.2]
+  JA共済連; JA都道府県中央会; JA全農; 農林中金; JA全中
+  node [width = 2.2,
+    shape = box,
+    style = "dashed,filled"]
+  JA経済連; JA信連
+
+  edge []
+  組合員->JA（単協）
+  JA（単協）->JA経済連->JA全農
+  JA（単協）->JA共済連
+  JA（単協）->JA信連->農林中金
+  JA（単協）->JA都道府県中央会->JA全中
+  JA経済連->JA都道府県中央会
+  JA信連->JA都道府県中央会
+  JA全農->JA全中
+  JA共済連->JA全中
+  農林中金->JA全中
+
+  subgraph cluster1 {
+    label = "都道府県段階"
+    fontname = Helvetica
+    bgcolor = ivory
+    style = rounded
+    {rank = same; JA経済連; JA信連; JA都道府県中央会}
+  }
+  subgraph cluster0 {
+    label = "全国段階"
+    fontname = Helvetica
+    bgcolor = honeydew
+    style = rounded
+    {rank = same; JA全農; JA共済連; 農林中金; JA全中}
+  }
+}
+```
+
+この図のソースコードは掲載しないので，各自で考えてほしい。
+
+先ほどの図と比べると，中央会の位置が微妙なところに来てしまっている。
+これらノードの位置は自動で決まるため，細かな調整はできない。
+こうした調整をしないと割り切ることがGraphvizの使用にあたって必要な心構えとなる。
+もし細部までこだわりたいのであれば，OmniGraffleやAdobe Illustratorを使えばよい。
+ただし，この図に限って言えば，中央会に向かうエッジを減らすと一応改善される。
+
+```{dot}
+digraph ja2 {
+  graph [rankdir = LR]
+
+  node [fontname = Helvetica,
+    shape = box,
+    fixedsize = false,
+    style = filled,
+    fillcolor = white]
+  組合員 [shape = circle, width = 0.9]
+  JA（単協）
+  node [width = 2.2]
+  JA共済連; JA都道府県中央会; JA全農; 農林中金; JA全中
+  node [width = 2.2,
+    shape = box,
+    style = "dashed,filled"]
+  JA経済連; JA信連
+
+  edge []
+  組合員->JA（単協）
+  JA（単協）->JA経済連->JA全農
+  JA（単協）->JA共済連
+  JA（単協）->JA信連->農林中金
+  JA（単協）->JA都道府県中央会->JA全中
+  
+  subgraph cluster1 {
+    label = "都道府県段階"
+    fontname = Helvetica
+    bgcolor = ivory
+    style = rounded
+    {rank = same; JA経済連; JA信連; JA都道府県中央会}
+  }
+  subgraph cluster0 {
+    label = "全国段階"
+    fontname = Helvetica
+    bgcolor = honeydew
+    style = rounded
+    {rank = same; JA全農; JA共済連; 農林中金; JA全中}
+  }
+}
+```
+
+この図に，JAバンクを枠で囲みたいと思っても，このままではうまくいかない。
+同じノードに2つ以上の`subgraph`を設定できないためである。
+こうした複雑な図は，Graphvizの将来のアップデートにより対応可能となるかもしれない。
+現時点では，多少の工夫により，以下のような図を描くことができる。
+
+```{dot}
+digraph ja_bank {
+  graph [rankdir = LR]
+
+  node [fontname = Helvetica,
+    shape = box,
+    fixedsize = false,
+    style = filled,
+    fillcolor = white]
+  組合員 [shape = circle, width = 0.9]
+  JA（単協）
+  node [width = 2.2]
+  JA共済連; JA都道府県中央会; JA全農; 農林中金; JA全中
+  node [width = 2.2,
+    shape = box,
+    style = "dashed,filled"]
+  JA経済連; JA信連
+
+  edge []
+  組合員->JA（単協）
+  JA（単協）->JA経済連->JA全農
+  JA（単協）->JA共済連
+  JA（単協）->JA信連->農林中金
+  JA（単協）->JA都道府県中央会->JA全中
+
+  {rank = sink; JA全農; JA共済連; JA全中}
+  subgraph cluster2 {
+    label = "JAバンク"
+    fontname = Helvetica
+    bgcolor = orange
+    style = rounded
+    JA（単協）; JA信連; 農林中金
+  }
+}
+```
