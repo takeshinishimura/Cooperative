@@ -150,7 +150,7 @@ DiagrammeR::export_graph(graph, file_name = "../fig/Systematic_organization_of_j
 
 この方法でうまくいくはずであるが，なぜかエラーが出てしまい，解決策がわからない。
 ひとまず，Rは使わずに，TerminalからPDFファイルを出力する。
-あるいは，RStudioで `graph` と入力して図を表示してから，図のパネルのExportからPNGファイルで保存するしてもよい（ただし，この方法は本質的な解決策ではないため，非推奨である）。
+あるいは，RStudioで `graph` と入力して図を表示してから，図のパネルのExportからPNGファイルで保存する（ただし，この方法は本質的な解決策ではないため，非推奨である）。
 
 ### PythonによるGraphvizの処理
 
@@ -167,7 +167,7 @@ source = Source(dot_string, format="pdf")
 source.render(filename="../fig/ja1_python", cleanup=True)
 ```
 
-なお，Google Colabを使う場合，`JA（単協）`のようにするとエラーの原因になることがあるため，`"JA（単協）"`とした方が無難である。
+なお，Google Colabを使う場合，`JA（単協）`のようにするとエラーの原因になることがあるため，`"JA（単協）"`とダブルクォーテーションで括った方が無難である。
 ただし，Google Colab上のGraphvizで日本語のフォントの入った出力を正しく得ることは困難なようである。
 
 ### Mermaid
