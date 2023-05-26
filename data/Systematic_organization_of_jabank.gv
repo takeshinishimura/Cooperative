@@ -16,11 +16,11 @@ digraph ja_bank {
   JA経済連; JA信連
 
   edge []
-  組合員->JA（単協）
-  JA（単協）->JA経済連->JA全農
-  JA（単協）->JA共済連
-  JA（単協）->JA信連->農林中金
-  JA（単協）->JA都道府県中央会->JA全中
+  組合員 -> JA（単協）
+  JA（単協） -> JA経済連 -> JA全農
+  JA（単協） -> JA共済連
+  JA（単協） -> JA信連 -> 農林中金
+  JA（単協） -> JA都道府県中央会 -> JA全中
 
   {rank = sink; JA全農; JA共済連; JA全中}
   subgraph cluster2 {

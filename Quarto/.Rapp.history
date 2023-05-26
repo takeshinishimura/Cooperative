@@ -1,0 +1,381 @@
+library(readxl)library(stringi)# Download the latest Excel file containing the local government codes from# the website of the Ministry of Internal Affairs and Communications.# https://www.soumu.go.jp/denshijiti/code.htmlurl <- "https://www.soumu.go.jp/main_content/000875486.xls"destfile <- file.path("./data-raw", sub(".*/", "", url))if (!file.exists(destfile)) {  utils::download.file(url, destfile, quiet = TRUE)}# Read the local government codeslg_code1 <- readxl::read_excel(destfile, sheet = 1)names(lg_code1) <- sub("\n", "", names(lg_code1))# Read the ordinance-designated city codesseirei <- readxl::read_excel(destfile, col_names = FALSE, sheet = 2)# Add designated city codes to the local government codenew_rows <- seirei[!seirei$...1 %in% lg_code1$"\u56e3\u4f53\u30b3\u30fc\u30c9", ]new_rows <- tibble::tibble(new_rows[, 1], rep(NA, nrow(new_rows)), new_rows[, 2],  rep(NA, nrow(new_rows)), new_rows[, 3], .name_repair = "unique")names(new_rows) <- names(lg_code1)lg_code <- rbind(l
+g_code1, new_rows)lg_code$romaji <- stringi::stri_trans_general(lg_code$"\u5e02\u533a\u753a\u6751\u540d\uff08\u30ab\u30ca\uff09",  "any-latin")lg_code$romaji <- paste0(toupper(substring(lg_code$romaji, 1, 1)),                         substring(lg_code$romaji, 2))file.remove(destfile)
+library(readxl)library(stringi)# Download the latest Excel file containing the local government codes from# the website of the Ministry of Internal Affairs and Communications.# https://www.soumu.go.jp/denshijiti/code.htmlurl <- "https://www.soumu.go.jp/main_content/000875486.xls"destfile <- file.path(".", sub(".*/", "", url))if (!file.exists(destfile)) {  utils::download.file(url, destfile, quiet = TRUE)}# Read the local government codeslg_code1 <- readxl::read_excel(destfile, sheet = 1)names(lg_code1) <- sub("\n", "", names(lg_code1))# Read the ordinance-designated city codesseirei <- readxl::read_excel(destfile, col_names = FALSE, sheet = 2)# Add designated city codes to the local government codenew_rows <- seirei[!seirei$...1 %in% lg_code1$"\u56e3\u4f53\u30b3\u30fc\u30c9", ]new_rows <- tibble::tibble(new_rows[, 1], rep(NA, nrow(new_rows)), new_rows[, 2],  rep(NA, nrow(new_rows)), new_rows[, 3], .name_repair = "unique")names(new_rows) <- names(lg_code1)lg_code <- rbind(lg_code1,
+new_rows)lg_code$romaji <- stringi::stri_trans_general(lg_code$"\u5e02\u533a\u753a\u6751\u540d\uff08\u30ab\u30ca\uff09",  "any-latin")lg_code$romaji <- paste0(toupper(substring(lg_code$romaji, 1, 1)),                         substring(lg_code$romaji, 2))file.remove(destfile)
+fude <- read_fude(file.choose())
+fude2 <- rename_fude(fude)
+fude <- read_fude(file.choose())
+fude2 <- rename_fude(fude)
+fude <- read_fude(file.choose())
+fude2 <- rename_fude(fude)
+fude <- read_fude(file.choose())
+fude2 <- rename_fude(fude)
+fude <- read_fude(file.choose())
+fude2 <- rename_fude(fude)
+fude <- read_fude(file.choose())
+fude2 <- rename_fude(fude)
+fude <- read_fude(file.choose())
+fude2 <- rename_fude(fude)
+fude <- read_fude(file.choose())
+fude2 <- rename_fude(fude)
+fude <- read_fude(file.choose())
+fude2 <- rename_fude(fude)
+fude <- read_fude(file.choose())
+fude2 <- rename_fude(fude)
+fude <- read_fude(file.choose())
+fude2 <- rename_fude(fude)
+fude <- read_fude(file.choose())
+fude2 <- rename_fude(fude)
+fude <- read_fude(file.choose())
+fude2 <- rename_fude(fude)
+fude <- read_fude(file.choose())
+fude2 <- rename_fude(fude)
+fude <- read_fude(file.choose())
+fude2 <- rename_fude(fude)
+fude <- read_fude(file.choose())
+fude2 <- rename_fude(fude)
+fude <- read_fude(file.choose())
+fude2 <- rename_fude(fude)
+fude <- read_fude(file.choose())
+fude2 <- rename_fude(fude)
+fude <- read_fude(file.choose())
+fude2 <- rename_fude(fude)
+fude <- read_fude(file.choose())
+fude2 <- rename_fude(fude)
+fude <- read_fude(file.choose())
+fude2 <- rename_fude(fude)
+fude <- read_fude(file.choose())
+fude2 <- rename_fude(fude)
+fude <- read_fude(file.choose())
+fude2 <- rename_fude(fude)
+fude <- read_fude(file.choose())
+fude2 <- rename_fude(fude)
+fude <- read_fude(file.choose())
+fude2 <- rename_fude(fude)
+fude <- read_fude(file.choose())
+fude2 <- rename_fude(fude)
+fude <- read_fude(file.choose())
+fude2 <- rename_fude(fude)
+fude <- read_fude(file.choose())
+fude2 <- rename_fude(fude)
+fude <- read_fude(file.choose())
+fude2 <- rename_fude(fude)
+fude <- read_fude(file.choose())
+fude2 <- rename_fude(fude)
+fude <- read_fude(file.choose())
+fude2 <- rename_fude(fude)
+fude <- read_fude(file.choose())
+fude2 <- rename_fude(fude)
+fude <- read_fude(file.choose())
+fude2 <- rename_fude(fude)
+fude <- read_fude(file.choose())
+fude2 <- rename_fude(fude)
+fude <- read_fude(file.choose())
+fude2 <- rename_fude(fude)
+fude <- read_fude(file.choose())
+fude2 <- rename_fude(fude)
+fude <- read_fude(file.choose())
+fude2 <- rename_fude(fude)
+fude <- read_fude(file.choose())
+fude2 <- rename_fude(fude)
+fude <- read_fude(file.choose())
+fude2 <- rename_fude(fude)
+fude <- read_fude(file.choose())
+fude2 <- rename_fude(fude)
+fude <- read_fude(file.choose())
+fude2 <- rename_fude(fude)
+fude <- read_fude(file.choose())
+fude2 <- rename_fude(fude)
+fude <- read_fude(file.choose())
+fude2 <- rename_fude(fude)
+fude <- read_fude(file.choose())
+fude2 <- rename_fude(fude)
+fude <- read_fude(file.choose())
+fude2 <- rename_fude(fude)
+fude <- read_fude(file.choose())
+fude2 <- rename_fude(fude)
+install.packages(rhub)
+install.packages("rhub")
+library(readxl)
+df <- readxl::read_excel("r006-02-001.xls", col_names = FALSE)
+head(df)
+str(fg)
+str(df)
+head(df, 10)
+head(df, 12)
+head(df, 13)
+2:ncol(df)
+df[, 2:ncol(df) == ""]
+df[2:ncol(df) == ""]
+df[][2:ncol(df) == ""]]
+df[[2:ncol(df) == ""]]
+df[1]
+df[2]
+df[3]
+2:ncol(df) == ""
+df[2:ncol(df)] == ""
+df[[2:ncol(df)]] == ""
+df[2:ncol(df)] == ""
+df %>% filter(across(-1, ~ . == ""))
+library(dplyr)
+df %>% filter(across(-1, ~ . == ""))
+df %>% filter(if_all(everything(), ~.x == ""))
+filtered_data <- data %>% #
+  filter(across(.cols = 2:ncol(data), .fns = ~. == ""))
+filtered_data <- df %>% #
+  filter(across(.cols = 2:ncol(data), .fns = ~. == ""))
+filtered_data
+filtered_data <- df %>% #
+  filter(across(.cols = 2:ncol(df), .fns = ~. == ""))
+df %>%#
+  filter(if_all(-1, ~ . == ""))
+df %>% filter(if_all(-1, ~ . == ""))
+df
+df %>% filter(if_all(-1, ~ . != ""))
+df %>% filter(if_all(-1, ~ . == ""))
+df %>% filter(if_all(-2, ~ . == ""))
+df %>% filter(if_all(-1, ~ . == ""))
+df <- tibble(a = c(1, 2, 3),#
+             b = c("", "foo", ""),#
+             c = c("bar", "", ""))#
+#
+df %>%#
+  filter(if_all(-1, ~ . == ""))
+df
+df <- readxl::read_excel("r006-02-001.xls", col_names = FALSE)
+df %>% filter(if_all(-1, ~ . == ""))
+df[1,]
+df[1,2] == ""
+df %>% filter(if_all(-1, is.na))
+result <- df %>%#
+  filter(grepl("^注|^\\(注", col1))
+result <- df %>%#
+  filter(grepl("^注|^\\(注", 1))
+result
+df_new <- df %>%#
+  slice_head(1, grep("^注|^（注", df$V1)) %>%#
+  filter(!rowSums(across(-1, ~ . == "")))
+df_new <- df %>%#
+  slice_head(1, grep("^注|^（注", df$V1))
+df <- df %>%#
+  slice_until(str_detect(V1, "^注|^（注"))
+library(stringr)
+df <- df %>%#
+  slice_until(str_detect(V1, "^注|^（注"))
+df <- df %>%#
+  stringr::slice_until(str_detect(V1, "^注|^（注"))
+df %>%#
+  slice_rows(#
+    which.max(cumsum(str_detect(V1, "^注|^（注"))) + 1:n() - 1#
+  ) %>%#
+  filter(!str_detect(V1, "^注|^（注"))
+library(slice)
+install.packages("slice")
+df <- df %>%#
+  slice_until(str_detect(V1, "^注|^（注")) %>%#
+  slice(-(which.max(cumsum(str_detect(V1, "^注|^（注"))) + 1):n())
+df
+df[10:30,]
+?read_excel
+df[11:12,]
+df[11:12,2]
+df[11:12,V2]
+df[11:12,11]
+df[10,11]
+df[10,]
+df[10,6]
+df[11,]
+df[12,]
+df[13,]
+df[14,]
+?stop
+library("fude")
+install.packages("fude")
+?read_fude
+path <- system.file("extdata", "castle.zip", package = "fude")
+d <- read_fude(path)
+path
+d <- read_fude(path)
+read_fude
+d <- fude::read_fude(path)
+remove.packages("fude")
+install.packages("fude")
+path <- system.file("extdata", "castle.zip", package = "fude")
+d <- fude::read_fude(path)
+d <- read_fude(file.choose())
+install.packages("devtools")#
+devtools::install_github("takeshinishimura/fude")
+d <- read_fude(file.choose())
+remove.packages("fude")
+install.packages("devtools")#
+devtools::install_github("takeshinishimura/fude")
+d <- read_fude(file.choose())
+remove.packages("fude")
+install.packages("fude")
+library(fude)
+d <- read_fude(file.choose())
+library(mmapview)
+library(mapview)
+mapview(d)
+path <- system.file("extdata", "castle.zip", package = "fude")
+d <- fude::read_fude(path)
+?read_fude
+?rename_fude
+?ls_fude
+?extract_fude
+install.packages("ggflowchart")
+library(ggflowchart)
+data <- tibble::tibble(from = c("A", "A", "A", "B", "C", "F"),#
+                       to = c("B", "C", "D", "E", "F", "G"))
+data
+ggflowchart(data)
+node_data <- tibble::tibble(#
+  name = c("A", "B", "C", "D", "E", "F", "G"),#
+  type = c("Type 1", "Type 1", "Type 1", "Type 1", #
+           "Type 2", "Type 2", "Type 2")#
+  )#
+ggflowchart(data, node_data, fill = type)
+node_data
+data <- read.table(file = "clipboard", header = TRUE)
+?readClipboard
+data <- read.table(file = "clipboard", header = TRUE)
+data <- read.table(pipe("pbpaste"), header = TRUE)
+data
+pipe("pbpaste")
+?pipe
+？pbpaste
+?pbpaste
+?kanji
+library(readxl)library(stringi)# Download the latest Excel file containing the local government codes from# the website of the Ministry of Internal Affairs and Communications.# https://www.soumu.go.jp/denshijiti/code.htmlurl <- "https://www.soumu.go.jp/main_content/000875486.xls"destfile <- file.path("./data-raw", sub(".*/", "", url))if (!file.exists(destfile)) {  utils::download.file(url, destfile, quiet = TRUE)}# Read the local government codeslg_code1 <- readxl::read_excel(destfile, sheet = 1)names(lg_code1) <- sub("\n", "", names(lg_code1))# Read the ordinance-designated city codesseirei <- readxl::read_excel(destfile, col_names = FALSE, sheet = 2)# Add designated city codes to the local government codenew_rows <- seirei[!seirei$...1 %in% lg_code1$"\u56e3\u4f53\u30b3\u30fc\u30c9", ]new_rows <- tibble::tibble(new_rows[, 1], rep(NA, nrow(new_rows)), new_rows[, 2],  rep(NA, nrow(new_rows)), new_rows[, 3], .name_repair = "unique")names(new_rows) <- names(lg_code1)lg_code <- rbind(l
+g_code1, new_rows)kanji <- sub("\u5e02$|\u533a$|\u753a$|\u6751$", "", lg_code$"\u5e02\u533a\u753a\u6751\u540d\uff08\u30ab\u30ca\uff09")romaji <- stringi::stri_trans_general(kanji, "any-latin")lg_code$romaji <- paste0(toupper(substring(romaji, 1, 1)), substring(romaji, 2))
+library(readxl)library(stringi)# Download the latest Excel file containing the local government codes from# the website of the Ministry of Internal Affairs and Communications.# https://www.soumu.go.jp/denshijiti/code.htmlurl <- "https://www.soumu.go.jp/main_content/000875486.xls"destfile <- file.path("./", sub(".*/", "", url))if (!file.exists(destfile)) {  utils::download.file(url, destfile, quiet = TRUE)}# Read the local government codeslg_code1 <- readxl::read_excel(destfile, sheet = 1)names(lg_code1) <- sub("\n", "", names(lg_code1))# Read the ordinance-designated city codesseirei <- readxl::read_excel(destfile, col_names = FALSE, sheet = 2)# Add designated city codes to the local government codenew_rows <- seirei[!seirei$...1 %in% lg_code1$"\u56e3\u4f53\u30b3\u30fc\u30c9", ]new_rows <- tibble::tibble(new_rows[, 1], rep(NA, nrow(new_rows)), new_rows[, 2],  rep(NA, nrow(new_rows)), new_rows[, 3], .name_repair = "unique")names(new_rows) <- names(lg_code1)lg_code <- rbind(lg_code1,
+new_rows)kanji <- sub("\u5e02$|\u533a$|\u753a$|\u6751$", "", lg_code$"\u5e02\u533a\u753a\u6751\u540d\uff08\u30ab\u30ca\uff09")romaji <- stringi::stri_trans_general(kanji, "any-latin")lg_code$romaji <- paste0(toupper(substring(romaji, 1, 1)), substring(romaji, 2))
+lg_code
+data.frame(lg_code)[lg_code$団体コード == "382019", ]
+lg_code1 <- readxl::read_excel(destfile, sheet = 1)names(lg_code1) <- sub("\n", "", names(lg_code1))# Read the ordinance-designated city codesseirei <- readxl::read_excel(destfile, col_names = FALSE, sheet = 2)# Add designated city codes to the local government codenew_rows <- seirei[!seirei$...1 %in% lg_code1$"\u56e3\u4f53\u30b3\u30fc\u30c9", ]new_rows <- tibble::tibble(new_rows[, 1], rep(NA, nrow(new_rows)), new_rows[, 2],  rep(NA, nrow(new_rows)), new_rows[, 3], .name_repair = "unique")names(new_rows) <- names(lg_code1)lg_code <- rbind(lg_code1, new_rows)
+sub("\u5e02$|\u533a$|\u753a$|\u6751$", "", lg_code$"\u5e02\u533a\u753a\u6751\u540d\uff08\u30ab\u30ca\uff09")
+lg_code <- rbind(lg_code1, new_rows)kanji <- sub("\uff7c$|\u304f$|\uff81\uff6e\uff73$|\uff7f\uff9d$", "", lg_code$"\u5e02\u533a\u753a\u6751\u540d\uff08\u30ab\u30ca\uff09")romaji <- stringi::stri_trans_general(kanji, "any-latin")lg_code$romaji <- paste0(toupper(substring(romaji, 1, 1)), substring(romaji, 2))
+data.frame(lg_code)[lg_code$団体コード == "382019", ]
+library(tidyr)
+?gather
+y <- x <- 1:10
+y
+x
+require(devtools)#
+devtools::install_github("ramnathv/slidify")#
+devtools::install_github("ramnathv/slidifyLibraries")
+# DiagrammeRパッケージの読み込み#
+library(DiagrammeR)#
+#
+# GraphvizのスクリプトをRスクリプトに変換#
+graph <- "#
+digraph ja1 {#
+  graph [rankdir = LR]#
+  node [fontname = Helvetica,#
+    shape = box,#
+    fixedsize = false,#
+    style = filled,#
+    fillcolor = white]#
+  組合員 [shape = circle, width = 0.9]#
+  JA（単協）#
+  node [width = 2.2]#
+  JA経済連; JA共済連; JA信連; JA都道府県中央会; JA全農; JA全共連; 農林中金; JA全中#
+#
+  edge []#
+  組合員->JA（単協）#
+  JA（単協）->JA経済連->JA全農#
+  JA（単協）->JA共済連->JA全共連#
+  JA（単協）->JA信連->農林中金#
+  JA（単協）->JA都道府県中央会->JA全中#
+  JA経済連->JA都道府県中央会#
+  JA共済連->JA都道府県中央会#
+  JA信連->JA都道府県中央会#
+  JA全農->JA全中#
+  JA全共連->JA全中#
+  農林中金->JA全中#
+#
+  subgraph cluster1 {#
+    label = '都道府県段階'#
+    fontname = Helvetica#
+    bgcolor = ivory#
+    style = rounded#
+    {rank = same; JA経済連; JA共済連; JA信連; JA都道府県中央会}#
+  }#
+  subgraph cluster0 {#
+    label = '全国段階'#
+    fontname = Helvetica#
+    bgcolor = honeydew#
+    style = rounded#
+    {rank = same; JA全農; JA全共連; 農林中金; JA全中}#
+  }#
+}#
+"#
+#
+# グラフの描画#
+DiagrammeR::grViz(graph)
+install.packages("DiagrammeR")
+# DiagrammeRパッケージの読み込み#
+library(DiagrammeR)#
+#
+# GraphvizのスクリプトをRスクリプトに変換#
+graph <- "#
+digraph ja1 {#
+  graph [rankdir = LR]#
+  node [fontname = Helvetica,#
+    shape = box,#
+    fixedsize = false,#
+    style = filled,#
+    fillcolor = white]#
+  組合員 [shape = circle, width = 0.9]#
+  JA（単協）#
+  node [width = 2.2]#
+  JA経済連; JA共済連; JA信連; JA都道府県中央会; JA全農; JA全共連; 農林中金; JA全中#
+#
+  edge []#
+  組合員->JA（単協）#
+  JA（単協）->JA経済連->JA全農#
+  JA（単協）->JA共済連->JA全共連#
+  JA（単協）->JA信連->農林中金#
+  JA（単協）->JA都道府県中央会->JA全中#
+  JA経済連->JA都道府県中央会#
+  JA共済連->JA都道府県中央会#
+  JA信連->JA都道府県中央会#
+  JA全農->JA全中#
+  JA全共連->JA全中#
+  農林中金->JA全中#
+#
+  subgraph cluster1 {#
+    label = '都道府県段階'#
+    fontname = Helvetica#
+    bgcolor = ivory#
+    style = rounded#
+    {rank = same; JA経済連; JA共済連; JA信連; JA都道府県中央会}#
+  }#
+  subgraph cluster0 {#
+    label = '全国段階'#
+    fontname = Helvetica#
+    bgcolor = honeydew#
+    style = rounded#
+    {rank = same; JA全農; JA全共連; 農林中金; JA全中}#
+  }#
+}#
+"#
+#
+# グラフの描画#
+DiagrammeR::grViz(graph)
+?grViz
+library(DiagrammeR)#
+#
+graph <- DiagrammeR::grViz(diagram = "../data/Systematic_organization_of_ja1.gv")
+graph
+DiagrammeR::grViz(graph)
+?grViz
+?export_graph
+graph
+DiagrammeR::export_graph(graph, file_name = "../Systematic_organization_of_ja1.pdf")
+print(graph)
+cat(readLines("graph.dot"), sep = "\n")
+cat(readLines("Systematic_organization_of_ja1.gv"), sep = "\n")
+cat(readLines("../data/Systematic_organization_of_ja1.gv"), sep = "\n")
+graph
+getwd()

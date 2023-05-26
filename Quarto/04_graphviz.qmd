@@ -69,17 +69,17 @@ digraph ja1 {
   JA経済連; JA共済連; JA信連; JA都道府県中央会; JA全農; JA全共連; 農林中金; JA全中
 
   edge []
-  組合員->JA（単協）
-  JA（単協）->JA経済連->JA全農
-  JA（単協）->JA共済連->JA全共連
-  JA（単協）->JA信連->農林中金
-  JA（単協）->JA都道府県中央会->JA全中
-  JA経済連->JA都道府県中央会
-  JA共済連->JA都道府県中央会
-  JA信連->JA都道府県中央会
-  JA全農->JA全中
-  JA全共連->JA全中
-  農林中金->JA全中
+  組合員 -> JA（単協）
+  JA（単協） -> JA経済連 -> JA全農
+  JA（単協） -> JA共済連 -> JA全共連
+  JA（単協） -> JA信連 -> 農林中金
+  JA（単協） -> JA都道府県中央会 -> JA全中
+  JA経済連 -> JA都道府県中央会
+  JA共済連 -> JA都道府県中央会
+  JA信連 -> JA都道府県中央会
+  JA全農 -> JA全中
+  JA全共連 -> JA全中
+  農林中金 -> JA全中
 
   subgraph cluster1 {
     label = "都道府県段階"
@@ -120,17 +120,17 @@ digraph ja1 {
   JA経済連; JA共済連; JA信連; JA都道府県中央会; JA全農; JA全共連; 農林中金; JA全中
 
   edge []
-  組合員->JA（単協）
-  JA（単協）->JA経済連->JA全農
-  JA（単協）->JA共済連->JA全共連
-  JA（単協）->JA信連->農林中金
-  JA（単協）->JA都道府県中央会->JA全中
-  JA経済連->JA都道府県中央会
-  JA共済連->JA都道府県中央会
-  JA信連->JA都道府県中央会
-  JA全農->JA全中
-  JA全共連->JA全中
-  農林中金->JA全中
+  組合員 -> JA（単協）
+  JA（単協） -> JA経済連 -> JA全農
+  JA（単協） -> JA共済連 -> JA全共連
+  JA（単協） -> JA信連 -> 農林中金
+  JA（単協） -> JA都道府県中央会 -> JA全中
+  JA経済連 -> JA都道府県中央会
+  JA共済連 -> JA都道府県中央会
+  JA信連 -> JA都道府県中央会
+  JA全農 -> JA全中
+  JA全共連 -> JA全中
+  農林中金 -> JA全中
 
   subgraph cluster1 {
     label = "都道府県段階"
@@ -155,6 +155,10 @@ digraph ja1 {
 もしTerminalがよくわからない場合は，[RStudio](https://posit.co/download/rstudio-desktop/){target="_blank"}を使うか，[GraphvizOnline](https://dreampuf.github.io/GraphvizOnline){target="_blank"}を使うと便利である。
 
 同様のことは，[DiagrammeR](https://cran.r-project.org/web/packages/DiagrammeR/index.html){target="_blank"}を用いて，Rからを実行することもできる。
+
+### RによるGraphvizの処理
+
+Rで実行するには以下のようにする。
 
 ```{r}
 #| eval: false
@@ -185,6 +189,24 @@ DiagrammeR::export_graph(graph, file_name = "../fig/Systematic_organization_of_j
 ひとまず，Rは使わずに，TerminalからPDFファイルを出力する。
 あるいは，RStudioで `graph` と入力して図を表示してから，図のパネルのExportからPNGファイルで保存するしてもよい（ただし，この方法は本質的な解決策ではないため，非推奨である）。
 
+### PythonによるGraphvizの処理
+
+一方，Pythonで実行するには以下のようにする。
+
+```{python}
+#| output: false
+from graphviz import Source
+
+with open("../data/ja1.gv", "r") as file:
+    dot_string = file.read()
+
+source = Source(dot_string, format="pdf")
+source.render(filename="../fig/ja1_python", cleanup=True)
+```
+
+なお，Google Colabを使う場合，`JA（単協）`のようにするとエラーの原因になることがあるため，`"JA（単協）"`とした方が無難である。
+ただし，Google Colab上のGraphvizで日本語のフォントの入った出力を正しく得ることは困難なようである。
+
 
 ## 1県1農協を踏まえた農協の全国組織
 
@@ -210,16 +232,16 @@ digraph ja2 {
   JA経済連; JA信連
 
   edge []
-  組合員->JA（単協）
-  JA（単協）->JA経済連->JA全農
-  JA（単協）->JA共済連
-  JA（単協）->JA信連->農林中金
-  JA（単協）->JA都道府県中央会->JA全中
-  JA経済連->JA都道府県中央会
-  JA信連->JA都道府県中央会
-  JA全農->JA全中
-  JA共済連->JA全中
-  農林中金->JA全中
+  組合員 -> JA（単協）
+  JA（単協） -> JA経済連 -> JA全農
+  JA（単協） -> JA共済連
+  JA（単協） -> JA信連 -> 農林中金
+  JA（単協） -> JA都道府県中央会 -> JA全中
+  JA経済連 -> JA都道府県中央会
+  JA信連 -> JA都道府県中央会
+  JA全農 -> JA全中
+  JA共済連 -> JA全中
+  農林中金 -> JA全中
 
   subgraph cluster1 {
     label = "都道府県段階"
@@ -265,11 +287,11 @@ digraph ja2 {
   JA経済連; JA信連
 
   edge []
-  組合員->JA（単協）
-  JA（単協）->JA経済連->JA全農
-  JA（単協）->JA共済連
-  JA（単協）->JA信連->農林中金
-  JA（単協）->JA都道府県中央会->JA全中
+  組合員 -> JA（単協）
+  JA（単協） -> JA経済連 -> JA全農
+  JA（単協） -> JA共済連
+  JA（単協） -> JA信連 -> 農林中金
+  JA（単協） -> JA都道府県中央会 -> JA全中
   
   subgraph cluster1 {
     label = "都道府県段階"
@@ -312,11 +334,11 @@ digraph ja_bank {
   JA経済連; JA信連
 
   edge []
-  組合員->JA（単協）
-  JA（単協）->JA経済連->JA全農
-  JA（単協）->JA共済連
-  JA（単協）->JA信連->農林中金
-  JA（単協）->JA都道府県中央会->JA全中
+  組合員 -> JA（単協）
+  JA（単協） -> JA経済連 -> JA全農
+  JA（単協） -> JA共済連
+  JA（単協） -> JA信連 -> 農林中金
+  JA（単協） -> JA都道府県中央会 -> JA全中
 
   {rank = sink; JA全農; JA共済連; JA全中}
   subgraph cluster2 {

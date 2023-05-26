@@ -1,7 +1,6 @@
-digraph ja2 {
+digraph ja1 {
   graph [rankdir = LR]
-
-  node [fontname = Helvetica,
+  node [fontname = "Helvetica",
     shape = box,
     fixedsize = false,
     style = filled,
@@ -9,31 +8,27 @@ digraph ja2 {
   組合員 [shape = circle, width = 0.9]
   JA（単協）
   node [width = 2.2]
-  JA共済連; JA都道府県中央会; JA全農; 農林中金; JA全中
-  node [width = 2.2,
-    shape = box,
-    style = "dashed,filled"]
-  JA経済連; JA信連
+  JA経済連; JA共済連; JA信連; JA都道府県中央会; JA全農; JA全共連; 農林中金; JA全中
 
   edge []
   組合員 -> JA（単協）
   JA（単協） -> JA経済連 -> JA全農
-  JA（単協） -> JA共済連
+  JA（単協） -> JA共済連 -> JA全共連
   JA（単協） -> JA信連 -> 農林中金
   JA（単協） -> JA都道府県中央会 -> JA全中
 
   subgraph cluster1 {
     label = "都道府県段階"
-    fontname = Helvetica
+    fontname = "Helvetica"
     bgcolor = ivory
     style = rounded
-    {rank = same; JA経済連; JA信連; JA都道府県中央会}
+    {rank = same; JA経済連; JA共済連; JA信連; JA都道府県中央会}
   }
   subgraph cluster0 {
     label = "全国段階"
-    fontname = Helvetica
+    fontname = "Helvetica"
     bgcolor = honeydew
     style = rounded
-    {rank = same; JA全農; JA共済連; 農林中金; JA全中}
+    {rank = same; JA全農; JA全共連; 農林中金; JA全中}
   }
 }

@@ -80,7 +80,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
    
   <ul>
   <li><a href="#graphvizのインストール" id="toc-graphvizのインストール" class="nav-link active" data-scroll-target="#graphvizのインストール"><span class="header-section-number">1</span> Graphvizのインストール</a></li>
-  <li><a href="#農協の全国組織" id="toc-農協の全国組織" class="nav-link" data-scroll-target="#農協の全国組織"><span class="header-section-number">2</span> 農協の全国組織</a></li>
+  <li><a href="#農協の全国組織" id="toc-農協の全国組織" class="nav-link" data-scroll-target="#農協の全国組織"><span class="header-section-number">2</span> 農協の全国組織</a>
+  <ul class="collapse">
+  <li><a href="#rによるgraphvizの処理" id="toc-rによるgraphvizの処理" class="nav-link" data-scroll-target="#rによるgraphvizの処理"><span class="header-section-number">2.1</span> RによるGraphvizの処理</a></li>
+  <li><a href="#pythonによるgraphvizの処理" id="toc-pythonによるgraphvizの処理" class="nav-link" data-scroll-target="#pythonによるgraphvizの処理"><span class="header-section-number">2.2</span> PythonによるGraphvizの処理</a></li>
+  </ul></li>
   <li><a href="#県1農協を踏まえた農協の全国組織" id="toc-県1農協を踏まえた農協の全国組織" class="nav-link" data-scroll-target="#県1農協を踏まえた農協の全国組織"><span class="header-section-number">3</span> 1県1農協を踏まえた農協の全国組織</a></li>
   </ul>
 </nav>
@@ -147,17 +151,17 @@ Graphviz
   JA経済連; JA共済連; JA信連; JA都道府県中央会; JA全農; JA全共連; 農林中金; JA全中
 
   edge []
-  組合員-&gt;JA（単協）
-  JA（単協）-&gt;JA経済連-&gt;JA全農
-  JA（単協）-&gt;JA共済連-&gt;JA全共連
-  JA（単協）-&gt;JA信連-&gt;農林中金
-  JA（単協）-&gt;JA都道府県中央会-&gt;JA全中
-  JA経済連-&gt;JA都道府県中央会
-  JA共済連-&gt;JA都道府県中央会
-  JA信連-&gt;JA都道府県中央会
-  JA全農-&gt;JA全中
-  JA全共連-&gt;JA全中
-  農林中金-&gt;JA全中
+  組合員 -&gt; JA（単協）
+  JA（単協） -&gt; JA経済連 -&gt; JA全農
+  JA（単協） -&gt; JA共済連 -&gt; JA全共連
+  JA（単協） -&gt; JA信連 -&gt; 農林中金
+  JA（単協） -&gt; JA都道府県中央会 -&gt; JA全中
+  JA経済連 -&gt; JA都道府県中央会
+  JA共済連 -&gt; JA都道府県中央会
+  JA信連 -&gt; JA都道府県中央会
+  JA全農 -&gt; JA全中
+  JA全共連 -&gt; JA全中
+  農林中金 -&gt; JA全中
 
   subgraph cluster1 {
     label = "都道府県段階"
@@ -303,6 +307,9 @@ JA全共連-&gt;JA全中
 <p>それぞれの<code>subgraph</code>内で中央会に向かうエッジを描いているため，若干複雑になっている。 系統組織であることを表現するにあたって，これらのエッジは不要かもしれない。</p>
 <p>もしTerminalがよくわからない場合は，<a href="https://posit.co/download/rstudio-desktop/" target="_blank">RStudio</a>を使うか，<a href="https://dreampuf.github.io/GraphvizOnline" target="_blank">GraphvizOnline</a>を使うと便利である。</p>
 <p>同様のことは，<a href="https://cran.r-project.org/web/packages/DiagrammeR/index.html" target="_blank">DiagrammeR</a>を用いて，Rからを実行することもできる。</p>
+<section id="rによるgraphvizの処理" class="level3" data-number="2.1">
+<h3 data-number="2.1" class="anchored" data-anchor-id="rによるgraphvizの処理"><span class="header-section-number">2.1</span> RによるGraphvizの処理</h3>
+<p>Rで実行するには以下のようにする。</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(DiagrammeR)</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -313,6 +320,21 @@ JA全共連-&gt;JA全中
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>DiagrammeR<span class="sc">::</span><span class="fu">export_graph</span>(graph, <span class="at">file_name =</span> <span class="st">"ja1.pdf"</span>)</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>この方法でうまくいくはずであるが，なぜかエラーが出てしまい，解決策がわからない。 ひとまず，Rは使わずに，TerminalからPDFファイルを出力する。 あるいは，RStudioで <code>graph</code> と入力して図を表示してから，図のパネルのExportからPNGファイルで保存するしてもよい（ただし，この方法は本質的な解決策ではないため，非推奨である）。</p>
+</section>
+<section id="pythonによるgraphvizの処理" class="level3" data-number="2.2">
+<h3 data-number="2.2" class="anchored" data-anchor-id="pythonによるgraphvizの処理"><span class="header-section-number">2.2</span> PythonによるGraphvizの処理</h3>
+<p>一方，Pythonで実行するには以下のようにする。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> graphviz <span class="im">import</span> Source</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(<span class="st">"../data/ja1.gv"</span>, <span class="st">"r"</span>) <span class="im">as</span> <span class="bu">file</span>:</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    dot_string <span class="op">=</span> <span class="bu">file</span>.read()</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>source <span class="op">=</span> Source(dot_string, <span class="bu">format</span><span class="op">=</span><span class="st">"pdf"</span>)</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>source.render(filename<span class="op">=</span><span class="st">"../fig/ja1_python"</span>, cleanup<span class="op">=</span><span class="va">True</span>)</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>なお，Google Colabを使う場合，<code>JA（単協）</code>のようにするとエラーの原因になることがあるため，<code>"JA（単協）"</code>とした方が無難である。 ただし，Google Colab上のGraphvizで日本語のフォントの入った出力を正しく得ることは困難なようである。</p>
+</section>
 </section>
 <section id="県1農協を踏まえた農協の全国組織" class="level2" data-number="3">
 <h2 data-number="3" class="anchored" data-anchor-id="県1農協を踏まえた農協の全国組織"><span class="header-section-number">3</span> 1県1農協を踏まえた農協の全国組織</h2>
