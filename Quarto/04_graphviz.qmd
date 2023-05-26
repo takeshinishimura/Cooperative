@@ -11,6 +11,8 @@ format:
     toc-depth: 3
     number-sections: true
     theme: lumen
+    mermaid:
+      theme: forest
 lang: ja
 ---
 
@@ -51,7 +53,7 @@ Windowsの場合は，以下から最新の64-bit版をダウンロードして�
 
 ## 農協の全国組織
 
-DOT言語とGraphviz属性について知りたい場合は，[DiagrammeR　〜RでGraphvizを使う~ - Ｒ言語による電子カルテデータの二次利用](https://r-beginner.hatenadiary.jp/entry/2018/03/11/081150){target="_blank"}を参照するとよい。
+DOT言語とGraphviz属性について知りたい場合は，[Graphvizとdot言語でグラフを描く方法のまとめ - Qiita](https://qiita.com/rubytomato@github/items/51779135bc4b77c8c20d){target="_blank"}や[DiagrammeR　〜RでGraphvizを使う~ - Ｒ言語による電子カルテデータの二次利用](https://r-beginner.hatenadiary.jp/entry/2018/03/11/081150){target="_blank"}などを参照するとよい。
 
 細かい説明抜きに，農協の全国組織をGraphvizで書くと，以下のようになる。
 
@@ -107,46 +109,7 @@ Terminalで以下のように打ち込むと，必要なPDFファイルが得ら
 $ dot -Tpdf ja1.gv > ja1.pdf
 ```
 ```{dot}
-digraph ja1 {
-  graph [rankdir = LR]
-  node [fontname = Helvetica,
-    shape = box,
-    fixedsize = false,
-    style = filled,
-    fillcolor = white]
-  組合員 [shape = circle, width = 0.9]
-  JA（単協）
-  node [width = 2.2]
-  JA経済連; JA共済連; JA信連; JA都道府県中央会; JA全農; JA全共連; 農林中金; JA全中
-
-  edge []
-  組合員 -> JA（単協）
-  JA（単協） -> JA経済連 -> JA全農
-  JA（単協） -> JA共済連 -> JA全共連
-  JA（単協） -> JA信連 -> 農林中金
-  JA（単協） -> JA都道府県中央会 -> JA全中
-  JA経済連 -> JA都道府県中央会
-  JA共済連 -> JA都道府県中央会
-  JA信連 -> JA都道府県中央会
-  JA全農 -> JA全中
-  JA全共連 -> JA全中
-  農林中金 -> JA全中
-
-  subgraph cluster1 {
-    label = "都道府県段階"
-    fontname = Helvetica
-    bgcolor = ivory
-    style = rounded
-    {rank = same; JA経済連; JA共済連; JA信連; JA都道府県中央会}
-  }
-  subgraph cluster0 {
-    label = "全国段階"
-    fontname = Helvetica
-    bgcolor = honeydew
-    style = rounded
-    {rank = same; JA全農; JA全共連; 農林中金; JA全中}
-  }
-}
+//| file: ../data/Systematic_organization_of_ja1.gv
 ```
 
 それぞれの`subgraph`内で中央会に向かうエッジを描いているため，若干複雑になっている。
@@ -206,6 +169,30 @@ source.render(filename="../fig/ja1_python", cleanup=True)
 
 なお，Google Colabを使う場合，`JA（単協）`のようにするとエラーの原因になることがあるため，`"JA（単協）"`とした方が無難である。
 ただし，Google Colab上のGraphvizで日本語のフォントの入った出力を正しく得ることは困難なようである。
+
+### Mermaid
+
+ちなみに，上の図をMermaidで描くと次のようになる。
+
+```{mermaid}
+flowchart LR
+
+組合員(組合員) --> JA(JA)
+
+JA --> JA経済連
+JA経済連 --> JA全農
+
+JA --> JA共済連
+JA共済連 --> JA全共連
+
+JA --> JA信連
+JA信連 --> 農林中金
+
+JA --> JA都道府県中央会
+JA都道府県中央会 --> JA全中
+```
+
+MermaidはGraphvizのように`cluster`や`rank`といった高度なレイアウト機能はサポートしていない。
 
 
 ## 1県1農協を踏まえた農協の全国組織
@@ -269,45 +256,7 @@ digraph ja2 {
 ただし，この図に限って言えば，中央会に向かうエッジを減らすと一応改善される。
 
 ```{dot}
-digraph ja2 {
-  graph [rankdir = LR]
-
-  node [fontname = Helvetica,
-    shape = box,
-    fixedsize = false,
-    style = filled,
-    fillcolor = white]
-  組合員 [shape = circle, width = 0.9]
-  JA（単協）
-  node [width = 2.2]
-  JA共済連; JA都道府県中央会; JA全農; 農林中金; JA全中
-  node [width = 2.2,
-    shape = box,
-    style = "dashed,filled"]
-  JA経済連; JA信連
-
-  edge []
-  組合員 -> JA（単協）
-  JA（単協） -> JA経済連 -> JA全農
-  JA（単協） -> JA共済連
-  JA（単協） -> JA信連 -> 農林中金
-  JA（単協） -> JA都道府県中央会 -> JA全中
-  
-  subgraph cluster1 {
-    label = "都道府県段階"
-    fontname = Helvetica
-    bgcolor = ivory
-    style = rounded
-    {rank = same; JA経済連; JA信連; JA都道府県中央会}
-  }
-  subgraph cluster0 {
-    label = "全国段階"
-    fontname = Helvetica
-    bgcolor = honeydew
-    style = rounded
-    {rank = same; JA全農; JA共済連; 農林中金; JA全中}
-  }
-}
+//| file: ../data/Systematic_organization_of_ja2.gv
 ```
 
 この図に，JAバンクを枠で囲みたいと思っても，このままではうまくいかない。
@@ -316,38 +265,5 @@ digraph ja2 {
 現時点では，多少の工夫により，以下のような図を描くことができる。
 
 ```{dot}
-digraph ja_bank {
-  graph [rankdir = LR]
-
-  node [fontname = Helvetica,
-    shape = box,
-    fixedsize = false,
-    style = filled,
-    fillcolor = white]
-  組合員 [shape = circle, width = 0.9]
-  JA（単協）
-  node [width = 2.2]
-  JA共済連; JA都道府県中央会; JA全農; 農林中金; JA全中
-  node [width = 2.2,
-    shape = box,
-    style = "dashed,filled"]
-  JA経済連; JA信連
-
-  edge []
-  組合員 -> JA（単協）
-  JA（単協） -> JA経済連 -> JA全農
-  JA（単協） -> JA共済連
-  JA（単協） -> JA信連 -> 農林中金
-  JA（単協） -> JA都道府県中央会 -> JA全中
-
-  {rank = sink; JA全農; JA共済連; JA全中}
-  subgraph cluster2 {
-    label = "JAバンク"
-    fontname = Helvetica
-    fontcolor = white
-    bgcolor = "#008000"
-    style = rounded
-    JA（単協）; JA信連; 農林中金
-  }
-}
+//| file: ../data/Systematic_organization_of_jabank.gv
 ```

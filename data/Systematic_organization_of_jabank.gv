@@ -28,7 +28,7 @@ digraph ja_bank {
     fontname = Helvetica
     fontcolor = white
     bgcolor = "#008000"
-    style = rounded
+    color = none
     JA（単協）; JA信連; 農林中金
   }
 }
