@@ -99,6 +99,7 @@ DT::datatable(
   DT::formatCurrency(ncol(df), currency = "", interval = 3, mark = ",", digits = 0)
 ```
 
+
 ## 棒グラフ
 
 まず，税引前当期利益を比較してみよう。
@@ -216,3 +217,92 @@ ggsave(g, file = file.path(outdir, "profit_and_loss_by_division.pdf"), width = 8
 ```
 
 営農指導事業は事業総利益そのものがマイナスの値を示していることが分かる。
+
+
+## 折れ線グラフ
+
+次に，農業協同組合の部門別損益の推移の把握を試みる。
+任意の値の推移を見る場合は，棒グラフより折れ線グラフの方が適している。
+
+農業協同組合の長期累年の統計データとして，損益計算書が提供されている。
+
+::: {.callout-note collapse="true" icon="true"}
+## 農業協同組合及び同連合会一斉調査 確報 総合農協統計表　長期累年
+
+[https://www.e-stat.go.jp/index.php/stat-search/database?statdisp_id=0003408614](https://www.e-stat.go.jp/index.php/stat-search/database?statdisp_id=0003408614){target="_blank"}
+:::
+
+```{r}
+response <- httr::GET(
+  url = "https://api.e-stat.go.jp/rest/2.1/app/getSimpleStatsData",
+  query = list(
+    appId = keyring::key_get("e-stat"),
+    statsDataId = "0003408614",
+    sectionHeaderFlg = 2
+  )
+)
+response <- httr::content(response)
+df <- read.csv(text = sub("^.*\\\"VALUE\\\"\n", "", response), header = TRUE, check.names = FALSE)
+
+head(df)
+
+df$`時間軸（年次）` <- as.double(sub("年", "", df$`時間軸（年次）`))
+df_all <- df[df$`都道府県` == "全国", ]
+df_all$value <- as.double(sub("…", "", df_all$value))
+df_all$`損益計算書（総括）` <- factor(df_all$`損益計算書（総括）`, levels = unique(df_all$`損益計算書（総括）`))
+levels(df_all$`損益計算書（総括）`) <- sub("^事業総利益_", "", levels(df_all$`損益計算書（総括）`))
+
+df_all$label <- ""
+df_all$label[grep(".事業総利益$", df_all$`損益計算書（総括）`)] <- "事業総利益"
+df_all2 <- df_all[df_all$label != "", ]
+
+g <- ggplot(data = df_all2, aes(x = `時間軸（年次）`, y = value, group = `損益計算書（総括）`, colour = `損益計算書（総括）`)) +
+  geom_line() +
+  geom_point() +
+  scale_y_continuous(labels = scales::comma_format(), name = "（千円）") +
+  ggtitle("農業協同組合の事業総利益") +
+  labs(caption = "出所：農林水産省『農業協同組合及び同連合会一斉調査 確報 総合農協統計表』長期累年\n（https://www.e-stat.go.jp/index.php/stat-search/database?statdisp_id=0003408614）") +
+  theme_bw() +
+  scale_color_d3() +
+  theme(axis.title.x = element_blank(),
+        axis.title.y = element_text(size = 10, hjust = 1),
+        legend.title=element_blank())
+g + theme(text = element_text(family = "HiraKakuProN-W3"))
+ggsave(g, file = file.path(outdir, "benefits_by_division_for_each_year.pdf"), width = 8, height = 4)
+
+df_all$label <- ""
+df_all$label[grep("事業収益$", df_all$`損益計算書（総括）`)] <- "事業収益"
+df_all2 <- df_all[df_all$label != "", ]
+
+g <- ggplot(data = df_all2, aes(x = `時間軸（年次）`, y = value, group = `損益計算書（総括）`, colour = `損益計算書（総括）`)) +
+  geom_line() +
+  geom_point() +
+  scale_y_continuous(labels = scales::comma_format(), name = "（千円）") +
+  ggtitle("農業協同組合の部門別損益の推移") +
+  labs(caption = "出所：農林水産省『農業協同組合及び同連合会一斉調査 確報 総合農協統計表』長期累年\n（https://www.e-stat.go.jp/index.php/stat-search/database?statdisp_id=0003408614）") +
+  theme_bw() +
+  scale_color_d3() +
+  theme(axis.title.x = element_blank(),
+        axis.title.y = element_text(size = 10, hjust = 1),
+        legend.title=element_blank())
+g + theme(text = element_text(family = "HiraKakuProN-W3"))
+ggsave(g, file = file.path(outdir, "revenues_by_division_for_each_year.pdf"), width = 8, height = 4)
+
+df_all$label <- ""
+df_all$label[grep("事業費用$", df_all$`損益計算書（総括）`)] <- "事業費用"
+df_all2 <- df_all[df_all$label != "", ]
+
+g <- ggplot(data = df_all2, aes(x = `時間軸（年次）`, y = value, group = `損益計算書（総括）`, colour = `損益計算書（総括）`)) +
+  geom_line() +
+  geom_point() +
+  scale_y_continuous(labels = scales::comma_format(), name = "（千円）") +
+  ggtitle("農業協同組合の事業費用") +
+  labs(caption = "出所：農林水産省『農業協同組合及び同連合会一斉調査 確報 総合農協統計表』長期累年\n（https://www.e-stat.go.jp/index.php/stat-search/database?statdisp_id=0003408614）") +
+  theme_bw() +
+  scale_color_d3() +
+  theme(axis.title.x = element_blank(),
+        axis.title.y = element_text(size = 10, hjust = 1),
+        legend.title=element_blank())
+g + theme(text = element_text(family = "HiraKakuProN-W3"))
+ggsave(g, file = file.path(outdir, "costs_by_division_for_each_year.pdf"), width = 8, height = 4)
+```
