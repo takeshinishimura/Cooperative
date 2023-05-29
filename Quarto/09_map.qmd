@@ -237,7 +237,7 @@ g + theme(text = element_text(family = "HiraKakuProN-W3"))
 g <- ggplot(data = dfja2_en) +
   geom_bar(aes(x = pref, y = Multifunctional), stat = "identity", fill = "gray", colour = "black") +
   coord_flip() +
-  scale_x_discrete(limits = rev(levels(dfja2_en$pref))) +
+  scale_x_discrete(limits = rev) +
   geom_hline(yintercept = mean(dfja2_en$Multifunctional), colour = "red", linetype = "dashed") +
   labs(title = "都道府県別総合農協数", y = "総合農協の数") +
   theme_minimal() +
@@ -254,7 +254,7 @@ g + theme(text = element_text(family = "HiraKakuProN-W3"))
 g <- ggplot(data = dfja2_en) +
   geom_segment(aes(x = 0, y = pref, xend = Multifunctional, yend = pref, colour = ifelse(dfja2_en$Multifunctional > mean(dfja2_en$Multifunctional), "red", "skyblue")), linewidth = .8) +
   geom_point(aes(x = Multifunctional, y = pref, colour = ifelse(dfja2_en$Multifunctional > mean(dfja2_en$Multifunctional), "red", "skyblue"))) +
-  scale_y_discrete(limits = rev(levels(dfja2_en$pref))) +
+  scale_y_discrete(limits = rev) +
   geom_vline(xintercept = mean(dfja2_en$Multifunctional), colour = "gray60", linetype = "dashed") +
 # geom_textvline(label = paste0("mean = ", round(mean(dfja2_en$Multifunctional), 1)), xintercept = mean(dfja2_en$Multifunctional), colour = "gray60", linetype = "dashed", hjust = 0, vjust = -.5) +
   labs(title = "都道府県別総合農協数", y = "総合農協の数", caption = "出所：農林水産省『農業協同組合等現在数統計 確報 令和3年度農業協同組合等現在数統計』\n（https://www.e-stat.go.jp/dbview?sid=0002003132）") +

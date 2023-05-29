@@ -32,7 +32,7 @@ lang: ja
 [統計データを用いた作図：e-Stat（API）編](https://takeshinishimura.github.io/Cooperative/02_stats_estatapi.html){target="_blank"}の後半では，e-StatのAPIを使って，Rに統計データを取り込んだ。
 ここでも同様の手法でデータを取得する。
 
-早速，次のコードを実行し，欲しいデータが取得しよう。
+早速，次のコードを実行し，欲しいデータを取得しよう。
 次のコードにある `statsDataId = "0003406360"` の数字はアクセスしたい統計データのIDである。
 
 ```{r}

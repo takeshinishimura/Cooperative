@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.2.475">
+<meta name="generator" content="quarto-1.3.353">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -17,9 +17,10 @@ div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
   width: 0.8em;
-  margin: 0 0.8em 0.2em -1.6em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
 pre > code.sourceCode { white-space: pre; position: relative; }
 pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
@@ -46,43 +47,13 @@ pre.numberSource code > span > a:first-child::before
     -khtml-user-select: none; -moz-user-select: none;
     -ms-user-select: none; user-select: none;
     padding: 0 4px; width: 4em;
-    color: #aaaaaa;
   }
-pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
 div.sourceCode
   {   }
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-code span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code span.at { color: #7d9029; } /* Attribute */
-code span.bn { color: #40a070; } /* BaseN */
-code span.bu { color: #008000; } /* BuiltIn */
-code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code span.ch { color: #4070a0; } /* Char */
-code span.cn { color: #880000; } /* Constant */
-code span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code span.dt { color: #902000; } /* DataType */
-code span.dv { color: #40a070; } /* DecVal */
-code span.er { color: #ff0000; font-weight: bold; } /* Error */
-code span.ex { } /* Extension */
-code span.fl { color: #40a070; } /* Float */
-code span.fu { color: #06287e; } /* Function */
-code span.im { color: #008000; font-weight: bold; } /* Import */
-code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-code span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code span.op { color: #666666; } /* Operator */
-code span.ot { color: #007020; } /* Other */
-code span.pp { color: #bc7a00; } /* Preprocessor */
-code span.sc { color: #4070a0; } /* SpecialChar */
-code span.ss { color: #bb6688; } /* SpecialString */
-code span.st { color: #4070a0; } /* String */
-code span.va { color: #19177c; } /* Variable */
-code span.vs { color: #4070a0; } /* VerbatimString */
-code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
 
@@ -126,9 +97,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <h2 id="toc-title">目次</h2>
    
   <ul>
-  <li><a href="#e-statからデータ取得" id="toc-e-statからデータ取得" class="nav-link active" data-scroll-target="#e-statからデータ取得"><span class="toc-section-number">1</span>  e-Statからデータ取得</a></li>
-  <li><a href="#都道府県別データの作図" id="toc-都道府県別データの作図" class="nav-link" data-scroll-target="#都道府県別データの作図"><span class="toc-section-number">2</span>  都道府県別データの作図</a></li>
-  <li><a href="#都道府県別に色分けした地図" id="toc-都道府県別に色分けした地図" class="nav-link" data-scroll-target="#都道府県別に色分けした地図"><span class="toc-section-number">3</span>  都道府県別に色分けした地図</a></li>
+  <li><a href="#e-statからデータ取得" id="toc-e-statからデータ取得" class="nav-link active" data-scroll-target="#e-statからデータ取得"><span class="header-section-number">1</span> e-Statからデータ取得</a></li>
+  <li><a href="#都道府県別データの作図" id="toc-都道府県別データの作図" class="nav-link" data-scroll-target="#都道府県別データの作図"><span class="header-section-number">2</span> 都道府県別データの作図</a></li>
+  <li><a href="#都道府県別に色分けした地図" id="toc-都道府県別に色分けした地図" class="nav-link" data-scroll-target="#都道府県別に色分けした地図"><span class="header-section-number">3</span> 都道府県別に色分けした地図</a></li>
   </ul>
 </nav>
 </div>
@@ -153,12 +124,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <p>ここでは，都道府県ごとの農業協同組合の数を視覚的に把握することを試みる。</p>
 <p>e-Statを探すと，都道府県ごとの農協の数に関する統計データが存在することがわかる。</p>
-<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
-<div class="callout-caption-container flex-fill">
+<div class="callout-title-container flex-fill">
 農業協同組合等現在数統計 確報 令和３年度農業協同組合等現在数統計 総括の部 1 農業協同組合、同連合会及び農事組合法人数の推移（第１表） 年度次
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
@@ -228,8 +199,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 
-<div class="datatables html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-72838fe2ec0130299cc0" style="width:100%;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-72838fe2ec0130299cc0">{"x":{"filter":"none","vertical":false,"extensions":["Buttons","ColReorder"],"caption":"<caption>都道府県別業種別現在数 - 出資組合（第２表）<\/caption>","data":[["北海道","青森","岩手","宮城","秋田","山形","福島","茨城","栃木","群馬","埼玉","千葉","東京","神奈川","山梨","長野","静岡","新潟","富山","石川","福井","岐阜","愛知","三重","滋賀","京都","大阪","兵庫","奈良","和歌山","鳥取","島根","岡山","広島","山口","徳島","香川","愛媛","高知","福岡","佐賀","長崎","熊本","大分","宮崎","鹿児島","沖縄"],[2,1,1,2,null,null,2,1,null,null,1,null,null,null,2,13,2,null,null,null,4,1,null,null,null,null,null,null,null,null,5,null,null,3,3,null,null,1,null,null,null,3,null,null,2,null,null],[4,6,null,null,null,null,1,null,2,2,null,null,5,null,null,1,6,null,null,null,null,null,3,1,null,2,3,5,null,null,2,1,4,null,1,null,null,null,null,1,null,null,2,3,null,null,null],[1,null,3,null,2,1,2,5,1,null,2,1,2,null,null,4,76,1,2,1,2,2,4,2,null,1,1,null,1,1,2,null,2,1,2,null,1,1,3,5,1,5,3,2,4,3,1],[135,37,31,16,21,18,12,30,19,21,23,26,23,15,14,51,107,26,21,19,13,14,32,14,10,9,28,23,4,10,15,4,15,22,15,21,4,16,10,28,5,23,32,9,28,23,4],[109,10,9,10,13,15,5,17,12,15,16,17,15,12,8,15,17,23,15,16,2,7,20,7,9,5,14,14,1,8,3,1,2,16,3,13,1,11,4,20,4,7,13,3,13,14,1],[104,10,7,10,13,15,5,17,10,15,15,17,15,12,8,14,17,23,15,16,2,7,20,7,9,5,14,14,1,8,3,1,2,13,3,13,1,11,4,20,4,7,13,3,13,13,1],[3,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null],[3,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null],[9,10,3,null,3,null,null,2,null,1,1,2,null,null,null,null,null,null,1,1,1,null,1,null,null,null,2,null,1,null,1,null,null,null,1,1,null,null,null,1,null,1,2,null,4,1,null],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,10,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,2,null,null,null,null,null,null,null,null,null,null,null],[2,1,1,null,null,null,null,null,null,null,null,null,null,null,null,null,2,null,null,null,null,null,null,null,1,null,1,null,null,null,null,1,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null],[1,8,12,1,null,null,1,null,null,null,null,null,null,null,1,6,null,null,null,null,1,null,null,null,null,null,null,null,null,null,1,null,3,null,null,null,null,null,null,null,null,null,1,null,null,2,null],[2,1,null,1,null,null,null,null,null,null,1,null,null,2,null,null,null,null,null,null,1,1,3,null,null,1,3,1,1,1,null,null,1,1,1,4,null,1,1,null,null,2,1,null,3,2,1],[5,null,2,2,3,2,1,5,4,3,2,6,1,1,3,2,4,1,3,1,2,3,1,4,null,null,4,3,null,null,1,1,3,1,3,1,1,2,2,1,null,5,10,1,2,1,1]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>その他<\/th>\n      <th>一般農協<\/th>\n      <th>園芸特産<\/th>\n      <th>出資組合計<\/th>\n      <th>総合農協<\/th>\n      <th>総合農協_うち共済事業を行う農協<\/th>\n      <th>総合農協_うち共済事業を行う農協_業務代理農協<\/th>\n      <th>総合農協_業務代理農協<\/th>\n      <th>畜産<\/th>\n      <th>農事放送<\/th>\n      <th>農村工業<\/th>\n      <th>牧野管理<\/th>\n      <th>養鶏<\/th>\n      <th>酪農<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":10,"dom":"Blfrtip","buttons":[["csv","excel"],["colvis"]],"colReorder":true,"columnDefs":[{"className":"dt-right","targets":[1,2,3,4,5,6,7,8,9,10,11,12,13,14]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+<div class="datatables html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-fd397d340678976f47ad" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-fd397d340678976f47ad">{"x":{"filter":"none","vertical":false,"extensions":["Buttons","ColReorder"],"caption":"<caption>都道府県別業種別現在数 - 出資組合（第２表）<\/caption>","data":[["北海道","青森","岩手","宮城","秋田","山形","福島","茨城","栃木","群馬","埼玉","千葉","東京","神奈川","山梨","長野","静岡","新潟","富山","石川","福井","岐阜","愛知","三重","滋賀","京都","大阪","兵庫","奈良","和歌山","鳥取","島根","岡山","広島","山口","徳島","香川","愛媛","高知","福岡","佐賀","長崎","熊本","大分","宮崎","鹿児島","沖縄"],[2,1,1,2,null,null,2,1,null,null,1,null,null,null,2,13,2,null,null,null,4,1,null,null,null,null,null,null,null,null,5,null,null,3,3,null,null,1,null,null,null,3,null,null,2,null,null],[4,6,null,null,null,null,1,null,2,2,null,null,5,null,null,1,6,null,null,null,null,null,3,1,null,2,3,5,null,null,2,1,4,null,1,null,null,null,null,1,null,null,2,3,null,null,null],[1,null,3,null,2,1,2,5,1,null,2,1,2,null,null,4,76,1,2,1,2,2,4,2,null,1,1,null,1,1,2,null,2,1,2,null,1,1,3,5,1,5,3,2,4,3,1],[135,37,31,16,21,18,12,30,19,21,23,26,23,15,14,51,107,26,21,19,13,14,32,14,10,9,28,23,4,10,15,4,15,22,15,21,4,16,10,28,5,23,32,9,28,23,4],[109,10,9,10,13,15,5,17,12,15,16,17,15,12,8,15,17,23,15,16,2,7,20,7,9,5,14,14,1,8,3,1,2,16,3,13,1,11,4,20,4,7,13,3,13,14,1],[104,10,7,10,13,15,5,17,10,15,15,17,15,12,8,14,17,23,15,16,2,7,20,7,9,5,14,14,1,8,3,1,2,13,3,13,1,11,4,20,4,7,13,3,13,13,1],[3,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null],[3,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null],[9,10,3,null,3,null,null,2,null,1,1,2,null,null,null,null,null,null,1,1,1,null,1,null,null,null,2,null,1,null,1,null,null,null,1,1,null,null,null,1,null,1,2,null,4,1,null],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,10,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,2,null,null,null,null,null,null,null,null,null,null,null],[2,1,1,null,null,null,null,null,null,null,null,null,null,null,null,null,2,null,null,null,null,null,null,null,1,null,1,null,null,null,null,1,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null],[1,8,12,1,null,null,1,null,null,null,null,null,null,null,1,6,null,null,null,null,1,null,null,null,null,null,null,null,null,null,1,null,3,null,null,null,null,null,null,null,null,null,1,null,null,2,null],[2,1,null,1,null,null,null,null,null,null,1,null,null,2,null,null,null,null,null,null,1,1,3,null,null,1,3,1,1,1,null,null,1,1,1,4,null,1,1,null,null,2,1,null,3,2,1],[5,null,2,2,3,2,1,5,4,3,2,6,1,1,3,2,4,1,3,1,2,3,1,4,null,null,4,3,null,null,1,1,3,1,3,1,1,2,2,1,null,5,10,1,2,1,1]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>その他<\/th>\n      <th>一般農協<\/th>\n      <th>園芸特産<\/th>\n      <th>出資組合計<\/th>\n      <th>総合農協<\/th>\n      <th>総合農協_うち共済事業を行う農協<\/th>\n      <th>総合農協_うち共済事業を行う農協_業務代理農協<\/th>\n      <th>総合農協_業務代理農協<\/th>\n      <th>畜産<\/th>\n      <th>農事放送<\/th>\n      <th>農村工業<\/th>\n      <th>牧野管理<\/th>\n      <th>養鶏<\/th>\n      <th>酪農<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":10,"dom":"Blfrtip","buttons":[["csv","excel"],["colvis"]],"colReorder":true,"columnDefs":[{"className":"dt-right","targets":[1,2,3,4,5,6,7,8,9,10,11,12,13,14]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 </div>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>caption <span class="ot">&lt;-</span> <span class="st">"都道府県別業種別現在数 - 非出資組合（第３表）"</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>DT<span class="sc">::</span><span class="fu">datatable</span>(</span>
@@ -247,8 +218,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 
-<div class="datatables html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-df5e66e3b540fc700e29" style="width:100%;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-df5e66e3b540fc700e29">{"x":{"filter":"none","vertical":false,"extensions":["Buttons","ColReorder"],"caption":"<caption>都道府県別業種別現在数 - 非出資組合（第３表）<\/caption>","data":[["北海道","青森","岩手","宮城","秋田","山形","福島","茨城","栃木","群馬","埼玉","千葉","東京","神奈川","山梨","長野","静岡","新潟","富山","石川","福井","岐阜","愛知","三重","滋賀","京都","大阪","兵庫","奈良","和歌山","鳥取","島根","岡山","広島","山口","徳島","香川","愛媛","高知","福岡","佐賀","長崎","熊本","大分","宮崎","鹿児島","沖縄"],[4,8,6,1,null,null,null,null,1,null,null,1,null,null,1,24,null,null,null,null,1,null,1,null,null,null,null,null,null,1,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[null,null,null,null,2,1,null,null,1,null,null,5,null,null,null,1,null,null,1,null,null,null,null,null,3,null,6,9,null,1,null,null,null,1,null,null,null,null,null,1,null,1,null,1,null,null,null],[null,null,null,1,null,null,null,null,null,null,null,null,null,null,7,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,1,null,null,null,null,null,null,null,null],[158,50,137,55,105,19,82,31,21,69,23,32,23,15,23,81,107,26,22,19,15,14,33,14,16,10,34,32,4,12,29,4,15,24,15,21,4,16,12,29,5,24,34,10,28,23,4],[3,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,3,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[4,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[23,13,106,39,84,1,70,1,2,48,null,6,null,null,9,30,null,null,1,null,2,null,1,null,6,1,6,9,null,2,14,null,null,2,null,null,null,null,2,1,null,1,2,1,null,null,null],[10,5,100,37,82,null,70,1,null,48,null,null,null,null,1,4,null,null,null,null,null,null,null,null,null,null,null,null,null,null,13,null,null,null,null,null,null,null,null,null,null,null,2,null,null,null,null],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[2,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>その他<\/th>\n      <th>一般農協<\/th>\n      <th>園芸特産<\/th>\n      <th>出資・非出資組合合計<\/th>\n      <th>畜産<\/th>\n      <th>農事放送<\/th>\n      <th>農村工業<\/th>\n      <th>非出資組合計<\/th>\n      <th>牧野管理<\/th>\n      <th>養鶏<\/th>\n      <th>酪農<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":10,"dom":"Blfrtip","buttons":[["csv","excel"],["colvis"]],"colReorder":true,"columnDefs":[{"className":"dt-right","targets":[1,2,3,4,5,6,7,8,9,10,11]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+<div class="datatables html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-ad5bc783e868a028d460" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-ad5bc783e868a028d460">{"x":{"filter":"none","vertical":false,"extensions":["Buttons","ColReorder"],"caption":"<caption>都道府県別業種別現在数 - 非出資組合（第３表）<\/caption>","data":[["北海道","青森","岩手","宮城","秋田","山形","福島","茨城","栃木","群馬","埼玉","千葉","東京","神奈川","山梨","長野","静岡","新潟","富山","石川","福井","岐阜","愛知","三重","滋賀","京都","大阪","兵庫","奈良","和歌山","鳥取","島根","岡山","広島","山口","徳島","香川","愛媛","高知","福岡","佐賀","長崎","熊本","大分","宮崎","鹿児島","沖縄"],[4,8,6,1,null,null,null,null,1,null,null,1,null,null,1,24,null,null,null,null,1,null,1,null,null,null,null,null,null,1,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[null,null,null,null,2,1,null,null,1,null,null,5,null,null,null,1,null,null,1,null,null,null,null,null,3,null,6,9,null,1,null,null,null,1,null,null,null,null,null,1,null,1,null,1,null,null,null],[null,null,null,1,null,null,null,null,null,null,null,null,null,null,7,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,1,null,null,null,null,null,null,null,null],[158,50,137,55,105,19,82,31,21,69,23,32,23,15,23,81,107,26,22,19,15,14,33,14,16,10,34,32,4,12,29,4,15,24,15,21,4,16,12,29,5,24,34,10,28,23,4],[3,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,3,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[4,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[23,13,106,39,84,1,70,1,2,48,null,6,null,null,9,30,null,null,1,null,2,null,1,null,6,1,6,9,null,2,14,null,null,2,null,null,null,null,2,1,null,1,2,1,null,null,null],[10,5,100,37,82,null,70,1,null,48,null,null,null,null,1,4,null,null,null,null,null,null,null,null,null,null,null,null,null,null,13,null,null,null,null,null,null,null,null,null,null,null,2,null,null,null,null],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[2,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>その他<\/th>\n      <th>一般農協<\/th>\n      <th>園芸特産<\/th>\n      <th>出資・非出資組合合計<\/th>\n      <th>畜産<\/th>\n      <th>農事放送<\/th>\n      <th>農村工業<\/th>\n      <th>非出資組合計<\/th>\n      <th>牧野管理<\/th>\n      <th>養鶏<\/th>\n      <th>酪農<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":10,"dom":"Blfrtip","buttons":[["csv","excel"],["colvis"]],"colReorder":true,"columnDefs":[{"className":"dt-right","targets":[1,2,3,4,5,6,7,8,9,10,11]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 </div>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>caption <span class="ot">&lt;-</span> <span class="st">"都道府県別業種別現在数 - （参考１）　出資組合と非出資組合の計（専門農協、業種別）"</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>DT<span class="sc">::</span><span class="fu">datatable</span>(</span>
@@ -266,17 +237,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 
-<div class="datatables html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-47b22d6b256cf82f0df9" style="width:100%;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-47b22d6b256cf82f0df9">{"x":{"filter":"none","vertical":false,"extensions":["Buttons","ColReorder"],"caption":"<caption>都道府県別業種別現在数 - （参考１）　出資組合と非出資組合の計（専門農協、業種別）<\/caption>","data":[["北海道","青森","岩手","宮城","秋田","山形","福島","茨城","栃木","群馬","埼玉","千葉","東京","神奈川","山梨","長野","静岡","新潟","富山","石川","福井","岐阜","愛知","三重","滋賀","京都","大阪","兵庫","奈良","和歌山","鳥取","島根","岡山","広島","山口","徳島","香川","愛媛","高知","福岡","佐賀","長崎","熊本","大分","宮崎","鹿児島","沖縄"],[6,9,7,3,null,null,2,1,1,null,1,1,null,null,3,37,2,null,null,null,5,1,1,null,null,null,null,null,null,1,6,null,null,3,3,null,null,1,null,null,null,3,null,null,2,null,null],[4,6,null,null,2,1,1,null,3,2,null,5,5,null,null,2,6,null,1,null,null,null,3,1,3,2,9,14,null,1,2,1,4,1,1,null,null,null,null,2,null,1,2,4,null,null,null],[1,null,3,1,2,1,2,5,1,null,2,1,2,null,7,4,76,1,2,1,2,2,4,2,null,1,1,null,1,1,2,null,2,2,2,null,1,1,4,5,1,5,3,2,4,3,1],[49,40,128,45,92,4,77,14,9,54,7,15,8,3,15,66,90,3,7,3,13,7,13,7,7,5,20,18,3,4,26,3,13,8,12,8,3,5,8,9,1,17,21,7,15,9,3],[12,10,3,null,3,null,null,2,null,1,1,2,null,null,null,null,null,null,1,1,2,null,1,null,null,null,2,null,1,null,1,null,null,null,1,1,null,null,1,1,null,1,2,null,4,1,null],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,11,null,1,null,null,null,null,null,null,3,1,null,null,null,null,null,null,null,null,1,2,null,null,null,null,null,null,null,null,null,null,null],[6,1,1,null,null,null,null,null,null,null,null,null,null,null,null,null,2,null,null,null,null,null,null,null,1,null,1,null,null,null,null,1,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null],[11,13,112,38,82,null,71,1,null,48,null,null,null,null,2,10,null,null,null,null,1,null,null,null,null,null,null,null,null,null,14,null,3,null,null,null,null,null,null,null,null,null,3,null,null,2,null],[2,1,null,1,null,null,null,null,null,null,1,null,null,2,null,null,null,null,null,null,1,1,3,null,null,1,3,1,1,1,null,null,1,1,1,4,null,1,1,null,null,2,1,null,3,2,1],[7,null,2,2,3,2,1,5,4,3,2,6,1,1,3,2,4,1,3,1,2,3,1,4,null,null,4,3,null,null,1,1,3,1,3,1,1,2,2,1,null,5,10,1,2,1,1]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>その他<\/th>\n      <th>一般農協<\/th>\n      <th>園芸特産<\/th>\n      <th>計<\/th>\n      <th>畜産<\/th>\n      <th>農事放送<\/th>\n      <th>農村工業<\/th>\n      <th>牧野管理<\/th>\n      <th>養鶏<\/th>\n      <th>酪農<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":10,"dom":"Blfrtip","buttons":[["csv","excel"],["colvis"]],"colReorder":true,"columnDefs":[{"className":"dt-right","targets":[1,2,3,4,5,6,7,8,9,10]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+<div class="datatables html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-c7705a74ee822204a697" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-c7705a74ee822204a697">{"x":{"filter":"none","vertical":false,"extensions":["Buttons","ColReorder"],"caption":"<caption>都道府県別業種別現在数 - （参考１）　出資組合と非出資組合の計（専門農協、業種別）<\/caption>","data":[["北海道","青森","岩手","宮城","秋田","山形","福島","茨城","栃木","群馬","埼玉","千葉","東京","神奈川","山梨","長野","静岡","新潟","富山","石川","福井","岐阜","愛知","三重","滋賀","京都","大阪","兵庫","奈良","和歌山","鳥取","島根","岡山","広島","山口","徳島","香川","愛媛","高知","福岡","佐賀","長崎","熊本","大分","宮崎","鹿児島","沖縄"],[6,9,7,3,null,null,2,1,1,null,1,1,null,null,3,37,2,null,null,null,5,1,1,null,null,null,null,null,null,1,6,null,null,3,3,null,null,1,null,null,null,3,null,null,2,null,null],[4,6,null,null,2,1,1,null,3,2,null,5,5,null,null,2,6,null,1,null,null,null,3,1,3,2,9,14,null,1,2,1,4,1,1,null,null,null,null,2,null,1,2,4,null,null,null],[1,null,3,1,2,1,2,5,1,null,2,1,2,null,7,4,76,1,2,1,2,2,4,2,null,1,1,null,1,1,2,null,2,2,2,null,1,1,4,5,1,5,3,2,4,3,1],[49,40,128,45,92,4,77,14,9,54,7,15,8,3,15,66,90,3,7,3,13,7,13,7,7,5,20,18,3,4,26,3,13,8,12,8,3,5,8,9,1,17,21,7,15,9,3],[12,10,3,null,3,null,null,2,null,1,1,2,null,null,null,null,null,null,1,1,2,null,1,null,null,null,2,null,1,null,1,null,null,null,1,1,null,null,1,1,null,1,2,null,4,1,null],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,11,null,1,null,null,null,null,null,null,3,1,null,null,null,null,null,null,null,null,1,2,null,null,null,null,null,null,null,null,null,null,null],[6,1,1,null,null,null,null,null,null,null,null,null,null,null,null,null,2,null,null,null,null,null,null,null,1,null,1,null,null,null,null,1,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null],[11,13,112,38,82,null,71,1,null,48,null,null,null,null,2,10,null,null,null,null,1,null,null,null,null,null,null,null,null,null,14,null,3,null,null,null,null,null,null,null,null,null,3,null,null,2,null],[2,1,null,1,null,null,null,null,null,null,1,null,null,2,null,null,null,null,null,null,1,1,3,null,null,1,3,1,1,1,null,null,1,1,1,4,null,1,1,null,null,2,1,null,3,2,1],[7,null,2,2,3,2,1,5,4,3,2,6,1,1,3,2,4,1,3,1,2,3,1,4,null,null,4,3,null,null,1,1,3,1,3,1,1,2,2,1,null,5,10,1,2,1,1]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>その他<\/th>\n      <th>一般農協<\/th>\n      <th>園芸特産<\/th>\n      <th>計<\/th>\n      <th>畜産<\/th>\n      <th>農事放送<\/th>\n      <th>農村工業<\/th>\n      <th>牧野管理<\/th>\n      <th>養鶏<\/th>\n      <th>酪農<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":10,"dom":"Blfrtip","buttons":[["csv","excel"],["colvis"]],"colReorder":true,"columnDefs":[{"className":"dt-right","targets":[1,2,3,4,5,6,7,8,9,10]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 <p>これらのデータをよく見ると，次のリンク先のページからダウンロードできるExcelファイルの内容も含んでいることが確認できる。 実際にダウンロードして確認してみよう。</p>
-<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
-<div class="callout-caption-container flex-fill">
+<div class="callout-title-container flex-fill">
 農業協同組合等現在数統計 確報 令和３年度農業協同組合等現在数統計 単位農協の部 1 都道府県別業種別現在数 総括表 非出資組合（第３表） 年度次
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
@@ -287,12 +258,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </div>
 </div>
-<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
-<div class="callout-caption-container flex-fill">
+<div class="callout-title-container flex-fill">
 農業協同組合等現在数統計 確報 令和３年度農業協同組合等現在数統計 単位農協の部 1 都道府県別業種別現在数 総括表 （参考１）出資組合と非出資組合の計（専門農協、業種別） 年度次
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
@@ -395,7 +366,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data =</span> dfja2_en) <span class="sc">+</span></span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="fu">aes</span>(<span class="at">x =</span> pref, <span class="at">y =</span> Multifunctional), <span class="at">stat =</span> <span class="st">"identity"</span>, <span class="at">fill =</span> <span class="st">"gray"</span>, <span class="at">colour =</span> <span class="st">"black"</span>) <span class="sc">+</span></span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>() <span class="sc">+</span></span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_discrete</span>(<span class="at">limits =</span> <span class="fu">rev</span>(<span class="fu">levels</span>(dfja2_en<span class="sc">$</span>pref))) <span class="sc">+</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_discrete</span>(<span class="at">limits =</span> rev) <span class="sc">+</span></span>
 <span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="fu">mean</span>(dfja2_en<span class="sc">$</span>Multifunctional), <span class="at">colour =</span> <span class="st">"red"</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
 <span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"都道府県別総合農協数"</span>, <span class="at">y =</span> <span class="st">"総合農協の数"</span>) <span class="sc">+</span></span>
 <span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
@@ -412,7 +383,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data =</span> dfja2_en) <span class="sc">+</span></span>
 <span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_segment</span>(<span class="fu">aes</span>(<span class="at">x =</span> <span class="dv">0</span>, <span class="at">y =</span> pref, <span class="at">xend =</span> Multifunctional, <span class="at">yend =</span> pref, <span class="at">colour =</span> <span class="fu">ifelse</span>(dfja2_en<span class="sc">$</span>Multifunctional <span class="sc">&gt;</span> <span class="fu">mean</span>(dfja2_en<span class="sc">$</span>Multifunctional), <span class="st">"red"</span>, <span class="st">"skyblue"</span>)), <span class="at">linewidth =</span> .<span class="dv">8</span>) <span class="sc">+</span></span>
 <span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> Multifunctional, <span class="at">y =</span> pref, <span class="at">colour =</span> <span class="fu">ifelse</span>(dfja2_en<span class="sc">$</span>Multifunctional <span class="sc">&gt;</span> <span class="fu">mean</span>(dfja2_en<span class="sc">$</span>Multifunctional), <span class="st">"red"</span>, <span class="st">"skyblue"</span>))) <span class="sc">+</span></span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_discrete</span>(<span class="at">limits =</span> <span class="fu">rev</span>(<span class="fu">levels</span>(dfja2_en<span class="sc">$</span>pref))) <span class="sc">+</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_discrete</span>(<span class="at">limits =</span> rev) <span class="sc">+</span></span>
 <span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fu">mean</span>(dfja2_en<span class="sc">$</span>Multifunctional), <span class="at">colour =</span> <span class="st">"gray60"</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
 <span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="co"># geom_textvline(label = paste0("mean = ", round(mean(dfja2_en$Multifunctional), 1)), xintercept = mean(dfja2_en$Multifunctional), colour = "gray60", linetype = "dashed", hjust = 0, vjust = -.5) +</span></span>
 <span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"都道府県別総合農協数"</span>, <span class="at">y =</span> <span class="st">"総合農協の数"</span>, <span class="at">caption =</span> <span class="st">"出所：農林水産省『農業協同組合等現在数統計 確報 令和3年度農業協同組合等現在数統計』</span><span class="sc">\n</span><span class="st">（https://www.e-stat.go.jp/dbview?sid=0002003132）"</span>) <span class="sc">+</span></span>
@@ -662,9 +633,23 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     icon: icon
   };
   anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
   const clipboard = new window.ClipboardJS('.code-copy-button', {
-    target: function(trigger) {
-      return trigger.previousElementSibling;
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
     }
   });
   clipboard.on('success', function(e) {
@@ -729,6 +714,92 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       return note.innerHTML;
     });
   }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
   const findCites = (el) => {
     const parentEl = el.parentElement;
     if (parentEl) {

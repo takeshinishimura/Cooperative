@@ -1,0 +1,218 @@
+---
+project:
+  type: website
+  output-dir: docs
+title: "棒グラフ"
+format:
+  html:
+    toc: true
+    toc-title: 目次
+    toc_float: true
+    toc-depth: 3
+    number-sections: true
+    theme: lumen
+lang: ja
+---
+
+ここでは，農業協同組合の部門別損益の把握を試みる。
+
+まず，令和2事業年度の総合農協統計表の損益計算書の統計データがどこにあるかを確認する。
+
+::: {.callout-note collapse="true" icon="true"}
+## 農業協同組合及び同連合会一斉調査 確報 総合農協統計表　令和２事業年度総合農協統計表　第１部　都道府県別統計表　損益計算書
+
+[https://www.e-stat.go.jp/index.php/stat-search/database?statdisp_id=0001998613](https://www.e-stat.go.jp/index.php/stat-search/database?statdisp_id=0001998613){target="_blank"}
+:::
+
+e-Statには部門別損益のデータセットも用意されており，次のページから確認できる。
+
+::: {.callout-note collapse="true" icon="true"}
+## 農業協同組合及び同連合会一斉調査 確報 総合農協統計表　令和２事業年度総合農協統計表　第１部　都道府県別統計表　部門別損益
+
+[https://www.e-stat.go.jp/index.php/stat-search/database?statdisp_id=0001998643](https://www.e-stat.go.jp/index.php/stat-search/database?statdisp_id=0001998643){target="_blank"}
+:::
+
+部門別損益の表は，損益計算書を組み替えたものであると考えられる。
+しかしながら，各統計表の数値は一致しない。
+例えば，事業総利益は前者では1,710,097,906，後者では1,707,803,082となっている（単位はいずれも千円）。
+本来，これらの数値は一致するはずであることから，どちらかが再集計しているのかもしれない。
+
+上記2つのデータセットを提供するページのいずれにもExcelファイルがないことから，どこかにExcelファイルを提供するページがあるはずである。
+探すと，次の2つのページが見つかる。
+
+::: {.callout-note collapse="true" icon="true"}
+## 農業協同組合及び同連合会一斉調査 確報 総合農協統計表　令和２事業年度総合農協統計表　第１部　都道府県別統計表　損益計算書
+
+[https://www.e-stat.go.jp/stat-search/files?stat_infid=000040041555](https://www.e-stat.go.jp/stat-search/files?stat_infid=000040041555){target="_blank"}
+:::
+
+::: {.callout-note collapse="true" icon="true"}
+## 農業協同組合及び同連合会一斉調査 確報 総合農協統計表　令和２事業年度総合農協統計表　第１部　都道府県別統計表　部門別損益
+
+[https://www.e-stat.go.jp/stat-search/files?stat_infid=000040041636](https://www.e-stat.go.jp/stat-search/files?stat_infid=000040041636){target="_blank"}
+:::
+
+これらのページからExcelファイルをダウンロードして比較してみると，上の2つのデータセットと同じ数値であり，損益計算書と部門別損益の違いも同じである。
+ただし，Excelファイルの方が情報が多いことが分かる。
+集計組合数が前者は587であるのに対して，後者は582である。
+後者が5つ少ない。
+この理由が後者の表の下の注に以下のように記されている。
+「農林中央金庫及び特定農水産業協同組合等による信用事業の再編及び強化に関する法律（平成八年法律第百十八号）第42条第1項に基づき信用事業譲渡を行い業務の代理を行う農協は含まない。」
+これらのことから，e-StatからAPIでデータを入手する場合，同じデータを含むExcelファイルを確認することも怠らない方がよいと言えよう。
+
+ここでは，部門別損益のデータセットを用いて図を作成することにする。
+
+
+## e-Statからデータ取得
+
+早速，次のコードを実行しよう。
+次のコードにある `statsDataId = "0001998643"` の数字はアクセスしたい統計データのIDである。
+
+```{r}
+library(httr)
+
+response <- httr::GET(
+  url = "https://api.e-stat.go.jp/rest/2.1/app/getSimpleStatsData",
+  query = list(
+    appId = keyring::key_get("e-stat"),
+    statsDataId = "0001998643",
+    sectionHeaderFlg = 2
+  )
+)
+response <- httr::content(response)
+df <- read.csv(text = sub("^.*\\\"VALUE\\\"\n", "", response), header = TRUE, check.names = FALSE)
+
+head(df, 10)
+
+caption <- "農業協同組合の部門別損益"
+DT::datatable(
+  df, caption = caption, rownames = TRUE,
+  extensions = 'Buttons',
+  options = list(
+    pageLength = 10,
+    dom = 'Blfrtip',
+    buttons = list(
+      c('csv', 'excel')
+    )
+  )
+) |>
+  DT::formatCurrency(ncol(df), currency = "", interval = 3, mark = ",", digits = 0)
+```
+
+## 棒グラフ
+
+まず，税引前当期利益を比較してみよう。
+
+```{r}
+df1 <- df[df[, 2] == "税引前当期利益" & df$`(R001-02-1-050)部門別損益計算書（総括版）` != "計" & df$value != "-", ]
+
+library(ggplot2)
+library(ggsci)
+
+g <- ggplot(data = df1) +
+  geom_bar(aes(x = `(R001-02-1-050)部門別損益計算書（総括版）`,
+               y = value,
+               fill = `(R001-02-1-050)部門別損益計算書（総括版）`),
+           stat = "identity") +
+  theme_bw() +
+  scale_x_discrete(limits = rev) +
+  theme(legend.position = "none") +
+  scale_fill_nejm() +
+  theme(axis.title = element_blank())
+g + theme(text = element_text(family = "HiraKakuProN-W3"))
+```
+
+::: {.callout-caution collapse="false" icon="true"}
+
+R（RStudio）で実行（Quartoを`Render`）した場合とVisual Studio CodeでQuartoを`Render`した場合とで，縦軸の順番が異なる。
+後で実行する，`levels(factor(df$`(R001-02-1-050)部門別損益計算書（総括版）`))`の結果にも違いが生じる。
+おそらく後者の処理の中でバグが生じている可能性が考えられる。
+ここに表示されるものは後者で`Render`した結果である。
+:::
+
+横軸の数値の幅がおかしい。
+ここで，データフレームの構造を確認してみる。
+
+```{r}
+str(df)
+```
+
+`value`列が文字型となっているのは，`"-"`が入っているためであることが想像できる。
+`"-"`を削除してから，数値型に変換することにする。
+
+```{r}
+df$value <- as.double(sub("^-$", "", df$value))
+
+levels(factor(df$`(R001-02-1-050)部門別損益計算書（総括版）`))
+
+df$`(R001-02-1-050)部門別損益計算書（総括版）` <- factor(df$`(R001-02-1-050)部門別損益計算書（総括版）`, levels = unique(df$`(R001-02-1-050)部門別損益計算書（総括版）`))
+```
+
+::: {.callout-caution collapse="false" icon="true"}
+
+上述のように実行環境によって結果が変わることから，ここでは`factor`の`levels`を明示している。
+ここで`levels`を省略した場合，R（RStudio）とVisual Studio Codeの結果のいずれも正しくない。
+:::
+
+改めて，税引前当期利益を比較してみよう。
+
+```{r}
+library(stringr)
+df1 <- df[str_detect(df$`(R001-02-2-011)区分`, "^税引前当期利益$") &
+          !str_detect(df$`(R001-02-1-050)部門別損益計算書（総括版）`, "^(計|共通管理費等)$"), ]
+
+g <- ggplot(data = df1) +
+  geom_bar(aes(x = `(R001-02-1-050)部門別損益計算書（総括版）`,
+               y = value,
+               fill = `(R001-02-1-050)部門別損益計算書（総括版）`),
+           stat = "identity") +
+  scale_y_continuous(labels = scales::comma_format(), name = "（千円）") +
+  ggtitle("農業協同組合の部門別税引前当期利益") +
+  labs(caption = "出所：農林水産省『令和2事業年度総合農協統計表』\n（https://www.e-stat.go.jp/index.php/stat-search/database?statdisp_id=0001998643）") +
+  theme_bw() +
+  theme(legend.position = "none") +
+  scale_fill_nejm() +
+  theme(axis.title.x = element_blank(),
+        axis.title.y = element_text(size = 10, hjust = 1))
+g + theme(text = element_text(family = "HiraKakuProN-W3"))
+```
+
+```{r}
+#| include: false
+#| warning: false
+outdir <- "../fig"
+if (!file.exists(outdir)) {
+  dir.create(outdir)
+}
+
+ggsave(g, file = file.path(outdir, "benefits_by_division.pdf"), width = 8, height = 4)
+```
+
+営農指導事業，生活その他事業，農業関連事業の税引前当期利益がマイナスであることが分かる。
+これらについて詳細を確認するために，次に，事業総利益と事業管理費のグラフを描いてみよう。
+
+```{r}
+df2 <- df[str_detect(df$`(R001-02-2-011)区分`, "^(事業総利益|事業管理費)$") &
+          !str_detect(df$`(R001-02-1-050)部門別損益計算書（総括版）`, "^(計|共通管理費等)$"), ]
+
+g <- ggplot(data = df2) +
+  geom_bar(aes(x = `(R001-02-1-050)部門別損益計算書（総括版）`,
+               y = value,
+               fill = `(R001-02-2-011)区分`),
+           stat = "identity", position = "dodge") +
+  scale_y_continuous(labels = scales::comma_format(), name = "（千円）") +
+  ggtitle("農業協同組合の部門別損益") +
+  labs(caption = "出所：農林水産省『令和2事業年度総合農協統計表』\n（https://www.e-stat.go.jp/index.php/stat-search/database?statdisp_id=0001998643）") +
+  theme_bw() +
+  guides(fill = guide_legend(reverse = TRUE, title = "部門別損益")) +
+  scale_fill_npg() +
+  theme(axis.title.x = element_blank(),
+        axis.title.y = element_text(size = 10, hjust = 1))
+g + theme(text = element_text(family = "HiraKakuProN-W3"))
+```
+
+```{r}
+ggsave(g, file = file.path(outdir, "profit_and_loss_by_division.pdf"), width = 8, height = 4)
+```
+
+営農指導事業は事業総利益そのものがマイナスの値を示していることが分かる。

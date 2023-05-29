@@ -11,6 +11,7 @@
 1. [統計データを用いた作図：HTML編](https://takeshinishimura.github.io/Cooperative/02_stats_html.html)
 1. [顔認識](https://takeshinishimura.github.io/Cooperative/03_face.html)
 1. [ダイアグラム](https://takeshinishimura.github.io/Cooperative/04_graphviz.html)
+1. [棒グラフ](https://takeshinishimura.github.io/Cooperative/05_barplot.html)
 1. [データの整形](https://takeshinishimura.github.io/Cooperative/08_data_formatting.html)
 1. [地図](https://takeshinishimura.github.io/Cooperative/09_map.html) -> [Pythonを使う場合](./map.ipynb)
 
