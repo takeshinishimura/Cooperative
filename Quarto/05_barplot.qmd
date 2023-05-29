@@ -125,13 +125,13 @@ g + theme(text = element_text(family = "HiraKakuProN-W3"))
 
 ::: {.callout-caution collapse="false" icon="true"}
 
-R（RStudio）で実行（Quartoを`Render`）した場合とVisual Studio CodeでQuartoを`Render`した場合とで，縦軸の順番が異なる。
+R（RStudio）で実行（Quartoを`Render`）した場合とVisual Studio CodeでQuartoを`Render`した場合とで，横軸の目盛りの順番が異なる。
 後で実行する，`levels(factor(df$`(R001-02-1-050)部門別損益計算書（総括版）`))`の結果にも違いが生じる。
 おそらく後者の処理の中でバグが生じている可能性が考えられる。
 ここに表示されるものは後者で`Render`した結果である。
 :::
 
-横軸の数値の幅がおかしい。
+縦軸の数値の幅がおかしい。
 ここで，データフレームの構造を確認してみる。
 
 ```{r}
