@@ -1,0 +1,40 @@
+digraph sankumi_to_ja {
+  graph [rankdir = LR]
+  node [fontname = Helvetica,
+    shape = box,
+    fixedsize = true,
+    style = filled,
+    fillcolor = white
+    width = 1.5]
+  産業組合; 農　　会; 農業会; 農業協同組合
+
+  edge []
+  産業組合->農業会
+  農　　会->農業会
+  農業会->農業協同組合
+
+  subgraph cluster1 {
+    label = "1900年\n産業組合法"
+    fontname = Helvetica
+    bgcolor = ivory
+    {rank = same; 産業組合}
+  }
+  subgraph cluster2 {
+    label = "1899年\n農会法"
+    fontname = Helvetica
+    bgcolor = ivory
+    {rank = same; 農　　会}
+  }
+  subgraph cluster3 {
+    label = "1943年\n農業団体法"
+    fontname = Helvetica
+    bgcolor = ivory
+    {rank = same; 農業会}
+  }
+  subgraph cluster4 {
+    label = "1947年\n農業協同組合法"
+    fontname = Helvetica
+    bgcolor = ivory
+    {rank = same; 農業協同組合}
+  }
+}

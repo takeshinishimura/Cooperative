@@ -30,13 +30,11 @@ e-Statを探すと，都道府県ごとの農協の数に関する統計デー�
 ヘッダーがゴチャゴチャしている。
 ここで，Excelではグラフ作成時にセルを指定できるから何の問題もないと考える人にとっては，以下の説明は無益である。
 
+以下では，e-StatのAPIを使って，Rに統計データを取り込むことから始める。
 
 ## e-Statからデータ取得
 
-[統計データを用いた作図：e-Stat（API）編](https://takeshinishimura.github.io/Cooperative/02_stats_estatapi.html){target="_blank"}の後半では，e-StatのAPIを使って，Rに統計データを取り込んだ。
-ここでも同様のことが可能である。
-
-早速，次のコードを実行し，欲しいデータが取得しよう。
+次のコードを実行し，欲しいデータを取得する。
 なお，`statsDataId = "0002003132"` にある数字は，e-Statの[農業協同組合等現在数統計 確報 令和3年度農業協同組合等現在数統計](https://www.e-stat.go.jp/dbview?sid=0002003132){target="_blank"}のページを指すIDである。
 
 ```{r}
@@ -76,7 +74,13 @@ dfref1 <- df2[, c("都道府県", grep("（参考１）出資組合と非出資�
 names(dfja2) <- sub("出資組合（第２表）_", "", names(dfja2))
 names(dfja3) <- sub("非出資組合（第３表）_", "", names(dfja3))
 names(dfref1) <- sub("（参考１）出資組合と非出資組合の計（専門農協、業種別）_", "", names(dfref1))
+```
 
+次の作表が突然エラーが出るようになった。
+バグなのかわからない。
+
+```{R}
+#| eval: false
 caption <- "都道府県別業種別現在数 - 出資組合（第２表）"
 DT::datatable(
   dfja2[, -1], caption = caption, rownames = TRUE,
@@ -152,7 +156,10 @@ DT::datatable(
 ## 都道府県別データの作図
 
 まず，総合農協の数を都道府県別に比較してみよう。
-その前に，`ggplot2` では日本語の変数名では処理できないことがあるようなので，変数名をアスキー文字に変換しておく。
+
+~~その前に，`ggplot2` では日本語の変数名では処理できないことがあるようなので，変数名をアスキー文字に変換しておく。~~
+と思ったが，列名の変更によってコードが煩雑になるため，日本語のまま処理することにしたい。
+次のコードは消さずに残しておくが，実行する必要はない。
 
 ```{r}
 jaen <- matrix(c(
@@ -178,17 +185,19 @@ names(jaen2) <- c("ja", "en")
 dfja2_en <- dfja2
 newnames <- rep("", ncol(dfja2_en))
 names(dfja2_en) <- jaen2$en[match(names(dfja2_en), jaen2$ja)]
+
 dfja2_en$pref <- factor(dfja2_en$pref, levels = pref)
 ```
 
 よく見かけるのが，横軸（または縦軸）を都道府県とした棒グラフである。
 
 ```{r}
-#| warning: false
+dfja2$`都道府県` <- factor(dfja2$`都道府県`, levels = pref)
+
 library(ggplot2)
 
-g <- ggplot(data = dfja2_en) +
-  geom_bar(aes(x = pref, y = Multifunctional), stat = "identity") +
+g <- ggplot(data = dfja2) +
+  geom_bar(aes(x = `都道府県`, y = `総合農協`), stat = "identity") +
   labs(y = "総合農協の数", title = "都道府県別総合農協数") +
   theme(axis.title.x = element_blank(),
         axis.text.x = element_text(angle = 90, hjust = 1, vjust = .5))
@@ -204,8 +213,8 @@ g + theme(text = element_text(family = "HiraKakuProN-W3"))
 なお，グラフを描かずとも，次のコマンドでほぼ類似の情報が得られる。
 
 ```{r}
-summary(dfja2_en$Multifunctional)
-stem(dfja2_en$Multifunctional, scale = 2)
+summary(dfja2$`総合農協`)
+stem(dfja2$`総合農協`, scale = 2)
 ```
 
 それでは，どうすれば見やすくなるだろうか。
@@ -214,10 +223,9 @@ stem(dfja2_en$Multifunctional, scale = 2)
 北海道を除いたグラフを作成してみよう。
 
 ```{r}
-#| warning: false
-g <- ggplot(data = dfja2_en[dfja2_en[, "pref"] != "北海道",]) +
-  geom_bar(aes(x = pref, y = Multifunctional), stat = "identity", fill = "gray", colour = "black") +
-  geom_hline(yintercept = mean(dfja2_en[dfja2_en[, "pref"] != "北海道",]$Multifunctional), colour = "red", linetype = "dashed") +
+g <- ggplot(data = dfja2[dfja2$`都道府県` != "北海道", ]) +
+  geom_bar(aes(x = `都道府県`, y = `総合農協`), stat = "identity", fill = "gray", colour = "black") +
+  geom_hline(yintercept = mean(dfja2[dfja2$`都道府県` != "北海道", ]$`総合農協`), colour = "red", linetype = "dashed") +
   labs(title = "都府県別総合農協数", y = "総合農協の数") +
   theme_minimal() +
   theme(axis.title.x = element_blank(),
@@ -233,12 +241,11 @@ g + theme(text = element_text(family = "HiraKakuProN-W3"))
 横棒グラフにすると多少ましかもしれない。
 
 ```{r}
-#| warning: false
-g <- ggplot(data = dfja2_en) +
-  geom_bar(aes(x = pref, y = Multifunctional), stat = "identity", fill = "gray", colour = "black") +
+g <- ggplot(data = dfja2) +
+  geom_bar(aes(x = `都道府県`, y = `総合農協`), stat = "identity", fill = "gray", colour = "black") +
   coord_flip() +
   scale_x_discrete(limits = rev) +
-  geom_hline(yintercept = mean(dfja2_en$Multifunctional), colour = "red", linetype = "dashed") +
+  geom_hline(yintercept = mean(dfja2$`総合農協`), colour = "red", linetype = "dashed") +
   labs(title = "都道府県別総合農協数", y = "総合農協の数") +
   theme_minimal() +
   theme(axis.title = element_blank())
@@ -251,12 +258,12 @@ g + theme(text = element_text(family = "HiraKakuProN-W3"))
 #| warning: false
 # library(geomtextpath)
 
-g <- ggplot(data = dfja2_en) +
-  geom_segment(aes(x = 0, y = pref, xend = Multifunctional, yend = pref, colour = ifelse(dfja2_en$Multifunctional > mean(dfja2_en$Multifunctional), "red", "skyblue")), linewidth = .8) +
-  geom_point(aes(x = Multifunctional, y = pref, colour = ifelse(dfja2_en$Multifunctional > mean(dfja2_en$Multifunctional), "red", "skyblue"))) +
+g <- ggplot(data = dfja2) +
+  geom_segment(aes(x = 0, y = `都道府県`, xend = `総合農協`, yend = `都道府県`, colour = ifelse(dfja2$`総合農協` > mean(dfja2$`総合農協`), "red", "skyblue")), linewidth = .8) +
+  geom_point(aes(x = `総合農協`, y = `都道府県`, colour = ifelse(dfja2$`総合農協` > mean(dfja2$`総合農協`), "red", "skyblue"))) +
   scale_y_discrete(limits = rev) +
-  geom_vline(xintercept = mean(dfja2_en$Multifunctional), colour = "gray60", linetype = "dashed") +
-# geom_textvline(label = paste0("mean = ", round(mean(dfja2_en$Multifunctional), 1)), xintercept = mean(dfja2_en$Multifunctional), colour = "gray60", linetype = "dashed", hjust = 0, vjust = -.5) +
+  geom_vline(xintercept = mean(dfja2$`総合農協`), colour = "gray60", linetype = "dashed") +
+# geom_textvline(label = paste0("mean = ", round(mean(dfja2$`総合農協`), 1)), xintercept = mean(dfja2$`総合農協`), colour = "gray60", linetype = "dashed", hjust = 0, vjust = -.5) +
   labs(title = "都道府県別総合農協数", y = "総合農協の数", caption = "出所：農林水産省『農業協同組合等現在数統計 確報 令和3年度農業協同組合等現在数統計』\n（https://www.e-stat.go.jp/dbview?sid=0002003132）") +
   theme_minimal() +
   scale_color_brewer(palette = "Paired", direction = 1) +
@@ -283,21 +290,21 @@ ggsave(g, file = file.path(outdir, "number_of_ja_lollipop.pdf"), width = 10, hei
 
 ```{r}
 #| warning: false
-g <- ggplot(data = dfja2_en) +
+g <- ggplot(data = dfja2) +
   geom_segment(
-    aes(x = 0, y = pref[order(Multifunctional)],
-        xend = Multifunctional[order(Multifunctional)],
-        yend = pref[order(Multifunctional)]),
+    aes(x = 0, y = `都道府県`[order(`総合農協`)],
+        xend = `総合農協`[order(`総合農協`)],
+        yend = `都道府県`[order(`総合農協`)]),
     colour = "darkorange",
     linewidth = .8
   ) +
   geom_point(
-    aes(x = Multifunctional[order(Multifunctional)],
-        y = pref[order(Multifunctional)]),
+    aes(x = `総合農協`[order(`総合農協`)],
+        y = `都道府県`[order(`総合農協`)]),
     colour = "darkorange"
   ) +
-  scale_y_discrete(limits = pref[order(dfja2_en$Multifunctional)]) +
-  geom_vline(xintercept = mean(dfja2_en$Multifunctional), colour = "gray60", linetype = "dashed") +
+  scale_y_discrete(limits = dfja2$`都道府県`[order(dfja2$`総合農協`)]) +
+  geom_vline(xintercept = mean(dfja2$`総合農協`), colour = "gray60", linetype = "dashed") +
   labs(title = "都道府県別総合農協数", y = "総合農協の数", caption = "出所：農林水産省『農業協同組合等現在数統計 確報 令和3年度農業協同組合等現在数統計』\n（https://www.e-stat.go.jp/dbview?sid=0002003132）") +
   theme_minimal() +
 #  scale_color_brewer(palette = "Paired") +
@@ -321,6 +328,8 @@ ggsave(g, file = file.path(outdir, "number_of_ja_lollipop_ordered.pdf"), width =
 
 ## 都道府県別に色分けした地図
 
+### 都道府県別総合農協の数
+
 ```{r}
 #| warning: false
 library(rnaturalearth)
@@ -330,14 +339,15 @@ japan_map <- rnaturalearth::ne_states("Japan", returnclass = "sf")
 names(japan_map)[names(japan_map) == "name_ja"] <- "pref"
 
 # 農協のデータに「都府県」の文字を追加する
-dfja2_en$pref <- ifelse(dfja2_en$pref %in% c("北海道", "東京", "京都", "大阪"),
-  paste0(dfja2_en$pref, c("", "都", "府", "府")[match(dfja2_en$pref, c("北海道", "東京", "京都", "大阪"))]),
-  paste0(dfja2_en$pref, "県"))
+dfja2$pref <- dfja2$`都道府県`
+dfja2$pref <- ifelse(dfja2$pref %in% c("北海道", "東京", "京都", "大阪"),
+  paste0(dfja2$pref, c("", "都", "府", "府")[match(dfja2$pref, c("北海道", "東京", "京都", "大阪"))]),
+  paste0(dfja2$pref, "県"))
 
-japan_map2 <- dplyr::left_join(japan_map, dfja2_en, by = "pref")
+japan_map2 <- dplyr::left_join(japan_map, dfja2, by = "pref")
 
 g <- ggplot(data = japan_map2) +
-  geom_sf(aes(fill = Multifunctional)) +
+  geom_sf(aes(fill = `総合農協`)) +
   scale_fill_distiller(name = "総合農協の数", palette = "Greens", direction = 1) +
   theme_void()
 g + theme(text = element_text(family = "HiraKakuProN-W3"))
@@ -356,15 +366,14 @@ g + theme(text = element_text(family = "HiraKakuProN-W3"))
 ```{r}
 library(rmapshaper)
 
-dfja2_en$Multifunctional_q <- 
 adddf <- data.frame(
-  pref = dfja2_en$pref,
-  Multifunctional_q = factor(cut(dfja2_en$Multifunctional, breaks = quantile(dfja2_en$Multifunctional), labels = FALSE, include.lowest = TRUE)))
+  pref = dfja2$pref,
+  Multifunctional_q = factor(cut(dfja2$`総合農協`, breaks = quantile(dfja2$`総合農協`), labels = FALSE, include.lowest = TRUE)))
 
-japan_map2 <- dplyr::left_join(japan_map2, adddf, by = "pref")
+japan_map2_2 <- dplyr::left_join(japan_map2, adddf, by = "pref")
 # 離島を削除する
-japan_map_shrinked <- rmapshaper::ms_filter_islands(japan_map2, min_area = 300000000)
-# japan_map_shrinked <- rmapshaper::ms_filter_islands(japan_map2, min_area = 1301448169)# 沖縄県が消える ※沖縄本島の面積は1,207.00km2
+japan_map_shrinked <- rmapshaper::ms_filter_islands(japan_map2_2, min_area = 300000000)
+# japan_map_shrinked <- rmapshaper::ms_filter_islands(japan_map2_2, min_area = 1301448169)# 沖縄県が消える ※沖縄本島の面積は1,207.00km2
 
 g <- ggplot(data = japan_map_shrinked) +
   geom_sf(aes(fill = Multifunctional_q)) +
@@ -389,6 +398,39 @@ ggsave(g, file = file.path(outdir, "number_of_ja_map.pdf"), width = 8, height = 
 おそらく専門家はどうすべきか答えを持っているはずであるが，私はその答えを知らない。
 ここでの目的は都道府県別の比較であるため，全都道府県（の大半）が表示されていれば問題ないと考え，このような図にした。
 
+ここで，[bertin](https://github.com/BjnNowak/bertin){target="_blank"}パッケージを使うとどうなるか試してみる。
+
+```{r}
+#| warning: false
+library(bertin)
+
+regions_valued <- bertin::make_points(
+  polygon = japan_map2,
+  n = 50, # Number of points per side
+  square = TRUE
+)
+
+g <- ggplot(regions_valued, aes(size = `総合農協`))+
+  geom_sf(
+    japan_map2,
+    mapping = aes(geometry = geometry),
+    inherit.aes = FALSE
+  ) +
+  geom_sf()+
+  scale_size(range = c(1, 4)) +
+  theme_void()
+g + theme(text = element_text(family = "HiraKakuProN-W3"))
+```
+
+```{r}
+#| include: false
+ggsave(g, file = file.path(outdir, "number_of_ja_map_bertin.pdf"), width = 8, height = 7)
+```
+
+ドットの大きさを一定にして，ドットの数のみで描画した方がよいかもしれない。
+
+### 都道府県別専門農協の数
+
 さて，これまでを振り返ると総合農協の数しか図示していないことに気づく。
 次に，専門農協の数を図示してみよう。
 
@@ -411,7 +453,8 @@ stem(dfref1[, "計"], scale = 2)
 ひとつ飛び抜けた都道府県が存在することが分かる。
 元データを見ればどの都道府県か特定できるが，ここでは地図を描いて確認したい。
 
-`ggplot2` で描画する前に，変数名をアスキー文字に変換するなど，先ほどと同じ前処理が必要である。
+~~`ggplot2` で描画する前に，変数名をアスキー文字に変換するなど，先ほどと同じ前処理が必要である。~~
+スキップする。
 
 ```{r}
 #| message: false
@@ -434,22 +477,28 @@ names(jaenref1) <- c("ja", "en")
 dfref1_en <- dfref1
 newnames <- rep("", ncol(dfref1_en))
 names(dfref1_en) <- jaenref1$en[match(names(dfref1_en), jaenref1$ja)]
-dfref1_en$pref <- factor(dfref1_en$pref, levels = pref)
 
+dfref1_en$pref <- factor(dfref1_en$pref, levels = pref)
+```
+
+続いて，地図を描画する。
+
+```{r}
 # 農協のデータに「都府県」の文字を追加する
-dfref1_en$pref <- ifelse(dfref1_en$pref %in% c("北海道", "東京", "京都", "大阪"),
-  paste0(dfref1_en$pref, c("", "都", "府", "府")[match(dfref1_en$pref, c("北海道", "東京", "京都", "大阪"))]),
-  paste0(dfref1_en$pref, "県"))
+dfref1$pref <- dfref1$`都道府県`
+dfref1$pref <- ifelse(dfref1$pref %in% c("北海道", "東京", "京都", "大阪"),
+  paste0(dfref1$pref, c("", "都", "府", "府")[match(dfref1$pref, c("北海道", "東京", "京都", "大阪"))]),
+  paste0(dfref1$pref, "県"))
 
 library(NipponMap)
 library(sf)
 
 nippon_map <- sf::read_sf(system.file("shapes/jpn.shp", package = "NipponMap")[1], crs = "WGS84")
-nippon_map$pref <- dfref1_en$pref# こういう強引なことはやってはいけない
-japan_map2 <- dplyr::left_join(nippon_map, dfref1_en, by = "pref")
+nippon_map$pref <- dfref1$pref# こういう強引なことは本来はやってはいけない
+japan_map2 <- dplyr::left_join(nippon_map, dfref1, by = "pref")
 
 g <- ggplot(data = japan_map2) +
-  geom_sf(aes(fill = total)) +
+  geom_sf(aes(fill = `計`)) +
   scale_fill_distiller(name = "専門農協の数", palette = "YlOrRd", direction = 1) +
   theme(axis.text = element_blank()) +
   theme_minimal()
@@ -463,21 +512,15 @@ g + theme(text = element_text(family = "HiraKakuProN-W3"))
 
 次に，四分位数による区分を見てもよいが，ここでは，専門農協の業種別データがあるので，これらのデータを使って，岩手県にどのような専門農協が多いかを確認してみよう。
 
-
 ```{r}
-tmp <- dfref1[, -which(names(dfref1) == "計")]
+tmp <- dfref1[, -grep("計|都道府県", names(dfref1))]
 dfref1_long <- tmp %>%
-  tidyr::pivot_longer(cols = names(tmp)[-1], names_to = "JA")
+  tidyr::pivot_longer(cols = names(tmp)[-length(names(tmp))], names_to = "JA")
 names(dfref1_long)[1] <- "pref"
 dfref1_long$JA <- factor(dfref1_long$JA, levels = jaenref1$ja[-length(jaenref1$ja)])
 
 # 地図上のNAの色がグレーになるため，NAを0にする
 dfref1_long$value[is.na(dfref1_long$value)] <- 0
-
-# 農協のデータに「都府県」の文字を追加する
-dfref1_long$pref <- ifelse(dfref1_long$pref %in% c("北海道", "東京", "京都", "大阪"),
-  paste0(dfref1_long$pref, c("", "都", "府", "府")[match(dfref1_long$pref, c("北海道", "東京", "京都", "大阪"))]),
-  paste0(dfref1_long$pref, "県"))
 
 japan_map2 <- dplyr::left_join(japan_map, dfref1_long, by = "pref")
 
