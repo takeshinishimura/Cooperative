@@ -76,11 +76,10 @@ names(dfja3) <- sub("非出資組合（第３表）_", "", names(dfja3))
 names(dfref1) <- sub("（参考１）出資組合と非出資組合の計（専門農協、業種別）_", "", names(dfref1))
 ```
 
-次の作表が突然エラーが出るようになった。
-バグなのかわからない。
+データを確認する。
 
 ```{R}
-#| eval: false
+#| eval: true
 caption <- "都道府県別業種別現在数 - 出資組合（第２表）"
 DT::datatable(
   dfja2[, -1], caption = caption, rownames = TRUE,
