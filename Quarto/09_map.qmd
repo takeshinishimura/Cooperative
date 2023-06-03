@@ -401,11 +401,18 @@ ggsave(g, file = file.path(outdir, "number_of_ja_map.pdf"), width = 8, height = 
 
 ```{r}
 #| warning: false
+library(NipponMap)
+library(sf)
+
+nippon_map <- sf::read_sf(system.file("shapes/jpn.shp", package = "NipponMap")[1], crs = "WGS84")
+nippon_map$pref <- dfja2$pref# こういう強引なことは本来はやってはいけない
+japan_map2 <- dplyr::left_join(nippon_map, dfja2, by = "pref")
+
 library(bertin)
 
 regions_valued <- bertin::make_points(
   polygon = japan_map2,
-  n = 50, # Number of points per side
+  n = 45,
   square = TRUE
 )
 
@@ -413,7 +420,8 @@ g <- ggplot(regions_valued, aes(size = `総合農協`))+
   geom_sf(
     japan_map2,
     mapping = aes(geometry = geometry),
-    inherit.aes = FALSE
+    inherit.aes = FALSE,
+    color = alpha("black", .1)
   ) +
   geom_sf()+
   scale_size(range = c(1, 4)) +
@@ -426,7 +434,8 @@ g + theme(text = element_text(family = "HiraKakuProN-W3"))
 ggsave(g, file = file.path(outdir, "number_of_ja_map_bertin.pdf"), width = 8, height = 7)
 ```
 
-ドットの大きさを一定にして，ドットの数のみで描画した方がよいかもしれない。
+この地図は先ほどの地図と若干異なることに気づいたかもしれない。
+地図データを含む別のパッケージを使用しているためである。
 
 ### 都道府県別専門農協の数
 
@@ -456,7 +465,6 @@ stem(dfref1[, "計"], scale = 2)
 スキップする。
 
 ```{r}
-#| message: false
 jaen <- matrix(c(
   "都道府県", "pref",
   "一般農協", "Ordinary",
@@ -483,17 +491,13 @@ dfref1_en$pref <- factor(dfref1_en$pref, levels = pref)
 続いて，地図を描画する。
 
 ```{r}
+#| message: false
 # 農協のデータに「都府県」の文字を追加する
 dfref1$pref <- dfref1$`都道府県`
 dfref1$pref <- ifelse(dfref1$pref %in% c("北海道", "東京", "京都", "大阪"),
   paste0(dfref1$pref, c("", "都", "府", "府")[match(dfref1$pref, c("北海道", "東京", "京都", "大阪"))]),
   paste0(dfref1$pref, "県"))
 
-library(NipponMap)
-library(sf)
-
-nippon_map <- sf::read_sf(system.file("shapes/jpn.shp", package = "NipponMap")[1], crs = "WGS84")
-nippon_map$pref <- dfref1$pref# こういう強引なことは本来はやってはいけない
 japan_map2 <- dplyr::left_join(nippon_map, dfref1, by = "pref")
 
 g <- ggplot(data = japan_map2) +
@@ -505,9 +509,6 @@ g + theme(text = element_text(family = "HiraKakuProN-W3"))
 ```
 
 専門農協の数が多いのは岩手県であることが分かる。
-この地図は先ほどの地図と若干異なることに気づいたかもしれない。
-地図データを含む別のパッケージを使用しているためである。
-また，経度と緯度を示す線など，見た目は `ggplot2` の書き方次第で如何様にもなる。
 
 次に，四分位数による区分を見てもよいが，ここでは，専門農協の業種別データがあるので，これらのデータを使って，岩手県にどのような専門農協が多いかを確認してみよう。
 
