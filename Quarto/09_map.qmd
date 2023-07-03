@@ -36,7 +36,6 @@ e-Statを探すと，都道府県ごとの農協の数に関する統計デー�
 
 次のコードを実行し，欲しいデータを取得する。
 なお，`statsDataId = "0002003132"` にある数字は，e-Statの[農業協同組合等現在数統計 確報 令和3年度農業協同組合等現在数統計](https://www.e-stat.go.jp/dbview?sid=0002003132){target="_blank"}のページを指すIDである。
-
 ```{r}
 library(httr)
 
@@ -77,7 +76,6 @@ names(dfref1) <- sub("（参考１）出資組合と非出資組合の計（専�
 ```
 
 データを確認する。
-
 ```{R}
 #| eval: true
 caption <- "都道府県別業種別現在数 - 出資組合（第２表）"
@@ -159,7 +157,6 @@ DT::datatable(
 ~~その前に，`ggplot2` では日本語の変数名では処理できないことがあるようなので，変数名をアスキー文字に変換しておく。~~
 と思ったが，列名の変更によってコードが煩雑になるため，日本語のまま処理することにしたい。
 次のコードは消さずに残しておくが，実行する必要はない。
-
 ```{r}
 jaen <- matrix(c(
   "都道府県", "pref",
@@ -189,7 +186,6 @@ dfja2_en$pref <- factor(dfja2_en$pref, levels = pref)
 ```
 
 よく見かけるのが，横軸（または縦軸）を都道府県とした棒グラフである。
-
 ```{r}
 dfja2$`都道府県` <- factor(dfja2$`都道府県`, levels = pref)
 
@@ -220,7 +216,6 @@ stem(dfja2$`総合農協`, scale = 2)
 このとき，決して棒グラフの途中を省略して，北海道の棒を低くしてはならない。
 途中を省略した棒グラフを幽霊グラフと呼ぶことがある（[【連載】ねこでも分かる！いかさまグラフにはもうダマされない！！「第５回　棒グラフ（１）」 - ed-ict｜授業でもっとICT活用](https://www.ed-ict.net/entry/neco-demo-wakaru-graph-5){target="_blank"}を参照）。
 北海道を除いたグラフを作成してみよう。
-
 ```{r}
 g <- ggplot(data = dfja2[dfja2$`都道府県` != "北海道", ]) +
   geom_bar(aes(x = `都道府県`, y = `総合農協`), stat = "identity", fill = "gray", colour = "black") +
@@ -238,7 +233,6 @@ g + theme(text = element_text(family = "HiraKakuProN-W3"))
 というのも，この棒グラフから，総合農協の数は西日本より，東日本の方が多そうであることが分かるからである。
 
 横棒グラフにすると多少ましかもしれない。
-
 ```{r}
 g <- ggplot(data = dfja2) +
   geom_bar(aes(x = `都道府県`, y = `総合農協`), stat = "identity", fill = "gray", colour = "black") +
@@ -252,7 +246,6 @@ g + theme(text = element_text(family = "HiraKakuProN-W3"))
 ```
 
 棒グラフと似たものにロリポップチャートがあり，次のように点と線の組み合わせで表現する。
-
 ```{r}
 #| warning: false
 # library(geomtextpath)
@@ -274,7 +267,6 @@ g + theme(text = element_text(family = "HiraKakuProN-W3"))
 
 ここでは，総合農協の数が全国平均より少ない都道府県を強調している。
 逆に，多い都道府県を強調したければ，`direction` を `-1` にするだけでよい。
-
 ```{r}
 #| include: false
 outdir <- "../fig"
@@ -286,7 +278,6 @@ ggsave(g, file = file.path(outdir, "number_of_ja_lollipop.pdf"), width = 10, hei
 ```
 
 縦軸で都道府県の順位を表現することもできる。
-
 ```{r}
 #| warning: false
 g <- ggplot(data = dfja2) +
@@ -320,6 +311,29 @@ if (!file.exists(outdir)) {
 }
 
 ggsave(g, file = file.path(outdir, "number_of_ja_lollipop_ordered.pdf"), width = 10, height = 7)
+```
+
+手軽にロリポップチャートを描く方法はあるが，細かいカスタマイズはできないかもしれない。
+```{r}
+library(ggpubr)
+
+dfja2c <- cbind(dfja2, col = factor(1))
+
+g <- ggdotchart(data = dfja2c, x = "都道府県", y = "総合農協",
+           color = "col",
+           palette = "darkorange",
+           sorting = "descending",
+           add = "segments",
+           rotate = TRUE,
+           dot.size = 5,
+           label = round(dfja2$"総合農協"),
+           font.label = list(color = "white", size = 7, vjust = 0.5),
+           ggtheme = theme_pubr()
+           ) +
+  labs(title = "都道府県別総合農協数", y = "総合農協の数", caption = "出所：農林水産省『農業協同組合等現在数統計 確報 令和3年度農業協同組合等現在数統計』\n（https://www.e-stat.go.jp/dbview?sid=0002003132）") +
+  theme(legend.position = "none") +
+  theme(axis.title = element_blank())
+g + theme(text = element_text(family = "HiraKakuProN-W3"))
 ```
 
 これらのグラフは諦めて，日本地図に表示するとどうなるだろうか。

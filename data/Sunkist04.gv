@@ -1,0 +1,23 @@
+digraph sunkist {
+  graph [rankdir = LR]
+
+  node [fontname = Helvetica,
+    shape = box,
+    fixedsize = false,
+    style = filled,
+    fillcolor = white]
+  生産者 [shape = circle, width = 0.9]
+  地方出荷組合; 地区取引所
+  サンキスト連合会
+  "果実生産者供給会社\n（購買協同組合）"
+  選果業者, 選果場A, 選果場B, 市場 [style = dashed]
+
+  edge []
+  生産者 -> 地方出荷組合 -> 地区取引所 [fontname = Helvetica, label = "組合員契約"]
+  生産者 -> 地区取引所 -> サンキスト連合会 [fontname = Helvetica, label = "組合員契約\n理事選出"]
+  地方出荷組合 -> サンキスト連合会 [fontname = Helvetica, label = "組合員契約"]
+  地方出荷組合 -> "果実生産者供給会社\n（購買協同組合）" [fontname = Helvetica, label = "組合員契約"]
+  生産者 -> 選果場B -> 地方出荷組合 -> 市場 [fontname = Helvetica, style = dashed]
+  生産者 -> 選果場A -> 選果業者 -> 市場 [fontname = Helvetica, style = dashed]
+  生産者 -> サンキスト連合会 [fontname = Helvetica, label = "組合員契約"]
+}
