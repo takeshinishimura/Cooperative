@@ -136,8 +136,29 @@ df <- df[-c(1:3), ]
 df[1, ]
 df <- df[-1, ]
 
-# 年度を西暦に強引に変換する
-df$年度 <- c(seq(35 + 1925, 2005, 5), seq(2006, 2021, 1))
+# 和暦を西暦に変換する関数
+convert_to_ad <- function(nen) {
+  # 和暦と西暦の対応表
+  era_table <- c("明治" = 1868, "大正" = 1912, "昭和" = 1926, "平成" = 1989, "令和" = 2019)
+  
+  # 和暦の元号を補う
+  for (i in 2:length(nen)) {
+    if (!grepl("^[明大昭平令]", nen[i])) {
+      nen[i] <- paste0(substr(nen[i - 1], 1, 2), nen[i])
+    }
+  }
+  nen <- gsub("元", "1", nen)
+  
+  # 和暦から西暦の年を計算する
+  ad_years <- numeric(length(nen))
+  for (era in names(era_table)) {
+    year <- as.numeric(gsub(era, "", nen[grepl(era, nen)]))
+    ad_years[grepl(era, nen)] <- era_table[era] + year - 1
+  }
+  return(ad_years)
+}
+
+df$年度 <- convert_to_ad(df$年度)
 
 # 列を整数型に変換する
 str(df)
@@ -382,8 +403,8 @@ df <- df[df[, "組合種類"] == "組合数", ]
 # df[1, ]
 df <- df[-1, ]
 
-# 年度を西暦に強引に変換する
-df[, "年度"] <- c(seq(35 + 1925, 2005, 5), seq(2006, 2021, 1))
+# 和暦を西暦に変換する
+df$年度 <- convert_to_ad(df$年度)
 
 # 列を整数型に変換する
 df[df == "-"] <- ""
