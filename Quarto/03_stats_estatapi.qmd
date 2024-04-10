@@ -14,32 +14,32 @@ format:
 lang: ja
 ---
 
-ここでは，農業協同組合数の推移の折れ線グラフを作成する。
-[消費生活協同組合](https://takeshinishimura.github.io/Cooperative/02_stats_estat.html){target="_blank"}のときと同じように，農業協同組合に関する統計データもe-Statから取得できる。
-農業協同組合数の推移がわかる最新のデータは，次のページから取得できる。
-実際に検索してみて，このページにたどり着けるか試してみよう。
+ここでは，農業協同組合数の推移の折れ線グラフを作成します。
+
+[消費生活協同組合](https://takeshinishimura.github.io/Cooperative/02_stats_estat.html){target="_blank"} のときと同じように，農業協同組合に関する統計データもe-Statから取得できます。
+農業協同組合数の推移がわかる最新のデータは，次のページから取得できます。
+実際に検索してみて，このページにたどり着けるか試してみましょう。
 
 ::: {.callout-note collapse="true" icon="true"}
-## 農業協同組合等現在数統計 確報 令和３年度農業協同組合等現在数統計 総括の部 1 農業協同組合、同連合会及び農事組合法人数の推移（第１表） 年度次
+## 農業協同組合等現在数統計 / 確報 令和４年度農業協同組合等現在数統計
+1 総括の部 農業協同組合、同連合会及び農事組合法人数の推移（第１表）
 
-[https://www.e-stat.go.jp/stat-search/files?stat_infid=000032206155](https://www.e-stat.go.jp/stat-search/files?stat_infid=000032206155){target="_blank"}
+[https://www.e-stat.go.jp/stat-search/files?stat_infid=000040060821](https://www.e-stat.go.jp/stat-search/files?stat_infid=000040060821){target="_blank"}
 :::
 
-上述のサイトから，`r006-02-001.xls` という名前のExcel形式のファイルをダウンロードできる。
-あとは，Microsoft Officeを構成するアプリケーションのひとつであるExcelを起動して，ファイルを開き，Excelの機能を使って折れ線グラフを作成することができる。
-Excelの図で満足できる人はこれで終わりである。
-ちまちまとマウスをクリックしながら，はたまた数値を別のセルに移動させながら，折れ線グラフを作成するとよい。
-以下の説明は，Excelでは満足できない人のためのものである。
+上述のサイトから，`r006-02-001.xls` という名前のExcel形式のファイルをダウンロードできます。
+以下の説明は，Excelでは満足できない人のためのものです。
+Excelを使って作成するグラフとRを使って作成するグラフの何が違うのか，どちらが好みかを考えながら作業してみてください。
 
 
 ## Excelファイルを使う方法
 
 ### Excelファイルの読み込み
 
-ここでも，e-StatにあるExcelファイルのフォーマットが原因で，データを扱えるようにするまでが一苦労であることが再認識できる。
-本当なら試行錯誤が必要であるが，以下のとおり実行すれば問題なく読み込める（今回の場合，ヘッダーを読み込んでいない。諦めた。通常は読み込まなければならない）。
+ここでも，e-StatにあるExcelファイルのフォーマットが原因で，データを扱えるようにするまでが一苦労です。
+本当なら試行錯誤が必要ですが，以下のとおり実行すれば問題なく読み込めます（今回の場合，ヘッダーを読み込むのを諦めました）。
 
-以下のコマンドでExcelファイルを読み込む。
+以下のコマンドでExcelファイルを読み込みます。
 
 ```{r}
 #| eval: false
@@ -53,77 +53,103 @@ library(readxl)
 df <- readxl::read_excel("../data/r006-02-001.xls", col_names = FALSE, skip = 12)
 ```
 
-次に，読み込んだデータの前処理をする。
-ここで何をやるかは，そのファイルがどうなっているかに依存する。
-この作業を地道にやることにより，データ分析を見越して綺麗なファイルを作成しなければならないことに気づくはずである。
-ここで，農林水産省を責めてはいけない。
-それぞれの立場でそれぞれの事情があるのだろうと思いを馳せるだけである。
-地味で辛い作業である。
+次に，読み込んだデータの前処理をします。
+ここで何をやるかは，そのファイルがどうなっているかに依存します。
+この作業を地道にやることにより，データ分析を見越して綺麗なファイルを作成しなければならないことに気づくことでしょう。
 
 ```{r}
 # 前処理半作：データ分析は前処理が大事だという諺（嘘）
 df_header1 <- c("", rep("単位農協", 4), rep("連合会", 3), rep("農事組合法人", 4))
-df_header2 <- c("年次", "総合農協", "専門農協_出資組合", "専門農協_非出資組合", "合計", "出資連合会", "非出資連合会", "合計", "１号", "２号", "１号及び２号", "合計")
-df_header <- paste(df_header1, df_header2, sep = "_")
-df_header <- sub("^_", "", df_header)
+df_header2 <- c("年次", "総合農協", "専門農協（出資組合）", "専門農協（非出資組合）", "合計", "出資連合会", "非出資連合会", "合計", "１号", "２号", "１号及び２号", "合計")
+df_header <- paste0(paste(df_header1, df_header2, sep = "（"), "）")
+df_header <- sub("^（年次）", "年次", df_header)
 
 names(df) <- df_header
-df <- df[1:76, ]
+df <- df[-c((nrow(df) - 4):nrow(df)), ]
+
+# 8.3(変更前)の行を削除
 df <- df[-49, ]
-df[, 1] <- 1:nrow(df) + 22 + 1925
+
+# 和暦を西暦に変換する関数
+convert_to_ad <- function(nen) {
+  # 和暦と西暦の対応表
+  era_table <- c("明治" = 1868, "大正" = 1912, "昭和" = 1926, "平成" = 1989, "令和" = 2019)
+  
+  # 和暦の元号を補う
+  for (i in 2:length(nen)) {
+    if (!grepl("^[明大昭平令]", nen[i])) {
+      nen[i] <- paste0(substr(nen[i - 1], 1, 2), nen[i])
+    }
+  }
+  nen <- gsub("元", "1", nen)
+  
+  # 和暦から西暦の年を計算する
+  ad_years <- numeric(length(nen))
+  for (era in names(era_table)) {
+    year <- as.numeric(gsub(era, "", nen[grepl(era, nen)]))
+    ad_years[grepl(era, nen)] <- era_table[era] + year - 1
+  }
+  return(ad_years)
+}
+
+df$年次 <- gsub("\\..*?$", "", df$年次)
+df$年次 <- gsub("^S", "昭和", df$年次)
+df$年次 <- gsub("^H", "平成", df$年次)
+df$年次 <- gsub("^R", "令和", df$年次)
+df$年次 <- convert_to_ad(df$年次)
 
 # 以下は好みであり，実行しなくてもよい
-dfcoop <- data.frame(df)
+dfcoop <- data.frame(df, check.names = FALSE)
 ```
 
-Excelファイルから読み込んだデータが分析可能な状態になっているかどうかを確認する。
+Excelファイルから読み込んだデータが分析可能な状態になっているかどうかを確認します。
 
 ```{r}
 head(dfcoop)
+str(dfcoop)
 ```
 
-このようになっていれば，作図や分析に使えるデータであるといえる。
-なお，`NA` というのは `NA` という文字があるのではなく，そこには何もないという意味で理解するとよい。
+このようになっていれば，作図や分析に使えるデータであるといえます。
+なお，`NA` というのは `NA` という文字があるのではなく，そこには何もないという意味で理解するとよいでしょう。
 
 ### 折れ線グラフ {#sec-simpleplot}
 
-次に，折れ線グラフを作成してみる。
+次に，折れ線グラフを作成します。
 
 ```{r}
-plot(dfcoop[, c("年次", "単位農協_総合農協")], type = "o", main = "総合農協数の推移", xlab = "年3月末", pch = 16, las = 1)
+plot(dfcoop[, c("年次", "単位農協（総合農協）")], type = "o", main = "総合農協数の推移", xlab = "年3月末", pch = 16, las = 1)
 ```
 
-macOSの場合，文字化けする（トーフになる）かもしれない。
+macOSの場合，文字化けする（トーフになる）かもしれません。
+その場合，無視して次に進みましょう。
 
-続いて，専門農協のうちの出資組合と非出資組合も同じ図に表示してみる。
+続いて，専門農協のうちの出資組合と非出資組合も同じ図に表示してみましょう。
 
 ```{r}
 dfcoop2 <- dfcoop
 rownames(dfcoop2) <- dfcoop2[, 1]
 dfcoop2 <- dfcoop2[, -1]
-matplot(dfcoop2[, c("単位農協_総合農協", "単位農協_専門農協_出資組合", "単位農協_専門農協_非出資組合")], type = "o", main = "単位農協数の推移", xlab = "年3月末", ylab = "農業協同組合数", lwd = 1, lty = 1, pch = 16, las = 1,  axes = FALSE)
+matplot(dfcoop2[, c("単位農協（総合農協）", "単位農協（専門農協（出資組合））", "単位農協（専門農協（非出資組合））")], type = "o", main = "単位農協数の推移", xlab = "年3月末", ylab = "農業協同組合数", col = 2:4, lwd = 1, lty = 1, pch = 16, las = 1,  axes = FALSE)
 axis(1, at = seq(3, 73, 10), labels = seq(1950, 2020, 10))
 axis(2, las = 1)
-legend("topright", legend = c("総合農協", "専門農協_出資組合", "専門農協_非出資組合"), col = 1:3, lwd = 1, lty = 1, pch = 16)
+legend("topright", legend = c("総合農協", "専門農協（出資組合）", "専門農協（非出資組合）"), col = 2:4, lwd = 1, lty = 1, pch = 16)
 ```
 
 
 ## e-StatのAPIを使う方法 {#sec-estat}
 
-e-StatからExcelファイルをダウンロードせずとも，APIを使ってデータを取得できることがある。
-ややスッキリしない表現なのは，APIを使ってデータを取得できるものとできないものがあるためである。
-幸いなことに，今回扱った農業協同組合数の推移のデータはAPIを使って取得できる。
-
-以下の説明は高度であるため，スキップしてよい。
-ただし，Rのスキルを身につけたい人は，時間をかけて構わないので，ぜひ挑戦してほしい。
+e-StatからExcelファイルをダウンロードしなくても，APIを使ってデータを取得できることがあります。
+幸いなことに，今回扱った農業協同組合数の推移のデータはAPIを使って取得できます。
+APIを使うと，Excelファイルを読み込む場合と異なる利点があります。
+それは前処理をほとんどしなくてよいことです。
 
 ### e-StatのAPI取得
 
-まず，e-Statのサイトでユーザ登録して，APIを取得する。
-取得方法は自分で調べてほしい。
+まず，e-Statのサイトでユーザ登録して，APIを取得します。
+取得方法は自分で調べてください。
 
-次に，[keyring: Access the system credential store from R](https://github.com/r-lib/keyring){target="_blank"}を設定する。
-これは必須ではないが，便利なので設定しておくとよい。
+次に，[keyring: Access the system credential store from R](https://github.com/r-lib/keyring){target="_blank"} を設定します。
+これは必須ではありませんが，便利なので設定しておくとよいです。
 
 ```{r}
 #| eval: false
@@ -137,11 +163,11 @@ keyring::key_set("e-stat")
 
 ### e-Statからデータ取得
 
-いよいよ本題に入る。
-e-Statから欲しいデータを取得してみよう。
+いよいよ本題に入ります。
+e-Statから欲しいデータを取得してみましょう。
 
-次のコードを実行することで，欲しいデータが取得できる。
-`statsDataId = "0002003131"` にある数字は，e-Statの[農業協同組合等現在数統計 確報 令和３年度農業協同組合等現在数統計総括の部 1 農業協同組合、同連合会及び農事組合法人数の推移（第１表）](https://www.e-stat.go.jp/dbview?sid=0002003131){target="_blank"}のページを指すIDである。
+次のコードを実行することで，欲しいデータが取得できます。
+`statsDataId = "0002066879"` にある数字は，e-Statの[農業協同組合等現在数統計 確報 令和４年度農業協同組合等現在数統計総括の部 1 農業協同組合、同連合会及び農事組合法人数の推移（第１表）](https://www.e-stat.go.jp/dbview?sid=0002066879){target="_blank"}のページを指すIDです。
 
 ```{r}
 library(httr)
@@ -150,7 +176,7 @@ response <- httr::GET(
   url = "https://api.e-stat.go.jp/rest/2.1/app/getSimpleStatsData",
   query = list(
     appId = keyring::key_get("e-stat"),
-    statsDataId = "0002003131",
+    statsDataId = "0002066879",
     sectionHeaderFlg = 2
   )
 )
@@ -160,123 +186,77 @@ df <- read.csv(text = sub("^.*\\\"VALUE\\\"\n", "", response), header = TRUE, ch
 df2 <- df
 names(df2) <- gsub("\\(.+\\)", "", names(df2))
 
-df2[, "農業協同組合等統括の部現在数"] <- factor(df2[, "農業協同組合等統括の部現在数"])
-df2 <- tidyr::spread(df2, key = "農業協同組合等統括の部現在数", value = value)
+# 年次の整理
+df2 <- df2[df2$時点 != "1996年3月末(変更前)", ]
+df2 <- df2[df2$時点 != "2023年4月1日", ]
+df2$年次 <- as.integer(gsub("年3月末.*$", "", df2$時点))
 
-dfMultifunctional <- na.omit(df2[, c("年次", "単位農協_総合農協")])
-dfInvested <- na.omit(df2[, c("年次", "単位農協_専門農協_出資組合")])
-dfNoninvested <- na.omit(df2[, c("年次", "単位農協_専門農協_非出資組合")])
+# 区分の整理
+df2$区分 <- gsub("_", "（", df2$区分)
+df2$区分 <- unlist(lapply(df2$区分, function(x) {
+  num_opening_brackets <- sum(utf8ToInt(x) == utf8ToInt("（"))
+  return(paste0(x, paste0(rep("）", num_opening_brackets), collapse = "")))
+}))
 
-dfcoop <- merge(merge(dfMultifunctional, dfInvested, by = "年次", all = TRUE), dfNoninvested, by = "年次", all = TRUE)
-
-# 「年次」列に1996年3月末の行が，「1996年3月末(変更前)」と「1996年3月末(変更後)」の2つあるため，前者を削除する
-rm1996 <- function (x) {
-  tmp <- x[x[, "年次"] != "1996年3月末(変更前)", ]
-  tmp[tmp[, "年次"] == "1996年3月末(変更後)", "年次"] <- "1996年3月末"
-  tmp
-}
-dfcoop <- rm1996(dfcoop)
-dfcoop <- dfcoop[dfcoop[, "年次"] != "2022年4月1日", ]
-dfcoop[, "年次"] <- as.double(gsub("年3月末", "", dfcoop[, "年次"]))
-
-head(dfcoop)
+head(df2)
 ```
 
-欲しかったデータが分析可能な形になったことが確認できる。
-もう少し見栄えのよい表にしたければ，[DT: A Wrapper of the JavaScript Library 'DataTables'](https://cran.r-project.org/web/packages/DT/index.html){target="_blank"}を使うとよい。
-
-```{r}
-caption <- "農業協同組合数の推移"
-DT::datatable(
-  dfcoop, caption = caption, rownames = TRUE,
-  extensions = 'Buttons',
-  options = list(
-    pageLength = 10,
-    dom = 'Blfrtip',
-    buttons = list(
-      c('csv', 'excel')
-    )
-  )
-) |>
-  DT::formatCurrency(c(2:ncol(dfcoop)), currency = "", interval = 3, mark = ",", digits = 0)
-```
-
-今回はDTを使うメリットがほとんどないが，複雑な表だと視認性が劇的に改善するため，覚えておくとよい。
+欲しかったデータが分析可能な形になったことが確認できます。
+このデータフレームはロングです。
+ロングからワイドに変換すると人間にとって分かりやすくなりますが，`ggplot2` で作図する場合は，ロングの方が扱いやすいです。
 
 ### ggplot2を用いた折れ線グラフ
 
-上記のデータフレームから折れ線グラフを作成する方法は，@sec-simpleplot と同じである。
-以下では，授業で使用した図の作成方法を紹介する。
+上記のデータフレームから折れ線グラフを作成する方法は，@sec-simpleplot と同じです。
+以下では，授業で使用した図の作成方法を紹介します。
 
 ```{r}
 #| warning: false
 library(ggplot2)
-
-dfcoop2 <- reshape2::melt(dfcoop, id.vars = "年次")
-names(dfcoop2)[2:3] <- c("単位農協", "組合数")
-levels(dfcoop2[, "単位農協"]) <- sub("単位農協_", "", levels(dfcoop2[, "単位農協"]))
-
-# _を（）に変換する
-levels(dfcoop2[, "単位農協"])[grep("_", levels(dfcoop2[, "単位農協"]))] <- paste0(sub("_", "（", grep("_", levels(dfcoop2[, "単位農協"]), value = TRUE)), "）")
-
-g <- ggplot(data = dfcoop2) +
-  geom_line(aes(x = 年次, y = 組合数, group = 単位農協, colour = 単位農協)) +
-  geom_point(aes(x = 年次, y = 組合数, group = 単位農協, colour = 単位農協)) +
-  ggtitle("単位農協数の推移")
-g + theme(text = element_text(family = "HiraKakuProN-W3"))
-```
-
-最後のところでエラーが出る場合は，`g` だけにして，プラス以降を入力しない。
-文字化けするかもしれないが，気にする必要はない（文字化けを修正するのは大変）。
-
-次のように，少し工夫するだけで見栄えは劇的に改善する。
-
-```{r}
-#| warning: false
 library(ggsci)
 
-g <- ggplot(data = dfcoop2) +
-  geom_line(aes(x = 年次, y = 組合数, group = 単位農協, colour = 単位農協)) +
-  geom_point(aes(x = 年次, y = 組合数, group = 単位農協, colour = 単位農協)) +
-# scale_x_continuous(breaks = seq(1950, 2020, 10), minor_breaks = NULL) +
+df3 <- df2[grepl("^単位農協", df2$区分), ]
+
+g <- ggplot(data = df3, aes(x = 年次, y = value, group = 区分, colour = 区分)) +
+  geom_line() +
+  geom_point() +
   scale_y_continuous(labels = scales::comma_format()) +
   ggtitle("単位農協数の推移") +
-  labs(caption = "出所：農林水産省『令和3年度農業協同組合等現在数統計』\n（https://www.e-stat.go.jp/stat-search/files?stat_infid=000032206155）") +
+  labs(caption = "出所：農林水産省『令和4年度農業協同組合等現在数統計』\n（https://www.e-stat.go.jp/stat-search/files?stat_infid=000032206155）") +
   theme_bw() +
-# theme_minimal() +
-# theme_classic() +
   scale_color_d3()
 g + theme(text = element_text(family = "HiraKakuProN-W3"))
 ```
 
-いい感じの図が描けたので，ファイルに保存する。
+最後のところでエラーが出る場合は，`g` だけにして，プラス以降を入力しないでください。
+文字化けしても気にせず次に進んでください（文字化けを修正するのは大変なので）。
+
+いい感じの図が描けたら，ファイルに保存する。
 
 ```{r}
-#| warning: false
-
-```{r}
+#| eval: false
 outdir <- "./fig"
+if (!file.exists(outdir)) {
+  dir.create(outdir)
+}
+ggsave(filename = file.path(outdir, "number_of_ja.pdf"), plot = g, width = 8, height = 4)
 ```
 ```{r}
 #| include: false
 outdir <- "../fig"
-```
-
-```{r}
-#| warning: false
 if (!file.exists(outdir)) {
   dir.create(outdir)
 }
-
-ggsave(g, file = file.path(outdir, "number_of_ja.pdf"), width = 8, height = 4)
+ggsave(filename = file.path(outdir, "number_of_ja.pdf"), plot = g, width = 8, height = 4)
 ```
 
 
 ## e-Statの検索
 
-@sec-estat では，`statsDataId = “0002003131”` とIDを指定した。
-しかし，通常はデータを探すところから始める必要がある。
-以下に探し方の一例を示す。
+@sec-estat では，`statsDataId = "0002066879"` とIDを指定しました。
+しかし，通常はデータを探すところから始める必要があります。
+
+以下に探し方の一例を示します。
 
 ```{r}
 #| eval: false
@@ -324,7 +304,7 @@ DT::datatable(
 )
 ```
 
-ここで示した方法は，[Rからe-Stat APIを使う - Qiita](https://qiita.com/nozma/items/f88f5cc60ab63461deae){target="_blank"}が大変参考になった。
-これ以外にも，e-Statからデータを取得する方法はある。
-例えば，[estatapi](https://yutannihilation.github.io/estatapi/){target="_blank"}というパッケージを使ってもほぼ同じことができるはずである。
-興味ある人は，自分で確かめてほしい。
+ここで示した方法は，[Rからe-Stat APIを使う - Qiita](https://qiita.com/nozma/items/f88f5cc60ab63461deae){target="_blank"} が大変参考になりました。
+これ以外にも，e-Statからデータを取得する方法はあります。
+例えば，[estatapi](https://yutannihilation.github.io/estatapi/){target="_blank"} というパッケージを使ってもほぼ同じことが簡単にできるようになります。
+興味ある人は，自分で確かめてください。
