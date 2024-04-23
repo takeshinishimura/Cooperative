@@ -222,7 +222,8 @@ g <- ggplot(data = df3, aes(x = 年次, y = value, group = 区分, colour = 区�
   geom_point() +
   scale_y_continuous(labels = scales::comma_format()) +
   ggtitle("単位農協数の推移") +
-  labs(caption = "出所：農林水産省『令和4年度農業協同組合等現在数統計』\n（https://www.e-stat.go.jp/stat-search/files?stat_infid=000032206155）") +
+  labs(y = "農業協同組合数",
+       caption = "出所：農林水産省『令和4年度農業協同組合等現在数統計』\n（https://www.e-stat.go.jp/stat-search/files?stat_infid=000032206155）") +
   theme_bw() +
   scale_color_d3()
 g + theme(text = element_text(family = "HiraKakuProN-W3"))
