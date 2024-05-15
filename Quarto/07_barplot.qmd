@@ -67,11 +67,17 @@ e-StatからAPIでデータを入手する場合，同じデータを含むExcel
 ```{r}
 library(httr)
 
+outdir <- "../fig"
+dir.create(outdir, showWarnings = FALSE)
+
+appId <- keyring::key_get("e-stat")
+statsDataId <- "0002063277"
+
 response <- httr::GET(
   url = "https://api.e-stat.go.jp/rest/2.1/app/getSimpleStatsData",
   query = list(
-    appId = keyring::key_get("e-stat"),
-    statsDataId = "0002063277",
+    appId = appId,
+    statsDataId = statsDataId,
     sectionHeaderFlg = 2
   )
 )
@@ -136,6 +142,7 @@ str(df)
 
 `value`列が文字型となっているのは，`"-"`が入っているためであることが想像できます。
 このため，`"-"`を削除してから，数値型に変換しましょう。
+なお，後述のように `estatapi` パッケージを使うとこのような問題は発生しません。
 
 ```{r}
 df$value <- as.double(sub("^-$", "", df$value))
@@ -177,11 +184,6 @@ g + theme(text = element_text(family = "HiraKakuProN-W3"))
 ```{r}
 #| include: false
 #| warning: false
-outdir <- "../fig"
-if (!file.exists(outdir)) {
-  dir.create(outdir)
-}
-
 ggsave(g, file = file.path(outdir, "benefits_by_division.pdf"), width = 8, height = 4)
 ```
 
@@ -229,17 +231,17 @@ ggsave(g, file = file.path(outdir, "profit_and_loss_by_division.pdf"), width = 8
 :::
 
 ```{r}
-response <- httr::GET(
-  url = "https://api.e-stat.go.jp/rest/2.1/app/getSimpleStatsData",
-  query = list(
-    appId = keyring::key_get("e-stat"),
-    statsDataId = "0003408614",
-    sectionHeaderFlg = 2
-  )
+library(estatapi)
+
+statsDataId <- "0003408614"
+(meta_info <- estat_getMetaInfo(appId = appId, statsDataId = statsDataId))
+
+# 統計データ取得
+df <- estat_getStatsData(
+  appId = appId,
+  statsDataId = statsDataId
 )
-response <- httr::content(response)
-df <- read.csv(text = sub("^.*\\\"VALUE\\\"\n", "", response), header = TRUE, check.names = FALSE)
-head(df)
+df
 
 df$`時間軸（年次）` <- as.double(sub("年", "", df$`時間軸（年次）`))
 df$value <- as.double(sub("…", "", df$value))
@@ -310,13 +312,15 @@ ggsave(g, file = file.path(outdir, "costs_by_division_for_each_year_all.pdf"), w
 ### 都道府県別の折れ線グラフ
 
 ```{r}
+#| message: false
+library(dplyr)
 library(gghighlight)
 
-df_pref <- df[df$`都道府県` != "全国", ]
+df_pref <- df |>
+  filter(都道府県 != "全国") |>
+  filter(grepl("信用事業総利益", `損益計算書（総括）`))
 
-df_pref2 <- df_pref[grep("信用事業総利益", df_pref$`損益計算書（総括）`), ]
-
-g <- ggplot(data = df_pref2, aes(x = `時間軸（年次）`, y = value, group = `都道府県`, colour = `都道府県`)) +
+g <- ggplot(data = df_pref, aes(x = `時間軸（年次）`, y = value, group = `都道府県`, colour = `都道府県`)) +
   geom_line() +
   geom_point() +
   gghighlight(都道府県 == "愛媛県" | 都道府県 == "北海道" | 都道府県 == "愛知県") +
@@ -329,11 +333,14 @@ g <- ggplot(data = df_pref2, aes(x = `時間軸（年次）`, y = value, group =
         axis.title.y = element_text(size = 10, hjust = 1),
         legend.title = element_blank())
 g + theme(text = element_text(family = "HiraKakuProN-W3"))
+
 ggsave(g, file = file.path(outdir, "benefits_by_division_for_each_year_pref_shinyou.pdf"), width = 8, height = 4)
 
-df_pref2 <- df_pref[grep("共済事業総利益", df_pref$`損益計算書（総括）`), ]
+df_pref <- df |>
+  filter(都道府県 != "全国") |>
+  filter(grepl("共済事業総利益", `損益計算書（総括）`))
 
-g <- ggplot(data = df_pref2, aes(x = `時間軸（年次）`, y = value, group = `都道府県`, colour = `都道府県`)) +
+g <- ggplot(data = df_pref, aes(x = `時間軸（年次）`, y = value, group = `都道府県`, colour = `都道府県`)) +
   geom_line() +
   geom_point() +
   gghighlight(都道府県 == "愛媛県" | 都道府県 == "北海道" | 都道府県 == "愛知県") +
@@ -346,11 +353,14 @@ g <- ggplot(data = df_pref2, aes(x = `時間軸（年次）`, y = value, group =
         axis.title.y = element_text(size = 10, hjust = 1),
         legend.title = element_blank())
 g + theme(text = element_text(family = "HiraKakuProN-W3"))
+
 ggsave(g, file = file.path(outdir, "benefits_by_division_for_each_year_pref_kyousai.pdf"), width = 8, height = 4)
 
-df_pref2 <- df_pref[grep("購買事業総利益", df_pref$`損益計算書（総括）`), ]
+df_pref <- df |>
+  filter(都道府県 != "全国") |>
+  filter(grepl("購買事業総利益", `損益計算書（総括）`))
 
-g <- ggplot(data = df_pref2, aes(x = `時間軸（年次）`, y = value, group = `都道府県`, colour = `都道府県`)) +
+g <- ggplot(data = df_pref, aes(x = `時間軸（年次）`, y = value, group = `都道府県`, colour = `都道府県`)) +
   geom_line() +
   geom_point() +
   gghighlight(都道府県 == "愛媛県" | 都道府県 == "北海道" | 都道府県 == "愛知県") +
@@ -366,9 +376,11 @@ g + theme(text = element_text(family = "HiraKakuProN-W3"))
 
 ggsave(g, file = file.path(outdir, "benefits_by_division_for_each_year_pref_koubai.pdf"), width = 8, height = 4)
 
-df_pref2 <- df_pref[grep("販売事業総利益", df_pref$`損益計算書（総括）`), ]
+df_pref <- df |>
+  filter(都道府県 != "全国") |>
+  filter(grepl("販売事業総利益", `損益計算書（総括）`))
 
-g <- ggplot(data = df_pref2, aes(x = `時間軸（年次）`, y = value, group = `都道府県`, colour = `都道府県`)) +
+g <- ggplot(data = df_pref, aes(x = `時間軸（年次）`, y = value, group = `都道府県`, colour = `都道府県`)) +
   geom_line() +
   geom_point() +
   gghighlight(都道府県 == "愛媛県" | 都道府県 == "北海道" | 都道府県 == "愛知県") +
