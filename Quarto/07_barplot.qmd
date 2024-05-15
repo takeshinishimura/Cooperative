@@ -272,7 +272,7 @@ g <- ggplot(data = df_all2, aes(x = `時間軸（年次）`, y = value, group = 
         axis.title.y = element_text(size = 10, hjust = 1),
         legend.title = element_blank())
 g + theme(text = element_text(family = "HiraKakuProN-W3"))
-ggsave(g, file = file.path(outdir, "benefits_by_division_for_each_year_all.pdf"), width = 8, height = 4)
+ggsave(g, file = "benefits_by_division_for_each_year_all.pdf", path = outdir, width = 8, height = 4)
 
 df_all2 <- df_all[grep("事業収益$", df_all$`損益計算書（総括）`), ]
 
@@ -289,7 +289,7 @@ g <- ggplot(data = df_all2, aes(x = `時間軸（年次）`, y = value, group = 
         axis.title.y = element_text(size = 10, hjust = 1),
         legend.title = element_blank())
 g + theme(text = element_text(family = "HiraKakuProN-W3"))
-ggsave(g, file = file.path(outdir, "revenues_by_division_for_each_year_all.pdf"), width = 8, height = 4)
+ggsave(g, file = "revenues_by_division_for_each_year_all.pdf", path = outdir, width = 8, height = 4)
 
 df_all2 <- df_all[grep("事業費用$", df_all$`損益計算書（総括）`), ]
 
@@ -306,7 +306,7 @@ g <- ggplot(data = df_all2, aes(x = `時間軸（年次）`, y = value, group = 
         axis.title.y = element_text(size = 10, hjust = 1),
         legend.title = element_blank())
 g + theme(text = element_text(family = "HiraKakuProN-W3"))
-ggsave(g, file = file.path(outdir, "costs_by_division_for_each_year_all.pdf"), width = 8, height = 4)
+ggsave(g, file = "costs_by_division_for_each_year_all.pdf", path = outdir, width = 8, height = 4)
 ```
 
 ### 都道府県別の折れ線グラフ
@@ -334,7 +334,7 @@ g <- ggplot(data = df_pref, aes(x = `時間軸（年次）`, y = value, group = 
         legend.title = element_blank())
 g + theme(text = element_text(family = "HiraKakuProN-W3"))
 
-ggsave(g, file = file.path(outdir, "benefits_by_division_for_each_year_pref_shinyou.pdf"), width = 8, height = 4)
+ggsave(g, file = "benefits_by_division_for_each_year_pref_shinyou.pdf", path = outdir, width = 8, height = 4)
 
 df_pref <- df |>
   filter(都道府県 != "全国") |>
@@ -354,7 +354,7 @@ g <- ggplot(data = df_pref, aes(x = `時間軸（年次）`, y = value, group = 
         legend.title = element_blank())
 g + theme(text = element_text(family = "HiraKakuProN-W3"))
 
-ggsave(g, file = file.path(outdir, "benefits_by_division_for_each_year_pref_kyousai.pdf"), width = 8, height = 4)
+ggsave(g, file = "benefits_by_division_for_each_year_pref_kyousai.pdf", path = outdir, width = 8, height = 4)
 
 df_pref <- df |>
   filter(都道府県 != "全国") |>
@@ -374,7 +374,7 @@ g <- ggplot(data = df_pref, aes(x = `時間軸（年次）`, y = value, group = 
         legend.title = element_blank())
 g + theme(text = element_text(family = "HiraKakuProN-W3"))
 
-ggsave(g, file = file.path(outdir, "benefits_by_division_for_each_year_pref_koubai.pdf"), width = 8, height = 4)
+ggsave(g, file = "benefits_by_division_for_each_year_pref_koubai.pdf", path = outdir, width = 8, height = 4)
 
 df_pref <- df |>
   filter(都道府県 != "全国") |>
@@ -394,5 +394,5 @@ g <- ggplot(data = df_pref, aes(x = `時間軸（年次）`, y = value, group = 
         legend.title = element_blank())
 g + theme(text = element_text(family = "HiraKakuProN-W3"))
 
-ggsave(g, file = file.path(outdir, "benefits_by_division_for_each_year_pref_hanbai.pdf"), width = 8, height = 4)
+ggsave(g, file = "benefits_by_division_for_each_year_pref_hanbai.pdf", path = outdir, width = 8, height = 4)
 ```
