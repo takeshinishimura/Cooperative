@@ -109,7 +109,7 @@ Terminalで以下のように打ち込むと，必要なPDFファイルが得ら
 $ dot -Tpdf ja1.gv > ja1.pdf
 ```
 ```{dot}
-//| file: ../data/Systematic_organization_of_ja1_0.gv
+//| file: ../Graphviz/Systematic_organization_of_ja1_0.gv
 ```
 
 それぞれの`subgraph`内で中央会に向かうエッジを描いているため，若干複雑になっている。
@@ -133,7 +133,7 @@ graph <- DiagrammeR::grViz(diagram = "ja1.gv")
 #| include: false
 library(DiagrammeR)
 
-graph <- DiagrammeR::grViz(diagram = "../data/Systematic_organization_of_ja1.gv")
+graph <- DiagrammeR::grViz(diagram = "../Graphviz/Systematic_organization_of_ja1.gv")
 ```
 
 PDFで保存したい場合は，以下のようにする。
@@ -160,7 +160,7 @@ DiagrammeR::export_graph(graph, file_name = "../fig/Systematic_organization_of_j
 #| output: false
 from graphviz import Source
 
-with open("../data/ja1.gv", "r") as file:
+with open("../Graphviz/ja1.gv", "r") as file:
     dot_string = file.read()
 
 source = Source(dot_string, format="pdf")
@@ -201,7 +201,7 @@ MermaidはGraphvizのように`cluster`や`rank`といった高度なレイア�
 このことを踏まえると，図は以下のように表現できる。
 
 ```{dot}
-//| file: ../data/Systematic_organization_of_ja2_0.gv
+//| file: ../Graphviz/Systematic_organization_of_ja2_0.gv
 ```
 
 この図のソースコードは掲載しないので，各自で考えてほしい。
@@ -213,7 +213,7 @@ MermaidはGraphvizのように`cluster`や`rank`といった高度なレイア�
 ただし，この図に限って言えば，中央会に向かうエッジを減らすと一応改善される。
 
 ```{dot}
-//| file: ../data/Systematic_organization_of_ja2.gv
+//| file: ../Graphviz/Systematic_organization_of_ja2.gv
 ```
 
 この図に，JAバンクを枠で囲みたいと思っても，このままではうまくいかない。
@@ -222,5 +222,5 @@ MermaidはGraphvizのように`cluster`や`rank`といった高度なレイア�
 現時点では，多少の工夫により，以下のような図を描くことができる。
 
 ```{dot}
-//| file: ../data/Systematic_organization_of_jabank.gv
+//| file: ../Graphviz/Systematic_organization_of_jabank.gv
 ```
