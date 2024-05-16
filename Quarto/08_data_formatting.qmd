@@ -275,7 +275,7 @@ df_JAmembers$組合員別内訳 <- droplevels(df_JAmembers$組合員別内訳)
 g <- ggplot(data = df_JAmembers, aes(x = 年度, y = value, group = 組合員別内訳, colour = 組合員別内訳)) +
   geom_line() +
   geom_point() +
-  scale_y_continuous(labels = scales::comma_format(), name = "組合員数") +
+  scale_y_continuous(labels = scales::comma, name = "組合員数") +
   ggtitle("農業協同組合の組合員数の推移") +
   labs(caption = "出所：農林水産省『農業協同組合及び同連合会一斉調査 確報 総合農協統計表』\n（https://www.e-stat.go.jp/dbview?sid=0003406360）") +
   theme_bw() +
@@ -290,7 +290,7 @@ g + theme(text = element_text(family = "HiraKakuProN-W3"))
 g <- ggplot(data = df_JAmembers, aes(x = 年度, y = value, group = 組合員別内訳, colour = 組合員別内訳)) +
   geom_line() +
   geom_point() +
-  scale_y_continuous(limits = c(0, NA), labels = scales::comma_format(), name = "組合員数") +
+  scale_y_continuous(limits = c(0, NA), labels = scales::comma, name = "組合員数") +
   ggtitle("農業協同組合の組合員数の推移") +
   labs(caption = "出所：農林水産省『農業協同組合及び同連合会一斉調査 確報 総合農協統計表』\n（https://www.e-stat.go.jp/dbview?sid=0003406360）") +
   theme_bw() +
@@ -316,7 +316,7 @@ df_JAmembers$組合員別内訳 <- droplevels(df_JAmembers$組合員別内訳)
 g <- ggplot(data = df_JAmembers, aes(x = 年度, y = value, group = 組合員別内訳, colour = 組合員別内訳)) +
   geom_line() +
   geom_point() +
-  scale_y_continuous(limits = c(0, NA), breaks = seq(0, 6000000, 1000000), labels = scales::comma_format(), name = "組合員数") +
+  scale_y_continuous(limits = c(0, NA), breaks = seq(0, 6000000, 1000000), labels = scales::comma, name = "組合員数") +
   ggtitle("農業協同組合の組合員数の推移") +
   labs(caption = "出所：農林水産省『農業協同組合及び同連合会一斉調査 確報 総合農協統計表』\n（https://www.e-stat.go.jp/dbview?sid=0003406360）") +
   theme_bw() +
@@ -343,7 +343,7 @@ df_JAmembers$組合員別内訳 <- droplevels(df_JAmembers$組合員別内訳)
 g <- ggplot(data = df_JAmembers, aes(x = 年度, y = value, group = 組合員別内訳, colour = 組合員別内訳)) +
   geom_line() +
   geom_point() +
-  scale_y_continuous(limits = c(0, NA), labels = scales::comma_format(), name = "組合員数") +
+  scale_y_continuous(limits = c(0, NA), labels = scales::comma, name = "組合員数") +
   ggtitle("農業協同組合の組合員数（個人，法人，団体）の推移") +
   labs(caption = "出所：農林水産省『農業協同組合及び同連合会一斉調査 確報 総合農協統計表』\n（https://www.e-stat.go.jp/dbview?sid=0003406360）") +
   theme_bw() +
@@ -380,7 +380,7 @@ df_JAmembers$組合員別内訳 <- droplevels(df_JAmembers$組合員別内訳)
 g <- ggplot(data = df_JAmembers, aes(x = 年度, y = value, group = 組合員別内訳, colour = 組合員別内訳)) +
   geom_line() +
   geom_point() +
-  scale_y_continuous(limits = c(0, NA), labels = scales::comma_format(), name = "組合員数") +
+  scale_y_continuous(limits = c(0, NA), labels = scales::comma, name = "組合員数") +
   ggtitle("農業協同組合の組合員数（女性）の推移") +
   labs(caption = "出所：農林水産省『農業協同組合及び同連合会一斉調査 確報 総合農協統計表』\n（https://www.e-stat.go.jp/dbview?sid=0003406360）") +
   theme_bw() +
@@ -402,7 +402,7 @@ df_JAmembers$組合員別内訳 <- droplevels(df_JAmembers$組合員別内訳)
 g <- ggplot(data = df_JAmembers, aes(x = 年度, y = value, group = 組合員別内訳, colour = 組合員別内訳)) +
   geom_line() +
   geom_point() +
-  scale_y_continuous(limits = c(0, NA), labels = scales::comma_format(), name = "組合員数") +
+  scale_y_continuous(limits = c(0, NA), labels = scales::comma, name = "組合員数") +
   ggtitle("農業協同組合の組合員数の推移") +
   labs(caption = "出所：農林水産省『農業協同組合及び同連合会一斉調査 確報 総合農協統計表』\n（https://www.e-stat.go.jp/dbview?sid=0003406360）") +
   theme_bw() +
@@ -451,7 +451,7 @@ df_JAmembers$組合員別内訳 <- droplevels(df_JAmembers$組合員別内訳)
 g <- ggplot(data = df_JAmembers, aes(x = 年度, y = value, group = 組合員別内訳, colour = 組合員別内訳)) +
   geom_line() +
   geom_point() +
-  scale_y_continuous(limits = c(0, NA), labels = scales::comma_format(), name = "組合員戸数") +
+  scale_y_continuous(limits = c(0, NA), labels = scales::comma, name = "組合員戸数") +
   ggtitle("農業協同組合の組合員戸数の推移") +
   labs(caption = "出所：農林水産省『農業協同組合及び同連合会一斉調査 確報 総合農協統計表』\n（https://www.e-stat.go.jp/dbview?sid=0003406360）") +
   theme_bw() +
@@ -470,7 +470,7 @@ df_JAmembers <- df3[grep("^一戸複数正組合員制実施組合数$", df3$組
 g <- ggplot(data = df_JAmembers, aes(x = 年度, y = value, group = 組合員別内訳, colour = 組合員別内訳)) +
   geom_line() +
   geom_point() +
-  scale_y_continuous(limits = c(0, NA), labels = scales::comma_format(), name = "組合数") +
+  scale_y_continuous(limits = c(0, NA), labels = scales::comma, name = "組合数") +
   ggtitle("一戸複数正組合員制実施組合数の推移") +
   labs(caption = "出所：農林水産省『農業協同組合及び同連合会一斉調査 確報 総合農協統計表』\n（https://www.e-stat.go.jp/dbview?sid=0003406360）") +
   theme_bw() +
@@ -501,7 +501,7 @@ df_JAmembers <- df3[grep("^正組合員（個人（組合員たる地位を失�
 g <- ggplot(data = df_JAmembers, aes(x = 年度, y = value, group = 組合員別内訳, colour = 組合員別内訳)) +
   geom_line() +
   geom_point() +
-  scale_y_continuous(limits = c(0, NA), labels = scales::comma_format(), name = "組合員数") +
+  scale_y_continuous(limits = c(0, NA), labels = scales::comma, name = "組合員数") +
   ggtitle("正組合員（個人（組合員たる地位を失わない者））") +
   labs(caption = "出所：農林水産省『農業協同組合及び同連合会一斉調査 確報 総合農協統計表』\n（https://www.e-stat.go.jp/dbview?sid=0003406360）") +
   theme_bw() +
@@ -547,7 +547,7 @@ g <- ggplot(data = df_JAmembers, aes(x = 年度, y = value, group = 都道府県
   geom_point() +
   gghighlight(max(value) > 400000 | min(value) < 100000) +
 # gghighlight(grepl("愛媛県", df_JAmembers$都道府県)) +
-  scale_y_continuous(limits = c(0, NA), labels = scales::comma_format(), name = "組合員数") +
+  scale_y_continuous(limits = c(0, NA), labels = scales::comma, name = "組合員数") +
   ggtitle("農業協同組合の組合員数の推移（都道府県別）") +
   labs(caption = "出所：農林水産省『農業協同組合及び同連合会一斉調査 確報 総合農協統計表』\n（https://www.e-stat.go.jp/dbview?sid=0003406360）") +
   theme_bw() +
@@ -567,7 +567,7 @@ g <- ggplot(data = df_JAmembers, aes(x = 年度, y = value, group = 都道府県
   geom_line() +
   geom_point() +
   gghighlight(max(value) > 200000 | min(value) < 52000) +
-  scale_y_continuous(limits = c(0, NA), labels = scales::comma_format(), name = "組合員数") +
+  scale_y_continuous(limits = c(0, NA), labels = scales::comma, name = "組合員数") +
   ggtitle("農業協同組合の正組合員数の推移（都道府県別）") +
   labs(caption = "出所：農林水産省『農業協同組合及び同連合会一斉調査 確報 総合農協統計表』\n（https://www.e-stat.go.jp/dbview?sid=0003406360）") +
   theme_bw() +
@@ -587,7 +587,7 @@ g <- ggplot(data = df_JAmembers, aes(x = 年度, y = value, group = 都道府県
   geom_line() +
   geom_point() +
   gghighlight(max(value) > 260000 | min(value) < 30000) +
-  scale_y_continuous(limits = c(0, NA), labels = scales::comma_format(), name = "組合員数") +
+  scale_y_continuous(limits = c(0, NA), labels = scales::comma, name = "組合員数") +
   ggtitle("農業協同組合の准組合員数の推移（都道府県別）") +
   labs(caption = "出所：農林水産省『農業協同組合及び同連合会一斉調査 確報 総合農協統計表』\n（https://www.e-stat.go.jp/dbview?sid=0003406360）") +
   theme_bw() +
