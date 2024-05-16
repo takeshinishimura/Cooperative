@@ -323,7 +323,7 @@ df_pref <- df |>
 g <- ggplot(data = df_pref, aes(x = `時間軸（年次）`, y = value, group = `都道府県`, colour = `都道府県`)) +
   geom_line() +
   geom_point() +
-  gghighlight(都道府県 == "愛媛県" | 都道府県 == "北海道" | 都道府県 == "愛知県") +
+  gghighlight(grepl("愛媛県|北海道|愛知県|奈良県|沖縄県|長崎県", 都道府県)) +
   scale_y_continuous(labels = scales::comma_format(), name = "（千円）") +
   ggtitle("農業協同組合の信用事業総利益の推移（都道府県別）") +
   labs(caption = "出所：農林水産省『農業協同組合及び同連合会一斉調査 確報 総合農協統計表』長期累年\n（https://www.e-stat.go.jp/index.php/stat-search/database?statdisp_id=0003408614）") +
@@ -343,7 +343,7 @@ df_pref <- df |>
 g <- ggplot(data = df_pref, aes(x = `時間軸（年次）`, y = value, group = `都道府県`, colour = `都道府県`)) +
   geom_line() +
   geom_point() +
-  gghighlight(都道府県 == "愛媛県" | 都道府県 == "北海道" | 都道府県 == "愛知県") +
+  gghighlight(grepl("愛媛県|北海道|愛知県", 都道府県)) +
   scale_y_continuous(labels = scales::comma_format(), name = "（千円）") +
   ggtitle("農業協同組合の共済事業総利益の推移（都道府県別）") +
   labs(caption = "出所：農林水産省『農業協同組合及び同連合会一斉調査 確報 総合農協統計表』長期累年\n（https://www.e-stat.go.jp/index.php/stat-search/database?statdisp_id=0003408614）") +
@@ -363,7 +363,7 @@ df_pref <- df |>
 g <- ggplot(data = df_pref, aes(x = `時間軸（年次）`, y = value, group = `都道府県`, colour = `都道府県`)) +
   geom_line() +
   geom_point() +
-  gghighlight(都道府県 == "愛媛県" | 都道府県 == "北海道" | 都道府県 == "愛知県") +
+  gghighlight(grepl("愛媛県|北海道|愛知県", 都道府県)) +
   scale_y_continuous(labels = scales::comma_format(), name = "（千円）") +
   ggtitle("農業協同組合の購買事業総利益の推移（都道府県別）") +
   labs(caption = "出所：農林水産省『農業協同組合及び同連合会一斉調査 確報 総合農協統計表』長期累年\n（https://www.e-stat.go.jp/index.php/stat-search/database?statdisp_id=0003408614）") +
@@ -383,7 +383,7 @@ df_pref <- df |>
 g <- ggplot(data = df_pref, aes(x = `時間軸（年次）`, y = value, group = `都道府県`, colour = `都道府県`)) +
   geom_line() +
   geom_point() +
-  gghighlight(都道府県 == "愛媛県" | 都道府県 == "北海道" | 都道府県 == "愛知県") +
+  gghighlight(grepl("愛媛県|北海道|愛知県", 都道府県)) +
   scale_y_continuous(labels = scales::comma_format(), name = "（千円）") +
   ggtitle("農業協同組合の販売事業総利益の推移（都道府県別）") +
   labs(caption = "出所：農林水産省『農業協同組合及び同連合会一斉調査 確報 総合農協統計表』長期累年\n（https://www.e-stat.go.jp/index.php/stat-search/database?statdisp_id=0003408614）") +
