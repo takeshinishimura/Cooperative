@@ -14,7 +14,7 @@ format:
 lang: ja
 ---
 
-ここでは，農業協同組合の組合員数の推移の把握を試みる。
+ここでは，農業協同組合の組合員数の推移の把握を試みます。
 
 ::: {.callout-note collapse="true" icon="true"}
 ## 農業協同組合及び同連合会一斉調査 確報 総合農協統計表
@@ -22,18 +22,15 @@ lang: ja
 [https://www.e-stat.go.jp/dbview?sid=0003406360](https://www.e-stat.go.jp/dbview?sid=0003406360){target="_blank"}
 :::
 
-これまで，e-Statから取得したデータをグラフにするまで，何の迷いもなくRのコードを書いているかのように，説明してきた。
-しかし実際には，図をどう描くか考える前に，データがどのような構造になっているのかを調べ，試行錯誤している。
-ここでは，統計データを取得した後，そのデータの構造を確認しながら，データを整形していく方法を紹介する。
+これまで，e-Statから取得したデータをグラフにするまで，何の迷いもなくRのコードを書いているかのように，説明してきました。
+しかし実際には，図をどう描くか考える前に，データがどのような構造になっているのかを調べ，試行錯誤しています。
+ここでは，統計データを取得した後，そのデータの構造を確認しながら，データを整形していく方法を紹介します。
 
 
 ## e-Statからデータ取得
 
-[統計データを用いた作図：e-Stat（API）編](https://takeshinishimura.github.io/Cooperative/02_stats_estatapi.html){target="_blank"}の後半では，e-StatのAPIを使って，Rに統計データを取り込んだ。
-ここでも同様の手法でデータを取得する。
-
-早速，次のコードを実行し，欲しいデータを取得しよう。
-次のコードにある `statsDataId = "0003406360"` の数字はアクセスしたい統計データのIDである。
+次のコードを実行し，欲しいデータを取得しましょう。
+次のコードにある `statsDataId = "0003406360"` の数字はアクセスしたい統計データのIDです。
 ```{r}
 library(estatapi)
 
@@ -55,145 +52,168 @@ df
 
 ## データ整形
 
+データの構造を確認するには，次のコマンドを実行するとよいでしょう。
+先頭のみを表示します。
 ```{r}
 head(df)
+```
+先頭の全体を表示したい場合は，`tibble` は不向きです。
+不便だと思ったら，`data.frame` に変換するとよいでしょう。
+```{r}
+data.frame(head(df))
+```
+
+データの最後の部分のみを表示します。
+```{r}
 tail(df)
+```
+
+データの次元（列数とレコード数）を確認します。
+```{r}
 dim(df)
+```
+
+データの構造を確認します。
+```{r}
 str(df)
 ```
 
-まず，「都道府県」の列に「全国」があるのが確認できる。
-ここでは，都道府県別には検討せず，`"全国"` の行だけ抽出することに決める。
-こうしたデータ抽出の判断は，人間が行わなければならない。
-おそらく，`area_code` が `"0"` である行は，`"全国"` に対応していると想像できる。
+まず，「都道府県」の列に「全国」があるのが確認できます。
+最初は，`"全国"` の行だけ抽出することに決め。都道府県別については後回しにすることにします。
+こうしたデータ抽出の判断は，人間が行わなければなりません。
 
-次に，「時間軸（年度次）」列がそのまま年度が入力されていることが分かる。
-そして，`"2016年度"`，`"2015年度"`，`"2014年度"` となっていることから，`"年度"` を削除して，数値型に変換する必要があることまで見通せる。
-`time_code` 列は，`"2016100000"`，`"2015100000"`，`"2014100000"` という値が入っており，整数型である。
-これが `時間軸（年度次）` 列と同じ情報かどうかは，これだけでは分からない。
-`"2016"` に続く `"100000"` の数字は何を意味するのだろうか。
-
-`unit` 列は単位であり作図には使わないが，数値の意味を確認する際に参照することを覚えておく。
-`value` は数値である。
-ただし，型が文字列であることから，気をつけなければならないことがありそうである。
-`NA`に `"-"` が入力されているかもしれない。
-この表はロングであるため，`value` の型を変更すれば，`ggplot2` に使えるかもしれない。
-
-これまでの疑問にひとつずつ答えていこう。
-それぞれの列にどういう値が入っているか確認するには，文字列型の場合，`table()` または `unique()` を使えばよい。
+データフレームのそれぞれの列にどういう値が入っているか確認するには，文字列型の場合，`table()` または `unique()` を使えばよいです。
 ```{r}
 table(df$都道府県)
 unique(df$都道府県)
 ```
 
-`table()` と `unique()` は似た結果が出力される。
-`table()` からはそれぞれのレコード数が分かり，`unique()` からは表にある順番が分かる。
-`"全国"` だけで `r sum(df$都道府県 == "全国")` もある。
-年度の違い以外にも何かありそうなため，全国だけ抽出したとしても，どういうデータ構造になっているのか把握するのは容易ではなさそうである。
-実際に，データを抽出してみて，全国のデータが使えない場合は，改めて考えることにして，次に進む。
-`area_code` は確認してもよいが，仮に `"0"` が `"全国"` と1対1で対応していなかった場合，`area_code` の特定が難しくなるため，今回は使わないことにする。
+`table()` と `unique()` は似た結果が出力されます。
+`table()` からはそれぞれのレコード数が分かり，`unique()` からは表にある順番が分かります。
 
-なお，ここでデータフレームの列の指定方法について，簡単に説明しておく。
-最も簡単かつ短い書き方は次のとおりである。
+ここでは，`"全国"` だけで `r sum(df$都道府県 == "全国")` もある。
+
+### データフレームの列
+
+ここでデータフレームの列の指定方法について，簡単に説明しておきます。
+最も簡単かつ短い書き方は次のとおりです。
 ```{r}
 #| eval: false
 df$都道府県
 ```
 
-これでもよいが，日本語の列名をそのまま使うのは不安である。
-例えば，次のようにするとエラーが出る。
+ただし，日本語の列名をそのまま使うのは不安です。
+例えば，次のようにするとエラーが出ます。
 ```{r}
 #| eval: false
 df$時間軸（年度次）
 ```
 
-なぜか。
-Rを使い慣れている人だとこの理由が分かるはずである。
-Rを使っていると，データフレームがこの列名を変えたがることに気づく。
-`data.frame()` で指定する `check.names =` はこれに関係する引数である。
+なぜでしょうか。
+Rを使い慣れている人だとこの種のエラーへの対策は分かるはずです。
+例えば，データフレームがこの列名を変えたがることに気づいたことがあるでしょう。
+そう，`data.frame()` で指定する `check.names =` はこうした問題に対応するための引数です。
 
-こうしたエラーの回避策はある。
-次のようにするとエラーが出ず，欲しい結果が得られる。
+こうしたエラーの回避策はあります。
+次のようにするとエラーが出ず，欲しい結果が得られます。
 ```{r}
 #| eval: false
 df$`時間軸（年度次）`
 ```
 
-ただし，こういった書き方をするくらいであれば，次の表記に統一した方がスマートではないだろうか。
+ただし，こういった書き方をするくらいであれば，`df[, "時間軸（年度次）"]` といった表記に統一した方がスマートではないでしょうか。
+しかし，この表記はtidyverse（tibble）的には好ましくないようである。
+base Rでは，[]内がスカラー（1次元）なら返り値はベクトルで，[]内がベクトル（2次元以上）なら返り値はデータフレームです。
+tibbleの場合，[]内が何であれ，返り値はtibbleになるようです。
 ```{r}
 #| eval: false
 df[, "時間軸（年度次）"]
+data.frame(df, check.names = FALSE)[, "時間軸（年度次）"]
 ```
-しかし，この表記はtidyverse（tibble）的には好ましくないようである。
 
-話を戻す。
-次に，`time_code` 列を確認する。
+### データフレームの列間関係
+
+`head(df)`の返り値を詳細に見てみましょう。
+`area_code` が `"00000"` である行は，`"全国"` に対応していることが想像できます。
+本当にそうなっているか，確認してみましょう。
 ```{r}
-table(df[, "time_code"])
+#| eval: false
+table(df$area_code, df$都道府県)
 ```
-`time_code` 列の `"100000"` は，ここでは意味がなく，`sub()` で削除できることが分かる。
-それでは，`time_code` 列は `時間軸（年度次）` 列と1対1で対応しているだろうか。
-これを確認する方法は多くある。
-例えば，次のようにする。
 
+このようにしてもよいですが，出力が大きすぎるため，ピンポイントで結果が得られるコードを書く必要があります。
+```{r}
+table(df$area_code[df$都道府県 == "全国"])
+df[df$都道府県 != "全国" & df$area_code == "00000", ]
+```
+
+次に，`時間軸（年度次）` 列がそのまま年度が入力されていることが創造できます。
+そして，`"2016年度"`，`"2015年度"`，`"2014年度"` といったように文字列となっていることから，`"年度"` を削除して，数値型に変換する必要があることまで見通せます。
+一方，`time_code` 列は，`"2016100000"`，`"2015100000"`，`"2014100000"` という値が入っており，文字列です。
+これが `時間軸（年度次）` 列と同じ情報かどうかは，これだけでは分かりません。
+`"2016"` に続く `"100000"` の数字は何を意味するのでしょうか。
+`time_code` 列を確認してみます。
+```{r}
+table(df$time_code)
+```
+`time_code` 列の値の後半部分 `"100000"` は，ここでは意味がなく，`sub()` で削除してもよいことが創造できます。
+それでは，`time_code` 列は `時間軸（年度次）` 列と1対1で対応しているでしょうか。
+すなわち，`時間軸（年度次）` 列から`"年度"` を取り除いた値と`time_code` 列から`"100000"`を取り除いた値は一致するでしょうか。
+これを確認する方法は多くあります。
+例えば，次のようにします。
 ```{r}
 table(apply(df[, c("time_code", "時間軸（年度次）")], 1, paste, collapse = " "))
 ```
 
-ただし，この方法では結果をいちいち確認しなければならない。
-できれば，`TRUE` で返ってくるかどうかで判断したい。
-もしそうなら，次のようにすればよい。
+ただし，この方法では結果をいちいち確認しなければなりません。
+できれば，`TRUE` で返ってくるかどうかで判断したいです。
+もしそうなら，次のようにすればよいです。
 ```{r}
-x <- sapply(seq_len(nrow(df)), function(i) (df[i, "time_code"] / 1000000 - 0.1) == as.numeric(sub("年度", "", df[i, "時間軸（年度次）"])))
-table(x)
+table(sub("年度", "", df$`時間軸（年度次）`) == sub("100000$", "", df$time_code))
 ```
+年度の入力ミスはなさそうなので，どちらの列でもよく，今回は `時間軸（年度次）` 列から年度の数値が得られることが分かります。
 
-年度の入力ミスはなさそうなので，`時間軸（年度次）` 列をいじれば，年度の数値が得られることが分かる。
+`str(df)`の返り値について，他の列について見ておきましょう。
+`unit` 列は単位であり作図には使いませんが，数値の意味を確認する際に参照することを覚えておきます。
+`value` は数値です。
+この表はロングであるため，`ggplot2` として作図するのに扱いやすいです。
 
-大幅に変更する前に，新しいデータフレームを作成しておく。
-以降は新しいデータフレームで作業し，もし間違った場合は，ここに戻ってくれば読み直さずにすむ。
-ここで，全国のみのデータを抽出する。
+### データフレームの整形
+
+これまででデータの構造がおおよそ把握できました。
+ここで，データを扱いやすくなるように変更します。
+
+その際，元のデータフレームは残したまま，新しいデータフレームを作成するようにしましょう。
+以降は新しいデータフレームで作業し，もし間違った場合は，ここに戻ってくれば最初からやり直さずににすむためです。
+
+まず，全国のみのデータを抽出してもよいですが，後で都道府県別のデータを扱うときに手間をかけないようにするために，全国のみのデータにするのは最後にしましょう。
+それ以外の整形をまずやります。
 ```{r}
 df2 <- df
 
-df2 <- df2[df2[, "都道府県"] == "全国", ]
-df2$年度 <- as.double(sub("年度", "", df2[, "時間軸（年度次）"]))
+df2$年度 <- as.double(sub("年度", "", df2$`時間軸（年度次）`))
 
-# 必要な列のみ抽出する
-df3 <- df2[, c("組合員別内訳", "都道府県", "年度", "unit", "value")]
-head(df3)
+## 必要な列のみ抽出すると視認性は高まるが，Rとしてはこのようにするメリットはない
+# df2 <- df2[, c("組合員別内訳", "都道府県", "年度", "unit", "value")]
 ```
 
-全国のみのデータなので，`value` 列はすべて数値かもしれない。
-試しに変換してみる。
+いよいよ `組合員別内訳` 列に何が入っているか確認します。
 ```{r}
-as.double(df3$value)
+unique(data.frame(df2[, "組合員別内訳"]))
 ```
-
-エラーや警告が出ないため，次に進んで問題ない。
+ここで，この列が正組合員と准組合員といった分類であることが分かります。
+念のため，ここで `unit` 列との対応を確認しておきます。
 ```{r}
-df3$value <- as.double(df3$value)
+table(apply(df2[, c("組合員別内訳", "unit")], 1, paste, collapse = " "))
 ```
+法人も単位は `"人"` になっているようです。
+`"組合"` と `"戸"` だけ注意すべきでしょう。
 
-いよいよ `組合員別内訳` 列に何が入っているか確認する。
-こういう予想しにくいものは，データフレームをある程度整理してからの方が理解しやすいであろう。
-```{r}
-unique(df3[, "組合員別内訳"])
-```
-
-ここで，この列が正組合員と准組合員といった分類であることが分かる。
-念のため，ここで `unit` 列との対応を確認しておく。
-```{r}
-table(apply(df3[, c("組合員別内訳", "unit")], 1, paste, collapse = " "))
-```
-
-法人も単位は `"人"` になっている。
-`"組合"` と `"戸"` だけ注意が必要である。
-
-ここで，見栄えをよくするために，アンダーバーを括弧に変換しておく。
+ここで，見栄えをよくするために，アンダーバーを括弧に変換しておきます。
+これらの値が作図する際の凡例に表示されることがあるため，見栄えは重要です。
 ```{r}
 # _を（）に変換する（factorではない場合）
-df3[, "組合員別内訳"] <- apply(df3[, "組合員別内訳", drop = FALSE], 1, function(x) {
+df2[, "組合員別内訳"] <- apply(df2[, "組合員別内訳", drop = FALSE], 1, function(x) {
   if (length(grep("_", x)) > 0) {
     x <- paste0(sub("_", "（", x), "）")
   }
@@ -201,34 +221,58 @@ df3[, "組合員別内訳"] <- apply(df3[, "組合員別内訳", drop = FALSE], 
 )
 
 # _を2つ使っているケースに対応
-df3[, "組合員別内訳"] <- apply(df3[, "組合員別内訳", drop = FALSE], 1, function(x) {
+df2[, "組合員別内訳"] <- apply(df2[, "組合員別内訳", drop = FALSE], 1, function(x) {
   if (length(grep("_", x)) > 0) {
     x <- paste0(sub("_", "（", x), "）")
   }
   return(x)}
 )
 
-unique(df3[, "組合員別内訳"])
+unique(df2[, "組合員別内訳"])
+
+df2$組合員別内訳 <- factor(df2$組合員別内訳, levels = unique(df2$組合員別内訳))
+```
+
+最後に，全国のデータを抽出する。
+```{r}
+df3 <- df2[df2$都道府県 == "全国", ]
 ```
 
 
 ## 作図
 
-作図のためには，ここまでで整形されたデータフレームから，作図に必要な行を抽出すればよい。
+作図のためには，ここまでで整形したデータフレームから，作図に必要な行を抽出すればよいです。
 
-### 作図1
+### 折れ線グラフの作図
 
-まず，組合員の合計の折れ線グラフを描くことにしよう。
-その前に，これまでデータフレームに番号を振っており，どれが最新か分かりづらいため，最新のデータフレームを分かりやすいデータフレーム名に変更しておく。
+まず，組合員の合計の折れ線グラフを描くことにしましょう。
+必要なデータのみを抽出します。
+`grep()` の最初の引数は正規表現です。
+正規表現は初心者にはハードルが高いですが，慣れると非常に便利です。
+```{r}
+df_JAmembers <- df3[grep("^合計（計）$", df3$組合員別内訳), ]
+df_JAmembers
+```
+これは，tidyverseでは次のように書きます。
+```{r}
+library(dplyr)
+
+df_JAmembers <- df3 |>
+  filter(grepl("^合計（計）$", 組合員別内訳))
+df_JAmembers
+```
+tidyverseの方が分かりやすいとの評判ですが，個人的にはどちらでも同じです。
+tidyverseの方がコードが短くなることはよくあります。
+
 ```{r}
 #| warning: false
 library(ggplot2)
+library(scales)
 library(ggsci)
 
-dfja <- df3
-dfja1 <- dfja[grep("^合計（計）$", dfja[, "組合員別内訳"]), ]
+df_JAmembers$組合員別内訳 <- droplevels(df_JAmembers$組合員別内訳)
 
-g <- ggplot(data = dfja1, aes(x = 年度, y = value, group = 組合員別内訳, colour = 組合員別内訳)) +
+g <- ggplot(data = df_JAmembers, aes(x = 年度, y = value, group = 組合員別内訳, colour = 組合員別内訳)) +
   geom_line() +
   geom_point() +
   scale_y_continuous(labels = scales::comma_format(), name = "組合員数") +
@@ -239,13 +283,14 @@ g <- ggplot(data = dfja1, aes(x = 年度, y = value, group = 組合員別内訳,
 g + theme(text = element_text(family = "HiraKakuProN-W3"))
 ```
 
-組合員数が極端に増加しているように見えるのが気になるようなら，縦軸が0から始まるようにするとよい。
+組合員数が極端に増加しているように見えます。
+これはこれで間違っていないが，気になるようなら，縦軸が0から始まるようにするとよいでしょう。
 ```{r}
 #| warning: false
-g <- ggplot(data = dfja1, aes(x = 年度, y = value, group = 組合員別内訳, colour = 組合員別内訳)) +
+g <- ggplot(data = df_JAmembers, aes(x = 年度, y = value, group = 組合員別内訳, colour = 組合員別内訳)) +
   geom_line() +
   geom_point() +
-  scale_y_continuous(limits = c(0, NA), breaks = seq(0, 11000000, 2000000), labels = scales::comma_format(), name = "組合員数") +
+  scale_y_continuous(limits = c(0, NA), labels = scales::comma_format(), name = "組合員数") +
   ggtitle("農業協同組合の組合員数の推移") +
   labs(caption = "出所：農林水産省『農業協同組合及び同連合会一斉調査 確報 総合農協統計表』\n（https://www.e-stat.go.jp/dbview?sid=0003406360）") +
   theme_bw() +
@@ -259,17 +304,16 @@ g + theme(text = element_text(family = "HiraKakuProN-W3"))
 outdir <- "../fig"
 dir.create(outdir, showWarnings = FALSE)
 
-ggsave(g, file = "number_of_ja_members.pdf", path = outdir, width = 8, height = 4)
+ggsave(file = "ja_members.pdf", plot = g, path = outdir, width = 8, height = 4)
 ```
 
-続いて，正組合員と准組合員の折れ線グラフを描いてみる。
-
+続いて，正組合員と准組合員の折れ線グラフを描いてみます。
 ```{r}
 #| warning: false
-dfja1 <- dfja[grep("^正組合員（計）$|^准組合員（計）$", dfja[, "組合員別内訳"]), ]
-dfja1[, "組合員別内訳"] <- factor(dfja1[, "組合員別内訳"], levels = unique(dfja1[, "組合員別内訳"]))
+df_JAmembers <- df3[grep("^正組合員（計）$|^准組合員（計）$", df3$組合員別内訳), ]
+df_JAmembers$組合員別内訳 <- droplevels(df_JAmembers$組合員別内訳)
 
-g <- ggplot(data = dfja1, aes(x = 年度, y = value, group = 組合員別内訳, colour = 組合員別内訳)) +
+g <- ggplot(data = df_JAmembers, aes(x = 年度, y = value, group = 組合員別内訳, colour = 組合員別内訳)) +
   geom_line() +
   geom_point() +
   scale_y_continuous(limits = c(0, NA), breaks = seq(0, 6000000, 1000000), labels = scales::comma_format(), name = "組合員数") +
@@ -283,21 +327,20 @@ g + theme(text = element_text(family = "HiraKakuProN-W3"))
 ```{r}
 #| include: false
 #| warning: false
-ggsave(g, file = "number_of_ja_members_sei_vs_jun.pdf", path = outdir, width = 8, height = 4)
+ggsave(file = "ja_members_sei_vs_jun.pdf", plot = g, path = outdir, width = 8, height = 4)
 ```
 
-正組合員が准組合員が逆転する折れ線グラフが描けた。
+正組合員と准組合員が逆転する折れ線グラフが描けました。
 
-### 作図2
+### もっと作図
 
-次に，個人以外の組合員についても見ていこう。
-
+次に，個人以外の組合員についても見ていきましょう。
 ```{r}
 #| warning: false
-dfja2 <- dfja[grep("^正組合員（個人）$|^正組合員（法人）$|^正組合員（団体）$|^准組合員（個人）$|^准組合員（団体）$", dfja[, "組合員別内訳"]), ]
-dfja2[, "組合員別内訳"] <- factor(dfja2[, "組合員別内訳"], levels = unique(dfja2[, "組合員別内訳"]))
+df_JAmembers <- df3[grep("^正組合員（個人）$|^正組合員（法人）$|^正組合員（団体）$|^准組合員（個人）$|^准組合員（団体）$", df3$組合員別内訳), ]
+df_JAmembers$組合員別内訳 <- droplevels(df_JAmembers$組合員別内訳)
 
-g <- ggplot(data = dfja2, aes(x = 年度, y = value, group = 組合員別内訳, colour = 組合員別内訳)) +
+g <- ggplot(data = df_JAmembers, aes(x = 年度, y = value, group = 組合員別内訳, colour = 組合員別内訳)) +
   geom_line() +
   geom_point() +
   scale_y_continuous(limits = c(0, NA), labels = scales::comma_format(), name = "組合員数") +
@@ -307,33 +350,34 @@ g <- ggplot(data = dfja2, aes(x = 年度, y = value, group = 組合員別内訳,
   scale_color_d3()
 g + theme(text = element_text(family = "HiraKakuProN-W3"))
 
-ggsave(g, file = "number_of_ja_members_kojin_dantai.pdf", path = outdir, width = 8, height = 4)
+ggsave(file = "ja_members_kojin_dantai.pdf", plot = g, path = outdir, width = 8, height = 4)
 ```
 
-正組合員（団体）のグラフが途中で消え，正組合員（法人）のグラフが途中から現れていることが気になる。
-正組合員（団体）の値と正組合員（法人）の値が近いことから，統計の取り方が変わった可能性が考えられる。
-元のデータで，正組合員（団体）が途中から欠損値になっているかどうかを確認してみる。
-表を見る場合は，データをロングではなくワイドにした方が分かりやすい。
-
+正組合員（団体）のグラフが途中で消え，正組合員（法人）のグラフが途中から現れていることが気になります。
+正組合員（団体）の値と正組合員（法人）の値が近いことから，統計の取り方が変わった可能性が考えられるでしょう。
+そこで，元のデータで，正組合員（団体）が途中から欠損値になっているかどうかを確認してみます。
+表を見る場合は，データをロングではなくワイドにした方が分かりやすいです。
 ```{r}
-tmp <- reshape2::dcast(dfja2, 年度 ~ 組合員別内訳)
+library(tidyr)
 
-knitr::kable(tmp, digits = 3, format.args = list(big.mark = ",", scientific = FALSE))
+df3_wide <- df3 |>
+  tidyr::pivot_wider(id_cols = 年度, names_from = 組合員別内訳, values_from = value)
+
+knitr::kable(df3_wide, digits = 3, format.args = list(big.mark = ",", scientific = FALSE))
 ```
+予想どおりのデータです。
+ちなみに，年度のコンマは不要ですが，消し方が分からないため，表示されてしまいます。
 
-予想どおりのデータである。
-ちなみに，年度のコンマは不要だが，消し方が分からない。
+### もっともっと作図
 
-### 作図3
-
-次に，授業では女性の組合員が増えていることを説明した。
-このことを実際のデータで確認してみよう。
-
+次に，授業では女性の組合員が増えていることを説明しました。
+このことを実際のデータで確認してみましょう。
 ```{r}
 #| warning: false
-dfja3 <- dfja[grep("^正組合員（個人（女性））$", dfja[, "組合員別内訳"]), ]
+df_JAmembers <- df3[grep("^正組合員（個人（女性））$", df3$組合員別内訳), ]
+df_JAmembers$組合員別内訳 <- droplevels(df_JAmembers$組合員別内訳)
 
-g <- ggplot(data = dfja3, aes(x = 年度, y = value, group = 組合員別内訳, colour = 組合員別内訳)) +
+g <- ggplot(data = df_JAmembers, aes(x = 年度, y = value, group = 組合員別内訳, colour = 組合員別内訳)) +
   geom_line() +
   geom_point() +
   scale_y_continuous(limits = c(0, NA), labels = scales::comma_format(), name = "組合員数") +
@@ -345,41 +389,41 @@ g <- ggplot(data = dfja3, aes(x = 年度, y = value, group = 組合員別内訳,
   scale_color_d3()
 g + theme(text = element_text(family = "HiraKakuProN-W3"))
 
-ggsave(g, file = "number_of_ja_members_female.pdf", path = outdir, width = 8, height = 4)
+ggsave(file = "ja_members_female.pdf", plot = g, path = outdir, width = 8, height = 4)
 ```
 
-確かに女性の組合員は増加していることが分かる。
-ただし，これだと組合員全体に占める女性の比率が分からないので，上述のグラフと重ねてもよいだろう。
-
+確かに女性の組合員は増加していることが分かります。
+ただし，これだと組合員全体に占める女性の比率が分からないので，上述のグラフと重ねたグラフを描いてみます。
 ```{r}
 #| warning: false
-dfja3 <- dfja[grep("^正組合員（個人（女性））$|^正組合員（計）$|^准組合員（計）$", dfja[, "組合員別内訳"]), ]
-dfja3[, "組合員別内訳"] <- factor(dfja3[, "組合員別内訳"], levels = unique(dfja3[, "組合員別内訳"]))
+df_JAmembers <- df3[grep("^正組合員（個人（女性））$|^正組合員（計）$|^准組合員（計）$", df3$組合員別内訳), ]
+df_JAmembers$組合員別内訳 <- droplevels(df_JAmembers$組合員別内訳)
 
-g <- ggplot(data = dfja3, aes(x = 年度, y = value, group = 組合員別内訳, colour = 組合員別内訳)) +
+g <- ggplot(data = df_JAmembers, aes(x = 年度, y = value, group = 組合員別内訳, colour = 組合員別内訳)) +
   geom_line() +
   geom_point() +
-  scale_y_continuous(limits = c(0, NA), breaks = seq(0, 6000000, 1000000), labels = scales::comma_format(), name = "組合員数") +
+  scale_y_continuous(limits = c(0, NA), labels = scales::comma_format(), name = "組合員数") +
   ggtitle("農業協同組合の組合員数の推移") +
   labs(caption = "出所：農林水産省『農業協同組合及び同連合会一斉調査 確報 総合農協統計表』\n（https://www.e-stat.go.jp/dbview?sid=0003406360）") +
   theme_bw() +
   scale_color_d3()
 g + theme(text = element_text(family = "HiraKakuProN-W3"))
 
-ggsave(g, file = "number_of_ja_members_female_with_all.pdf", path = outdir, width = 8, height = 4)
+ggsave(file = "ja_members_female_with_all.pdf", plot = g, path = outdir, width = 8, height = 4)
 ```
 
-正組合員全体が減少している中で，女性が増加していることが1つのグラフでわかる。
-女性の増加に焦点を当てたければ，女性比率を計算するとよい。
-ここで，法人と団体は除いて計算することに気をつけよう。
+正組合員全体が減少している中で，女性が増加していることが1つのグラフでわかります。
 
+女性の増加に焦点を当てたければ，女性比率を計算するとよいかもしれません。
+ここで，法人と団体は除いて計算することに気をつけましょう。
 ```{r}
 #| warning: false
-dfja3 <- dfja[grep("^正組合員（個人（女性））$|^正組合員（個人）$", dfja[, "組合員別内訳"]), ]
-dfja3 <- reshape2::dcast(dfja3, 年度 ~ 組合員別内訳)
-dfja3[, "女性比率"] <- dfja3[, "正組合員（個人（女性））"] / dfja3[, "正組合員（個人）"]
+df_JAmembers <- df3[grep("^正組合員（個人（女性））$|^正組合員（個人）$", df3$組合員別内訳), ]
+df_JAmembers <- df_JAmembers |>
+  tidyr::pivot_wider(id_cols = 年度, names_from = 組合員別内訳, values_from = value)
+df_JAmembers$女性比率 <- df_JAmembers$`正組合員（個人（女性））` / df_JAmembers$`正組合員（個人）`
 
-g <- ggplot(data = dfja3, aes(x = 年度, y = 女性比率)) +
+g <- ggplot(data = df_JAmembers, aes(x = 年度, y = 女性比率)) +
   geom_line() +
   geom_point() +
   scale_y_continuous(limits = c(0, 1), name = "女性比率") +
@@ -390,23 +434,21 @@ g <- ggplot(data = dfja3, aes(x = 年度, y = 女性比率)) +
   scale_color_d3()
 g + theme(text = element_text(family = "HiraKakuProN-W3"))
 
-ggsave(g, file = "number_of_ja_members_female_ratio.pdf", path = outdir, width = 8, height = 4)
+ggsave(file = "ja_members_female_ratio.pdf", plot = g, path = outdir, width = 8, height = 4)
 ```
 
-凡例がなく，線と点の色が黒い。
-ここで描画に用いているデータフレームはワイドである。
-`ggplot2` で凡例を付け，色分けするためには，`group` を使わなければならず，そのためにはデータをワイドではなくロングにする必要がある。
+凡例がなく，線と点の色が黒くなりました。
+ここで描画に用いているデータフレームはワイドです。
+`ggplot2` で凡例を付け，色分けするためには，`group` を使わなければならず，そのためにはデータをワイドではなくロングにする必要があります。
+ロングにしたときの1つの列を `group` と `colour` に書くとよいです。
 
-### 作図4
-
-組合員戸数の推移はどうだろうか。
-
+組合員戸数の推移はどうでしょうか。
 ```{r}
 #| warning: false
-dfja4 <- dfja[grep("^正組合員戸数$|^准組合員戸数$", dfja[, "組合員別内訳"]), ]
-dfja4[, "組合員別内訳"] <- factor(dfja4[, "組合員別内訳"], levels = unique(dfja4[, "組合員別内訳"]))
+df_JAmembers <- df3[grep("^正組合員戸数$|^准組合員戸数$", df3$組合員別内訳), ]
+df_JAmembers$組合員別内訳 <- droplevels(df_JAmembers$組合員別内訳)
 
-g <- ggplot(data = dfja4, aes(x = 年度, y = value, group = 組合員別内訳, colour = 組合員別内訳)) +
+g <- ggplot(data = df_JAmembers, aes(x = 年度, y = value, group = 組合員別内訳, colour = 組合員別内訳)) +
   geom_line() +
   geom_point() +
   scale_y_continuous(limits = c(0, NA), labels = scales::comma_format(), name = "組合員戸数") +
@@ -416,19 +458,16 @@ g <- ggplot(data = dfja4, aes(x = 年度, y = value, group = 組合員別内訳,
   scale_color_d3()
 g + theme(text = element_text(family = "HiraKakuProN-W3"))
 
-ggsave(g, file = "number_of_ja_members_household.pdf", path = outdir, width = 8, height = 4)
+ggsave(file = "ja_members_household.pdf", plot = g, path = outdir, width = 8, height = 4)
 ```
 
-### 作図5
-
-ここで扱っているのデータには，一戸複数正組合員制実施組合数の値も含まれている。
-授業を踏まえると，この組合数は減少している可能性が考えられる。
-
+ここで扱っているのデータには，一戸複数正組合員制実施組合数の値も含まれています。
+授業を踏まえると，この組合数は減少している可能性が考えられます。
 ```{r}
 #| warning: false
-dfja5 <- dfja[grep("^一戸複数正組合員制実施組合数$", dfja[, "組合員別内訳"]), ]
+df_JAmembers <- df3[grep("^一戸複数正組合員制実施組合数$", df3$組合員別内訳), ]
 
-g <- ggplot(data = dfja5, aes(x = 年度, y = value, group = 組合員別内訳, colour = 組合員別内訳)) +
+g <- ggplot(data = df_JAmembers, aes(x = 年度, y = value, group = 組合員別内訳, colour = 組合員別内訳)) +
   geom_line() +
   geom_point() +
   scale_y_continuous(limits = c(0, NA), labels = scales::comma_format(), name = "組合数") +
@@ -439,18 +478,15 @@ g <- ggplot(data = dfja5, aes(x = 年度, y = value, group = 組合員別内訳,
   scale_color_d3()
 g + theme(text = element_text(family = "HiraKakuProN-W3"))
 
-ggsave(g, file = "number_of_ja_multiple_members_per_household.pdf", path = outdir, width = 8, height = 4)
+ggsave(file = "number_of_ja_multiple_members_per_household.pdf", plot = g, path = outdir, width = 8, height = 4)
 ```
+実際にグラフを作成すると，一戸複数正組合員制実施組合数の現象が確認できます。
+ただし，農業協同組合の数が減少しているため，この数値の解釈には注意が必要です。
 
-実際にグラフを作成すると，一戸複数正組合員制実施組合数の現象が確認できる。
-ただし，農業協同組合の数が減少しているため，この数値の解釈には注意が必要である。
-
-### 作図6
-
-正組合員（個人（組合員たる地位を失わない者））は何だろうか。
-授業を踏まえると，これは土地持ち非農家の数を反映したものかもしれない。
-定義については，統計データではなく，別の方法で調べる。
-例えば，以下のような資料がある。
+正組合員（個人（組合員たる地位を失わない者））は何でしょうか。
+授業を踏まえると，これは土地持ち非農家の数を反映したものかもしれません。
+定義については，統計データではなく，別の方法で調べます。
+例えば，以下のような資料があります。
 
 ::: {.callout-note collapse="true" icon="true"}
 ## 農林水産省「農地を所有している非農家の組合員資格保有という農協法の理念に違反している状況の解消」2012年1月
@@ -460,9 +496,9 @@ ggsave(g, file = "number_of_ja_multiple_members_per_household.pdf", path = outdi
 
 ```{r}
 #| warning: false
-dfja6 <- dfja[grep("^正組合員（個人（組合員たる地位を失わない者））$", dfja[, "組合員別内訳"]), ]
+df_JAmembers <- df3[grep("^正組合員（個人（組合員たる地位を失わない者））$", df3$組合員別内訳), ]
 
-g <- ggplot(data = dfja6, aes(x = 年度, y = value, group = 組合員別内訳, colour = 組合員別内訳)) +
+g <- ggplot(data = df_JAmembers, aes(x = 年度, y = value, group = 組合員別内訳, colour = 組合員別内訳)) +
   geom_line() +
   geom_point() +
   scale_y_continuous(limits = c(0, NA), labels = scales::comma_format(), name = "組合員数") +
@@ -475,5 +511,110 @@ g <- ggplot(data = dfja6, aes(x = 年度, y = value, group = 組合員別内訳,
   scale_color_d3()
 g + theme(text = element_text(family = "HiraKakuProN-W3"))
 
-ggsave(g, file = "number_of_ja_members_nonfarmer.pdf", path = outdir, width = 8, height = 4)
+ggsave(file = "ja_members_nonfarmer.pdf", plot = g, path = outdir, width = 8, height = 4)
+```
+
+## 都道府県別の作図
+
+データフレーム `df2` から `df2$都道府県 == "全国"` という条件で抽出したデータに基づいて全国のデータの図を描いたことから，`df2$都道府県 != "全国"` を抽出すれば都道府県のデータが得られると考えられるかもしれません。
+確認してみます。
+```{r}
+unique(df2$都道府県[df2$都道府県 != "全国"])
+```
+都道府県以外を1つずつ取り除いていく必要があります。
+このとき，`grepl()` の正規表現の中に異なる条件を書くのが手っ取り早いです。
+```{r}
+unique(df2$都道府県[!grepl("全国|小計|組合", df2$都道府県)])
+```
+`grep()` と `grepl()` の違いに注意しましょう。
+都道府県のみ抽出されていることが確認できたら，実際にデータにこの抽出条件を用います。
+```{r}
+df_pref <- df2[!grepl("全国|小計|組合", df2$都道府県), ]
+```
+
+図の描き方は全国の場合とまったく同じです。
+ただし，47本の折れ線グラフは判別しにくいため，特徴のあるものだけにラベルを表示するとよいでしょう。
+```{r}
+#| warning: false
+library(gghighlight)
+
+df_JAmembers <- df_pref |>
+  filter(grepl("^合計（計）$", 組合員別内訳))
+df_JAmembers$組合員別内訳 <- droplevels(df_JAmembers$組合員別内訳)
+
+g <- ggplot(data = df_JAmembers, aes(x = 年度, y = value, group = 都道府県, colour = 都道府県)) +
+  geom_line() +
+  geom_point() +
+  gghighlight(max(value) > 400000 | min(value) < 100000) +
+# gghighlight(grepl("愛媛県", df_JAmembers$都道府県)) +
+  scale_y_continuous(limits = c(0, NA), labels = scales::comma_format(), name = "組合員数") +
+  ggtitle("農業協同組合の組合員数の推移（都道府県別）") +
+  labs(caption = "出所：農林水産省『農業協同組合及び同連合会一斉調査 確報 総合農協統計表』\n（https://www.e-stat.go.jp/dbview?sid=0003406360）") +
+  theme_bw() +
+  scale_color_d3()
+g + theme(text = element_text(family = "HiraKakuProN-W3"))
+
+ggsave(file = "ja_members_pref.pdf", plot = g, path = outdir, width = 8, height = 4)
+```
+
+続いて，正組合員の折れ線グラフを描いてみます。
+```{r}
+#| warning: false
+df_JAmembers <- df_pref |>
+  filter(組合員別内訳 == "正組合員（計）")
+
+g <- ggplot(data = df_JAmembers, aes(x = 年度, y = value, group = 都道府県, colour = 都道府県)) +
+  geom_line() +
+  geom_point() +
+  gghighlight(max(value) > 200000 | min(value) < 52000) +
+  scale_y_continuous(limits = c(0, NA), labels = scales::comma_format(), name = "組合員数") +
+  ggtitle("農業協同組合の正組合員数の推移（都道府県別）") +
+  labs(caption = "出所：農林水産省『農業協同組合及び同連合会一斉調査 確報 総合農協統計表』\n（https://www.e-stat.go.jp/dbview?sid=0003406360）") +
+  theme_bw() +
+  scale_color_d3()
+g + theme(text = element_text(family = "HiraKakuProN-W3"))
+
+ggsave(file = "ja_members_sei_pref.pdf", plot = g, path = outdir, width = 8, height = 4)
+```
+
+准組合員の折れ線グラフを描いてみます。
+```{r}
+#| warning: false
+df_JAmembers <- df_pref |>
+  filter(組合員別内訳 == "准組合員（計）")
+
+g <- ggplot(data = df_JAmembers, aes(x = 年度, y = value, group = 都道府県, colour = 都道府県)) +
+  geom_line() +
+  geom_point() +
+  gghighlight(max(value) > 260000 | min(value) < 30000) +
+  scale_y_continuous(limits = c(0, NA), labels = scales::comma_format(), name = "組合員数") +
+  ggtitle("農業協同組合の准組合員数の推移（都道府県別）") +
+  labs(caption = "出所：農林水産省『農業協同組合及び同連合会一斉調査 確報 総合農協統計表』\n（https://www.e-stat.go.jp/dbview?sid=0003406360）") +
+  theme_bw() +
+  scale_color_d3()
+g + theme(text = element_text(family = "HiraKakuProN-W3"))
+
+ggsave(file = "ja_members_jun_pref.pdf", plot = g, path = outdir, width = 8, height = 4)
+```
+
+女性比率の高い都道府県と低い都道府県はどこでしょうか。
+```{r}
+#| warning: false
+df_JAmembers <- df_pref[grep("^正組合員（個人（女性））$|^正組合員（個人）$", df_pref$組合員別内訳), ]
+df_JAmembers <- df_JAmembers |>
+  tidyr::pivot_wider(id_cols = c(都道府県, 年度), names_from = 組合員別内訳, values_from = value)
+df_JAmembers$女性比率 <- df_JAmembers$`正組合員（個人（女性））` / df_JAmembers$`正組合員（個人）`
+
+g <- ggplot(data = df_JAmembers, aes(x = 年度, y = 女性比率, group = 都道府県, colour = 都道府県)) +
+  geom_line() +
+  geom_point() +
+  gghighlight(max(女性比率) > .3 | min(女性比率) < .1) +
+  ggtitle("農業協同組合の正組合員に占める女性比率の推移（都道府県別）") +
+  labs(caption = "出所：農林水産省『農業協同組合及び同連合会一斉調査 確報 総合農協統計表』\n（https://www.e-stat.go.jp/dbview?sid=0003406360）") +
+  theme_bw() +
+  theme(legend.position = "bottom") +
+  scale_color_d3()
+g + theme(text = element_text(family = "HiraKakuProN-W3"))
+
+ggsave(file = "ja_members_female_ratio_pref.pdf", plot = g, path = outdir, width = 8, height = 4)
 ```
