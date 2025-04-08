@@ -1,1 +1,2 @@
 dot -Tpdf f.gv > f.pdf
+fdp -Tpdf ja_ehime_history.gv > ja_ehime_history_fdp.pdf

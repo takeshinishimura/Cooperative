@@ -25,10 +25,10 @@ e-Statが何かを知るためには，[『e-Stat』とは？](https://www.e-sta
 このページで，`2-1.xlsx` という名前のファイルをダウンロードできます。
 
 ::: {.callout-note collapse="true" icon="true"}
-## 消費生活協同組合（連合会）実態調査 / 令和4年度消費生活協同組合（連合会）実態調査
+## 消費生活協同組合（連合会）実態調査 / 令和5年度消費生活協同組合（連合会）実態調査
 2-1 組合数及び組員員数の状況
 
-[https://www.e-stat.go.jp/stat-search/files?stat_infid=000040061084](https://www.e-stat.go.jp/stat-search/files?stat_infid=000040061084){target="_blank"}
+[https://www.e-stat.go.jp/stat-search/files?stat_infid=000040183565](https://www.e-stat.go.jp/stat-search/files?stat_infid=000040183565){target="_blank"}
 :::
 
 ここでは目的のページを示しましたが，実際には，自分が欲しいデータがダウンロードできるページを見つけなければなりません。
@@ -55,7 +55,6 @@ Rをはじめて使う人はExcelを使って作成するグラフとRを使っ�
 Windowsなら `C:` から始まり，macOSなら `/` から始まる階層構造における位置のことです。
 何も設定をしていなければ，起動直後のRはホームディレクトリにいるはずです。
 次のコマンドで，自分がどこにいるか（カレントディレクトリの場所）を確認できます。
-
 ```{r}
 #| eval: false
 getwd()
@@ -66,7 +65,6 @@ getwd()
 通常，頻繁に使う関数は覚えておくべきであり，覚えるためにはその関数の意味と関数の綴りをあなたの頭の中で対応させておくとよいでしょう。
 
 作業ディレクトリを設定するには次のようにします。
-
 ```{r}
 #| eval: false
 setwd("~")
@@ -82,7 +80,6 @@ setwd("~")
 
 readxlパッケージを初めて使う場合のみ，以下のコマンドを実行します。
 一度実行すれば，パソコンの電源を切ったとしても，再度実行する必要はありません（実行してもエラーにはならないので，不安なら実行すればよい）。
-
 ```{r}
 #| eval: false
 install.packages("readxl")
@@ -95,7 +92,6 @@ Rに慣れていない人は，まずはコンマ区切り（CSV）またはタ�
 ここでは，CSVファイルの読み込みについては説明しませんので，各自で調べて，CSVファイルを読み込めるようになっておくと，以下の内容の理解が容易になるはずです。
 
 以下のコマンドでExcelファイルを読み込むことができます。
-
 ```{r}
 #| eval: false
 library(readxl)
@@ -115,7 +111,6 @@ df <- readxl::read_excel("../data/2-1.xlsx", col_names = FALSE, skip = 2)
 今扱っているデータは前処理が若干面倒です。
 e-StatにあるExcelファイルの多くはデータを扱えるようにするまでが一苦労です。
 本当なら試行錯誤が必要ですが，以下のコードをまとめて実行すれば問題なく読み込めます。
-
 ```{r}
 # 下にある注を削除
 df <- df[-c((nrow(df) - 3):nrow(df)), ]
@@ -164,34 +159,23 @@ df$年度 <- convert_to_ad(df$年度)
 str(df)
 df[, 2:ncol(df)] <- lapply(df[, 2:ncol(df)], as.integer)
 str(df)
-
-# 以下は好みであり，実行しなくてもよい
-dfcoop <- data.frame(df, check.names = FALSE)
 ```
 
 最後に，Excelファイルから読み込んだデータが分析可能な状態になっているかを確認します。
 データフレームの先頭だけを確認するためには，以下のコードを実行します。
-
 ```{r}
-head(dfcoop)
+head(as.data.frame(df))
 ```
 
 これはExcelファイルと同じような見た目であるため，理解しやすいのではないでしょうか。
-このようになっていれば，作図や分析に使えるデータであるといえます。
-もう少し正確に確認するためには，次のコードを実行します。
-
-```{r}
-str(dfcoop)
-```
 
 
 ## 折れ線グラフ
 
 さて，ここからが本題です。
 折れ線グラフを作成してみましょう。
-
 ```{r}
-plot(dfcoop[, c("年度", "組合数（総数）")], type = "o", main = "消費生活協同組合の数の推移", xlab = "年度", pch = 16, las = 1)
+plot(df[, c("年度", "組合数（総数）")], type = "o", main = "消費生活協同組合の数の推移", xlab = "年度", pch = 16, las = 1)
 ```
 
 macOSの場合，日本語部分が文字化けする（トーフになる）かもしれません。
@@ -203,17 +187,15 @@ Rの操作に慣れてきたら，文字化けに対応しましょう（ひと�
 
 先ほどの図をよく見ると，2005年までは点の数が少ないことがわかります。
 これは，元データを正しく反映したものです。
-
 ```{r}
-dfcoop$年度
+df$年度
 ```
 
 このことから，Rでは何も指定しなくても，軸のスケールを正しく反映した図が描かれることがわかります。
 
 続いて，組合員数の図を描画してみましょう。
-
 ```{r}
-plot(dfcoop[, c("年度", "組合員数（総数）")], type = "o", main = "消費生活協同組合の組合員数の推移", xlab = "年度", pch = 16, las = 1)
+plot(df[, c("年度", "組合員数（総数）")], type = "o", main = "消費生活協同組合の組合員数の推移", xlab = "年度", pch = 16, las = 1)
 ```
 
 それっぽい図が描けました。
@@ -233,7 +215,6 @@ plot(dfcoop[, c("年度", "組合員数（総数）")], type = "o", main = "消�
 
 作業ディレクトリに `fig` フォルダがあるかどうか事前に知るには，エクスプローラー（Finder）で確認する必要があります。
 しかし，こうした確認は面倒なため，Rで次のようにすると便利です。
-
 ```{r}
 #| eval: false
 outdir <- "./fig"
@@ -250,20 +231,17 @@ if (!file.exists(outdir)) {
 ```
 
 このコードは，出力先ディレクトリがなければ，出力先ディレクトリを作成し，あれば何もしないという処理をRに指示しています。
-このコードは便利なので，個人的によく使います。
 
 図を表示するまえに，あらかじめ図の描画先を指定することで，図をファイルに保存できます。
 例えば，以下のように，pdfで保存先を指定した後，図を描画し，最後に `dev.off()` として描画先を閉じます。
-
 ```{r}
 #| results: 'hide'
 pdf(file.path(outdir, "number_of_coop_members_plot.pdf"), width = 10, height = 10)
-plot(dfcoop[, c("年度", "組合員数（地域）")], type = "o", main = "消費生活協同組合の組合員数の推移", xlab = "年度", pch = 16, las = 1)
+plot(df[, c("年度", "組合員数（地域）")], type = "o", main = "消費生活協同組合の組合員数の推移", xlab = "年度", pch = 16, las = 1)
 dev.off()
 ```
 
 また，グラフを描いた直後に次のコマンドにより，保存する方法もある。
-
 ```{r}
 #| eval: false
 dev.copy(cairo_pdf, file = file.path(outdir, "number_of_coop_members_plot2.pdf"))
@@ -272,7 +250,7 @@ dev.copy(png, file = file.path(outdir, "number_of_coop_members_plot2.png"))
 dev.off()
 ```
 
-dev.copy()とpdf()で出力されるPDFは同じではありません。
+`dev.copy()` と `pdf()` で出力されるPDFは同じではありません。
 結果を比較して，好みの保存方法を使うようにしてください。
 
 実用的なファイルフォーマットは，ほぼPDFとPNGだけです。
@@ -287,16 +265,15 @@ Wordで使うことを考えると，WindowsではPNGで，macOSではPDFで保�
 [ggplot2](https://ggplot2.tidyverse.org/){target="_blank"} で作成したグラフは一般的に綺麗です。
 ただし，好き嫌いが分かれます。
 個人的には，Rのコードが分かりやすく，短時間でいい感じのグラフに仕上がることから，`ggplot2` は非常に便利である（ただし，凝り過ぎには注意）と考えています。
-
 ```{r}
 #| warning: false
 library(ggplot2)
 library(reshape2)
 
-dfcoop2 <- reshape2::melt(dfcoop[, c("年度", grep("組合数（", names(dfcoop), value = TRUE))], id.vars = "年度")
-names(dfcoop2)[2:3] <- c("消費生活協同組合", "組合数")
+df_long <- reshape2::melt(df[, c("年度", grep("組合数（", names(df), value = TRUE))], id.vars = "年度")
+names(df_long)[2:3] <- c("消費生活協同組合", "組合数")
 
-g <- ggplot(data = dfcoop2) +
+g <- ggplot(data = df_long) +
   geom_line(aes(x = 年度, y = 組合数, group = 消費生活協同組合, colour = 消費生活協同組合)) +
   geom_point(aes(x = 年度, y = 組合数, group = 消費生活協同組合, colour = 消費生活協同組合)) +
   ggtitle("消費生活協同組合の数の推移")
@@ -309,49 +286,53 @@ g + theme(text = element_text(family = "HiraKakuProN-W3"))
 うまく表示されない原因が文字化け（トーフ）の場合は，無視して先に進んでください。
 
 次のように，少し工夫するだけで見栄えは劇的に改善します。
-
 ```{r}
 #| warning: false
 # 便利なカラーパレット
 library(ggsci)
 
-g <- ggplot(data = dfcoop2, aes(x = 年度, y = 組合数, group = 消費生活協同組合, colour = 消費生活協同組合)) +
+g <- ggplot(data = df_long, aes(x = 年度, y = 組合数, group = 消費生活協同組合, colour = 消費生活協同組合)) +
   geom_line() +
   geom_point() +
-# scale_x_continuous(breaks = seq(1960, 2020, 10), minor_breaks = NULL) +
   scale_y_continuous(labels = scales::comma_format()) +
-  ggtitle("消費生活協同組合の数の推移") +
-  labs(caption = "出所：厚生労働省『令和4年度消費生活協同組合（連合会）実態調査』\n（https://www.e-stat.go.jp/stat-search/files?stat_infid=000040061084）") +
+  labs(
+    title = "消費生活協同組合の数の推移",
+    caption = "出所：厚生労働省『令和4年度消費生活協同組合（連合会）実態調査』\n（https://www.e-stat.go.jp/stat-search/files?stat_infid=000040183565）"
+  ) +
   theme_bw() +
 # theme_minimal() +
 # theme_classic() +
   scale_color_d3()
 g + theme(text = element_text(family = "HiraKakuProN-W3"))
 ```
-
 いい感じの図が描けました。
 
 `ggplot2` で作成した図をファイルに保存するときは，以下のコードを実行します。
-
 ```{r}
 #| warning: false
 ggsave(filename = file.path(outdir, "number_of_coop.pdf"), plot = g, width = 8, height = 4)
-ggsave(filename = file.path(outdir, "number_of_coop.png"), plot = g, width = 8, height = 4)
 ```
-
-同じようにして，組合員数の推移のグラフを描くことができます。
-
+あるいは，次のコードを実行します。
 ```{r}
 #| warning: false
-dfcoop2 <- reshape2::melt(dfcoop[, c("年度", grep("組合員数（", names(dfcoop), value = TRUE))], id.vars = "年度")
-names(dfcoop2)[2:3] <- c("消費生活協同組合", "組合員数")
+ggsave(filename = file.path(outdir, "number_of_coop.png"), plot = g, width = 8, height = 4)
+```
+図をWordに貼り付けたい場合は，WindowsだとPNG形式で書き出し，macOSだとPDFで書き出すのがよいでよう。
 
-g <- ggplot(data = dfcoop2, aes(x = 年度, y = 組合員数 / 10000, group = 消費生活協同組合, colour = 消費生活協同組合)) +
+同じようにして，組合員数の推移のグラフを描くことができます。
+```{r}
+#| warning: false
+df_long <- reshape2::melt(df[, c("年度", grep("組合員数（", names(df), value = TRUE))], id.vars = "年度")
+names(df_long)[2:3] <- c("消費生活協同組合", "組合員数")
+
+g <- ggplot(data = df_long, aes(x = 年度, y = 組合員数 / 10000, group = 消費生活協同組合, colour = 消費生活協同組合)) +
   geom_line() +
   geom_point() +
   scale_y_continuous(labels = scales::comma_format(), name = "組合員数（万人）") +
-  ggtitle("消費生活協同組合の組合員数の推移") +
-  labs(caption = "出所：厚生労働省『令和4年度消費生活協同組合（連合会）実態調査』\n（https://www.e-stat.go.jp/stat-search/files?stat_infid=000040061084）") +
+  labs(
+    title = "消費生活協同組合の組合員数の推移",
+    caption = "出所：厚生労働省『令和4年度消費生活協同組合（連合会）実態調査』\n（https://www.e-stat.go.jp/stat-search/files?stat_infid=000040183565）"
+  ) +
   theme_bw() +
   scale_color_d3()
 g + theme(text = element_text(family = "HiraKakuProN-W3"))
@@ -365,16 +346,15 @@ ggsave(filename = file.path(outdir, "number_of_coop_members.pdf"), plot = g, wid
 上の内容を応用して，次の消費生活協同組合の事業種類別の組合数のデータを基に，折れ線グラフのPDFファイルを作成してみましょう。
 
 ::: {.callout-note collapse="true" icon="true"}
-## 消費生活協同組合（連合会）実態調査 / 令和4年度消費生活協同組合（連合会）実態調査
+## 消費生活協同組合（連合会）実態調査 / 令和5年度消費生活協同組合（連合会）実態調査
 2-2 事業種類別組合数の状況
 
-[https://www.e-stat.go.jp/stat-search/files?stat_infid=000040061125](https://www.e-stat.go.jp/stat-search/files?stat_infid=000040061125){target="_blank"}
+[https://www.e-stat.go.jp/stat-search/files?stat_infid=000040183566](https://www.e-stat.go.jp/stat-search/files?stat_infid=000040183566){target="_blank"}
 :::
 
 Rに慣れるまでは，前処理のハードルが非常に高いです。
 そこで，ここではExcelファイルをCSVに変換したファイルを提供します。
 以下は，`2-2.xlsx` を整理するためのコードです（読み飛ばしてよい）。
-
 ```{r}
 #| eval: false
 df <- readxl::read_excel("2-2.xlsx", col_names = FALSE, skip = 1)
@@ -384,7 +364,6 @@ df <- readxl::read_excel("2-2.xlsx", col_names = FALSE, skip = 1)
 #| message: false
 df <- readxl::read_excel("../data/2-2.xlsx", col_names = FALSE, skip = 1)
 ```
-
 ```{r}
 #| warning: false
 # 下にある注を削除
@@ -409,20 +388,16 @@ df$年度 <- convert_to_ad(df$年度)
 # 列を整数型に変換する
 df[df == "-"] <- ""
 df[, 3:ncol(df)] <- lapply(df[, 3:ncol(df)], as.integer)
-
-# 以下は好みであり，実行しなくてもよい
-dfcoop <- data.frame(df)
 ```
 
 次の表から，CSVファイルをダウンロードしてください。
-
 ```{r}
 #| echo: false
 library(DT) 
 
 caption <- "消費生活協同組合の事業種類別組合数の推移"
 DT::datatable(
-  dfcoop, caption = caption, rownames = TRUE,
+  df, caption = caption, rownames = TRUE,
   extensions = 'Buttons',
   options = list(
     pageLength = 10,
@@ -432,39 +407,38 @@ DT::datatable(
     )
   )
 ) |>
-  DT::formatCurrency(c(2:ncol(dfcoop)), currency = "", interval = 3, mark = ",", digits = 0)
+  DT::formatCurrency(c(2:ncol(df)), currency = "", interval = 3, mark = ",", digits = 0)
 ```
 
 ダウンロード後，エクスプローラー（Finder）を用いて，ファイルを作業ディレクトリに移動し，ファイル名を `2-2.csv` に変更してください。
 CSVファイルを読み込むには，次のようにします。
-
 ```{r}
 #| eval: false
-dfcoop <- read.csv("2-2.csv")
+df <- read.csv("2-2.csv")
 ```
 
-正しく読み込めているか，`dfcoop` や `str(dfcoop)` を実行して確かめてください。
+正しく読み込めているか，`df` や `str(df)` を実行して確かめてください。
 文字化けしている場合は，文字コードを指定して `read.csv()` を実行してください。
 例えば，次のようにします。
-
 ```{r}
 #| eval: false
-dfcoop <- `read.csv("2-2.csv", fileEncoding = "UTF-8")`
+df <- `read.csv("2-2.csv", fileEncoding = "UTF-8")`
 ```
 
 正しく読み込めていることが確認できたら，`ggplot2` を使って，グラフを描いてみましょう。
-
 ```{r}
 #| include: false
-dfcoop2 <- reshape2::melt(dfcoop[, -which(names(dfcoop) == "組合種類")], id.vars = "年度")
-names(dfcoop2)[2:3] <- c("消費生活協同組合", "組合数")
+df_long <- reshape2::melt(df[, -which(names(df) == "組合種類")], id.vars = "年度")
+names(df_long)[2:3] <- c("消費生活協同組合", "組合数")
 
-g <- ggplot(data = dfcoop2, aes(x = 年度, y = 組合数, group = 消費生活協同組合, colour = 消費生活協同組合)) +
+g <- ggplot(data = df_long, aes(x = 年度, y = 組合数, group = 消費生活協同組合, colour = 消費生活協同組合)) +
   geom_line() +
   geom_point() +
   scale_y_continuous(labels = scales::comma_format()) +
-  ggtitle("消費生活協同組合の事業種類別組合数の推移") +
-  labs(caption = "出所：厚生労働省『令和4年度消費生活協同組合（連合会）実態調査』\n（https://www.e-stat.go.jp/stat-search/files?stat_infid=000040061125）") +
+  labs(
+    title = "消費生活協同組合の事業種類別組合数の推移",
+    caption = "出所：厚生労働省『令和4年度消費生活協同組合（連合会）実態調査』\n（https://www.e-stat.go.jp/stat-search/files?stat_infid=000040183566）"
+  ) +
   theme_bw() +
   scale_color_d3()
 
