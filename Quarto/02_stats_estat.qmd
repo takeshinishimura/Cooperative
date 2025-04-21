@@ -246,6 +246,10 @@ dev.off()
 #| eval: false
 dev.copy(cairo_pdf, file = file.path(outdir, "number_of_coop_members_plot2.pdf"))
 dev.off()
+あるいは，次のコードを実行します。
+```
+```{r}
+#| eval: false
 dev.copy(png, file = file.path(outdir, "number_of_coop_members_plot2.png"))
 dev.off()
 ```
@@ -254,7 +258,7 @@ dev.off()
 結果を比較して，好みの保存方法を使うようにしてください。
 
 実用的なファイルフォーマットは，ほぼPDFとPNGだけです。
-Wordで使うことを考えると，WindowsではPNGで，macOSではPDFで保存すると綺麗な図が作成できるはずです。
+Wordで使うことを考えると，WindowsではPNG形式で，macOSではPDFで保存すると綺麗な図が作成できるはずです。
 ちなみに，保存は書き出しや出力と言い換えても，多くの場合は問題ありません。
 
 以下では，授業で使用した図の作成方法を紹介します。
@@ -317,7 +321,7 @@ ggsave(filename = file.path(outdir, "number_of_coop.pdf"), plot = g, width = 8, 
 #| warning: false
 ggsave(filename = file.path(outdir, "number_of_coop.png"), plot = g, width = 8, height = 4)
 ```
-図をWordに貼り付けたい場合は，WindowsだとPNG形式で書き出し，macOSだとPDFで書き出すのがよいでよう。
+図をWordに貼り付けたい場合は，WindowsだとPNG形式で書き出し，macOSだとPDFで書き出すのがよいでしょう。
 
 同じようにして，組合員数の推移のグラフを描くことができます。
 ```{r}

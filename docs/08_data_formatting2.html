@@ -1,0 +1,1665 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.42">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>データの整形</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="08_data_formatting2_files/libs/clipboard/clipboard.min.js"></script>
+<script src="08_data_formatting2_files/libs/quarto-html/quarto.js"></script>
+<script src="08_data_formatting2_files/libs/quarto-html/popper.min.js"></script>
+<script src="08_data_formatting2_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="08_data_formatting2_files/libs/quarto-html/anchor.min.js"></script>
+<link href="08_data_formatting2_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="08_data_formatting2_files/libs/quarto-html/quarto-syntax-highlighting-2f5df379a58b258e96c21c0638c20c03.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="08_data_formatting2_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="08_data_formatting2_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="08_data_formatting2_files/libs/bootstrap/bootstrap-fa50174f6a7ed17b207f88dfa0b7f5ab.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body>
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">目次</h2>
+   
+  <ul>
+  <li><a href="#e-statからデータ取得" id="toc-e-statからデータ取得" class="nav-link active" data-scroll-target="#e-statからデータ取得"><span class="header-section-number">1</span> e-Statからデータ取得</a></li>
+  <li><a href="#データ整形" id="toc-データ整形" class="nav-link" data-scroll-target="#データ整形"><span class="header-section-number">2</span> データ整形</a>
+  <ul class="collapse">
+  <li><a href="#データフレームの列" id="toc-データフレームの列" class="nav-link" data-scroll-target="#データフレームの列"><span class="header-section-number">2.1</span> データフレームの列</a></li>
+  <li><a href="#データフレームの列間関係" id="toc-データフレームの列間関係" class="nav-link" data-scroll-target="#データフレームの列間関係"><span class="header-section-number">2.2</span> データフレームの列間関係</a></li>
+  <li><a href="#データフレームの整形" id="toc-データフレームの整形" class="nav-link" data-scroll-target="#データフレームの整形"><span class="header-section-number">2.3</span> データフレームの整形</a></li>
+  </ul></li>
+  <li><a href="#作図" id="toc-作図" class="nav-link" data-scroll-target="#作図"><span class="header-section-number">3</span> 作図</a>
+  <ul class="collapse">
+  <li><a href="#折れ線グラフの作図" id="toc-折れ線グラフの作図" class="nav-link" data-scroll-target="#折れ線グラフの作図"><span class="header-section-number">3.1</span> 折れ線グラフの作図</a></li>
+  </ul></li>
+  <li><a href="#データ追加" id="toc-データ追加" class="nav-link" data-scroll-target="#データ追加"><span class="header-section-number">4</span> データ追加</a>
+  <ul class="collapse">
+  <li><a href="#年" id="toc-年" class="nav-link" data-scroll-target="#年"><span class="header-section-number">4.1</span> 2022年</a></li>
+  <li><a href="#年-1" id="toc-年-1" class="nav-link" data-scroll-target="#年-1"><span class="header-section-number">4.2</span> 2021年</a></li>
+  <li><a href="#年-2" id="toc-年-2" class="nav-link" data-scroll-target="#年-2"><span class="header-section-number">4.3</span> 2020年</a></li>
+  <li><a href="#年-3" id="toc-年-3" class="nav-link" data-scroll-target="#年-3"><span class="header-section-number">4.4</span> 2021年</a></li>
+  <li><a href="#追加" id="toc-追加" class="nav-link" data-scroll-target="#追加"><span class="header-section-number">4.5</span> 追加</a></li>
+  </ul></li>
+  <li><a href="#作図-1" id="toc-作図-1" class="nav-link" data-scroll-target="#作図-1"><span class="header-section-number">5</span> 作図</a></li>
+  </ul>
+</nav>
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">データの整形</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>ここでは，農業協同組合の組合員数の推移の把握を試みます。</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<del>農業協同組合及び同連合会一斉調査 確報 総合農協統計表</del>
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><a href="https://www.e-stat.go.jp/dbview?sid=0003406360" target="_blank">https://www.e-stat.go.jp/dbview?sid=0003406360</a></p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+農業協同組合及び同連合会一斉調査 / 長期累年
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-2" class="callout-2-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><a href="https://www.e-stat.go.jp/stat-search/database?statdisp_id=0003410051" target="_blank">https://www.e-stat.go.jp/stat-search/database?statdisp_id=0003410051</a></p>
+</div>
+</div>
+</div>
+<p>これまで，e-Statから取得したデータをグラフにするまで，何の迷いもなくRのコードを書いているかのように，説明してきました。 しかし実際には，図をどう描くか考える前に，データがどのような構造になっているのかを調べ，試行錯誤しています。 ここでは，統計データを取得した後，そのデータの構造を確認しながら，データを整形していく方法を紹介します。</p>
+<section id="e-statからデータ取得" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="e-statからデータ取得"><span class="header-section-number">1</span> e-Statからデータ取得</h2>
+<p>次のコードを実行し，欲しいデータを取得しましょう。 次のコードにある <del><code>statsDataId = "0003406360"</code></del> <code>statsDataId = "0003410051"</code> の数字はアクセスしたい統計データのIDです。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(estatapi)</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>このサービスは、政府統計総合窓口(e-Stat)のAPI機能を使用していますが、サービスの内容は国によって保証されたものではありません。</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>appId <span class="ot">&lt;-</span> keyring<span class="sc">::</span><span class="fu">key_get</span>(<span class="st">"e-stat"</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>statsDataId <span class="ot">&lt;-</span> <span class="st">"0003410051"</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>(meta_info <span class="ot">&lt;-</span> <span class="fu">estat_getMetaInfo</span>(<span class="at">appId =</span> appId, <span class="at">statsDataId =</span> statsDataId))</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$cat01
+# A tibble: 5 × 5
+  `@code` `@name`   `@level` `@unit` `@parentCode`
+  &lt;chr&gt;   &lt;chr&gt;     &lt;chr&gt;    &lt;chr&gt;   &lt;chr&gt;        
+1 100     計        1        人      &lt;NA&gt;         
+2 110     個人      2        人      100          
+3 120     個人_女性 3        人      110          
+4 130     団体      2        人      100          
+5 140     戸数      1        戸      &lt;NA&gt;         
+
+$cat02
+# A tibble: 5 × 3
+  `@code` `@name`                  `@level`
+  &lt;chr&gt;   &lt;chr&gt;                    &lt;chr&gt;   
+1 100     正組合員数及び准組合員数 1       
+2 150     正組合員数               1       
+3 160     正組合員戸数             1       
+4 170     准組合員数               1       
+5 180     准組合員戸数             1       
+
+$area
+# A tibble: 48 × 4
+   `@code` `@name` `@level` `@parentCode`
+   &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt;    &lt;chr&gt;        
+ 1 00000   全国    1        &lt;NA&gt;         
+ 2 01000   北海道  2        00000        
+ 3 02000   青森県  3        01100        
+ 4 03000   岩手県  3        01100        
+ 5 04000   宮城県  3        01100        
+ 6 05000   秋田県  3        01100        
+ 7 06000   山形県  3        01100        
+ 8 07000   福島県  3        01100        
+ 9 08000   茨城県  3        07100        
+10 09000   栃木県  3        07100        
+# ℹ 38 more rows
+
+$time
+# A tibble: 14 × 3
+   `@code`    `@name` `@level`
+   &lt;chr&gt;      &lt;chr&gt;   &lt;chr&gt;   
+ 1 2006000000 2006年  1       
+ 2 2005000000 2005年  1       
+ 3 2004000000 2004年  1       
+ 4 2003000000 2003年  1       
+ 5 2002000000 2002年  1       
+ 6 2001000000 2001年  1       
+ 7 2000000000 2000年  1       
+ 8 1999000000 1999年  1       
+ 9 1998000000 1998年  1       
+10 1997000000 1997年  1       
+11 1996000000 1996年  1       
+12 1995000000 1995年  1       
+13 1994000000 1994年  1       
+14 1993000000 1993年  1       
+
+$.names
+# A tibble: 4 × 2
+  id    name          
+  &lt;chr&gt; &lt;chr&gt;         
+1 cat01 個人・団体    
+2 cat02 組合          
+3 area  都道府県      
+4 time  時間軸（年次）</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 統計データ取得</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">estat_getStatsData</span>(</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">appId =</span> appId,</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">statsDataId =</span> statsDataId</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Fetching record 1-8064... (total: 8064 records)</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>df</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 8,064 × 11
+   cat01_code `個人・団体` cat02_code 組合          area_code 都道府県 time_code
+   &lt;chr&gt;      &lt;chr&gt;        &lt;chr&gt;      &lt;chr&gt;         &lt;chr&gt;     &lt;chr&gt;    &lt;chr&gt;    
+ 1 100        計           100        正組合員数及び准組合員数… 00000     全国     20060000…
+ 2 100        計           100        正組合員数及び准組合員数… 00000     全国     20050000…
+ 3 100        計           100        正組合員数及び准組合員数… 00000     全国     20040000…
+ 4 100        計           100        正組合員数及び准組合員数… 00000     全国     20030000…
+ 5 100        計           100        正組合員数及び准組合員数… 00000     全国     20020000…
+ 6 100        計           100        正組合員数及び准組合員数… 00000     全国     20010000…
+ 7 100        計           100        正組合員数及び准組合員数… 00000     全国     20000000…
+ 8 100        計           100        正組合員数及び准組合員数… 00000     全国     19990000…
+ 9 100        計           100        正組合員数及び准組合員数… 00000     全国     19980000…
+10 100        計           100        正組合員数及び准組合員数… 00000     全国     19970000…
+# ℹ 8,054 more rows
+# ℹ 4 more variables: `時間軸（年次）` &lt;chr&gt;, unit &lt;chr&gt;, value &lt;dbl&gt;,
+#   annotation &lt;chr&gt;</code></pre>
+</div>
+</div>
+<p>このデータはどういう構造になっているのか想像できない。 そこで，データの構造を詳細に確認してみる。</p>
+</section>
+<section id="データ整形" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="データ整形"><span class="header-section-number">2</span> データ整形</h2>
+<p>まず，<code>dplyr</code> パッケージを使えるようにします。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+次のパッケージを付け加えます: 'dplyr'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>以下のオブジェクトは 'package:stats' からマスクされています:
+
+    filter, lag</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>以下のオブジェクトは 'package:base' からマスクされています:
+
+    intersect, setdiff, setequal, union</code></pre>
+</div>
+</div>
+<p>データの構造を確認するには，次のコマンドを実行するとよいでしょう。 先頭のみを表示します。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>df <span class="sc">|&gt;</span> <span class="fu">head</span>() <span class="sc">|&gt;</span> <span class="fu">data.frame</span>()</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  cat01_code 個人.団体 cat02_code                     組合 area_code 都道府県
+1        100        計        100 正組合員数及び准組合員数     00000     全国
+2        100        計        100 正組合員数及び准組合員数     00000     全国
+3        100        計        100 正組合員数及び准組合員数     00000     全国
+4        100        計        100 正組合員数及び准組合員数     00000     全国
+5        100        計        100 正組合員数及び准組合員数     00000     全国
+6        100        計        100 正組合員数及び准組合員数     00000     全国
+   time_code 時間軸.年次. unit   value annotation
+1 2006000000       2006年   人 9322431       &lt;NA&gt;
+2 2005000000       2005年   人 9188153       &lt;NA&gt;
+3 2004000000       2004年   人 9145856       &lt;NA&gt;
+4 2003000000       2003年   人 9100072       &lt;NA&gt;
+5 2002000000       2002年   人 9071894       &lt;NA&gt;
+6 2001000000       2001年   人 9082535       &lt;NA&gt;</code></pre>
+</div>
+</div>
+<p>データの最後の部分のみを表示します。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>df <span class="sc">|&gt;</span> <span class="fu">tail</span>() <span class="sc">|&gt;</span> <span class="fu">data.frame</span>()</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  cat01_code 個人.団体 cat02_code         組合 area_code 都道府県  time_code
+1        140      戸数        180 准組合員戸数     47000   沖縄県 1998000000
+2        140      戸数        180 准組合員戸数     47000   沖縄県 1997000000
+3        140      戸数        180 准組合員戸数     47000   沖縄県 1996000000
+4        140      戸数        180 准組合員戸数     47000   沖縄県 1995000000
+5        140      戸数        180 准組合員戸数     47000   沖縄県 1994000000
+6        140      戸数        180 准組合員戸数     47000   沖縄県 1993000000
+  時間軸.年次. unit value annotation
+1       1998年   戸 53903       &lt;NA&gt;
+2       1997年   戸 51984       &lt;NA&gt;
+3       1996年   戸 49314       &lt;NA&gt;
+4       1995年   戸 47886       &lt;NA&gt;
+5       1994年   戸 47076       &lt;NA&gt;
+6       1993年   戸 44676       &lt;NA&gt;</code></pre>
+</div>
+</div>
+<p>データの構造を確認します。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(df)</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>tibble [8,064 × 11] (S3: tbl_df/tbl/data.frame)
+ $ cat01_code    : chr [1:8064] "100" "100" "100" "100" ...
+ $ 個人・団体    : chr [1:8064] "計" "計" "計" "計" ...
+ $ cat02_code    : chr [1:8064] "100" "100" "100" "100" ...
+ $ 組合          : chr [1:8064] "正組合員数及び准組合員数" "正組合員数及び准組合員数" "正組合員数及び准組合員数" "正組合員数及び准組合員数" ...
+ $ area_code     : chr [1:8064] "00000" "00000" "00000" "00000" ...
+ $ 都道府県      : chr [1:8064] "全国" "全国" "全国" "全国" ...
+ $ time_code     : chr [1:8064] "2006000000" "2005000000" "2004000000" "2003000000" ...
+ $ 時間軸（年次）: chr [1:8064] "2006年" "2005年" "2004年" "2003年" ...
+ $ unit          : chr [1:8064] "人" "人" "人" "人" ...
+ $ value         : num [1:8064] 9322431 9188153 9145856 9100072 9071894 ...
+ $ annotation    : chr [1:8064] NA NA NA NA ...</code></pre>
+</div>
+</div>
+<p>まず，<code>組合</code> の列に <code>正組合員数及び准組合員数</code> と <code>准組合員戸数</code> があるのが確認できます。 つまり，<code>組合</code> の列は組合員の区分に対応していることが想像できる。 ただし，組合員をどのように区分しているのか，正確にはわからない。</p>
+<p>データフレームのそれぞれの列にどういう値が入っているか確認するには，文字列型の場合，<code>table()</code> または <code>unique()</code> を使えばよいです。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>組合)</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+            准組合員戸数               准組合員数             正組合員戸数 
+                     672                     2016                      672 
+              正組合員数 正組合員数及び准組合員数 
+                    2688                     2016 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">unique</span>(df<span class="sc">$</span>組合)</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "正組合員数及び准組合員数" "正組合員数"              
+[3] "准組合員数"               "正組合員戸数"            
+[5] "准組合員戸数"            </code></pre>
+</div>
+</div>
+<p><code>table()</code> と <code>unique()</code> は似た結果が出力されます。 <code>table()</code> からはそれぞれのレコード数が分かり，<code>unique()</code> からは表にある順番が分かります。</p>
+<p>このデータでは，<code>組合</code> 列の下のカテゴリーに <code>個人・団体</code> 列があります。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>組合, df<span class="sc">$</span><span class="st">`</span><span class="at">個人・団体</span><span class="st">`</span>)</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                          
+                            計 個人 個人_女性 戸数 団体
+  准組合員戸数               0    0         0  672    0
+  准組合員数               672  672         0    0  672
+  正組合員戸数               0    0         0  672    0
+  正組合員数               672  672       672    0  672
+  正組合員数及び准組合員数 672  672         0    0  672</code></pre>
+</div>
+</div>
+<p>あるいは，次のようにします。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>df <span class="sc">|&gt;</span> </span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(組合, <span class="st">`</span><span class="at">個人・団体</span><span class="st">`</span>)</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 12 × 3
+   組合                     `個人・団体`     n
+   &lt;chr&gt;                    &lt;chr&gt;        &lt;int&gt;
+ 1 准組合員戸数             戸数           672
+ 2 准組合員数               個人           672
+ 3 准組合員数               団体           672
+ 4 准組合員数               計             672
+ 5 正組合員戸数             戸数           672
+ 6 正組合員数               個人           672
+ 7 正組合員数               個人_女性      672
+ 8 正組合員数               団体           672
+ 9 正組合員数               計             672
+10 正組合員数及び准組合員数 個人           672
+11 正組合員数及び准組合員数 団体           672
+12 正組合員数及び准組合員数 計             672</code></pre>
+</div>
+</div>
+<p>この結果から，人数に関するデータと戸数に関するデータが混ざっていることがわかります。</p>
+<section id="データフレームの列" class="level3" data-number="2.1">
+<h3 data-number="2.1" class="anchored" data-anchor-id="データフレームの列"><span class="header-section-number">2.1</span> データフレームの列</h3>
+<p>ここでデータフレームの列の指定方法について，簡単に説明しておきます。 最も簡単かつ短い書き方は次のとおりです。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>都道府県</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>ただし，日本語の列名をそのまま使うのは不安です。 例えば，次のようにするとエラーが出ます。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>時間軸（年次）</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>なぜでしょうか。 Rを使い慣れている人だとこの種のエラーへの対策は分かるはずです。 例えば，データフレームがこの列名を変えたがることに気づいたことがあるでしょう。 そう，<code>data.frame()</code> で指定する <code>check.names =</code> はこうした問題に対応するための引数です。</p>
+<p>こうしたエラーの回避策はあります。 次のようにするとエラーが出ず，欲しい結果が得られます。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span><span class="st">`</span><span class="at">時間軸（年次）</span><span class="st">`</span></span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>ただし，こういった書き方をするくらいであれば，<code>df[, "時間軸（年次）"]</code> といった表記に統一した方がスマートではないでしょうか。 しかし，この表記はtidyverse（tibble）的には好ましくないようである。 base R のデータフレームでは，<code>[]</code> 内がスカラー（1次元のベクトル）なら返り値はベクトルで，<code>[]</code> 内がベクトル（2次元以上）なら返り値はデータフレームです。 tibbleの場合，<code>[]</code> 内が何であれ，返り値は tibble になります。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>df[, <span class="st">"時間軸（年次）"</span>]</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(df, <span class="at">check.names =</span> <span class="cn">FALSE</span>)[, <span class="st">"時間軸（年次）"</span>]</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>df[, <span class="st">"時間軸（年次）"</span>, drop <span class="ot">=</span> <span class="cn">TRUE</span>]</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="データフレームの列間関係" class="level3" data-number="2.2">
+<h3 data-number="2.2" class="anchored" data-anchor-id="データフレームの列間関係"><span class="header-section-number">2.2</span> データフレームの列間関係</h3>
+<p><code>head(df)</code>の返り値を詳細に見てみましょう。 <code>area_code</code> が <code>"00000"</code> である行は，<code>"全国"</code> に対応していることが想像できます。 本当にそうなっているか，確認してみましょう。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>area_code, df<span class="sc">$</span>都道府県)</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>このようにしてもよいですが，出力が大きすぎるため，ピンポイントで結果が得られるコードを書く必要があります。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>area_code[df<span class="sc">$</span>都道府県 <span class="sc">==</span> <span class="st">"全国"</span>])</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+00000 
+  168 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>df[df<span class="sc">$</span>都道府県 <span class="sc">!=</span> <span class="st">"全国"</span> <span class="sc">&amp;</span> df<span class="sc">$</span>area_code <span class="sc">==</span> <span class="st">"00000"</span>, ]</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 0 × 11
+# ℹ 11 variables: cat01_code &lt;chr&gt;, 個人・団体 &lt;chr&gt;, cat02_code &lt;chr&gt;,
+#   組合 &lt;chr&gt;, area_code &lt;chr&gt;, 都道府県 &lt;chr&gt;, time_code &lt;chr&gt;,
+#   時間軸（年次） &lt;chr&gt;, unit &lt;chr&gt;, value &lt;dbl&gt;, annotation &lt;chr&gt;</code></pre>
+</div>
+</div>
+<p>次に，<code>時間軸（年次）</code> 列がそのまま年度が入力されていることが想像できます。 そして，<code>"2016年度"</code>，<code>"2015年度"</code>，<code>"2014年度"</code> といったように文字列となっていることから，<code>"年度"</code> を削除して，数値型に変換する必要があることまで見通せます。 一方，<code>time_code</code> 列は，<code>"2006000000"</code>，<code>"2005000000"</code>，<code>"2004000000"</code> という値が入っており，文字列です。 これが <code>時間軸（年次）</code> 列と同じ情報かどうかは，これだけでは分かりません。 <code>"2006"</code> に続く <code>"000000"</code> の数字は何を意味するのでしょうか。 <code>time_code</code> 列を確認してみます。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>time_code)</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+1993000000 1994000000 1995000000 1996000000 1997000000 1998000000 1999000000 
+       576        576        576        576        576        576        576 
+2000000000 2001000000 2002000000 2003000000 2004000000 2005000000 2006000000 
+       576        576        576        576        576        576        576 </code></pre>
+</div>
+</div>
+<p><code>time_code</code> 列の値の後半部分 <code>"000000"</code> は，ここでは意味がなく，<code>sub()</code> で削除してもよさそうです。 それでは，<code>time_code</code> 列は <code>時間軸（年次）</code> 列と1対1で対応しているでしょうか。 すなわち，<code>時間軸（年次）</code> 列から<code>"年度"</code> を取り除いた値と<code>time_code</code> 列から<code>"000000"</code>を取り除いた値は一致するでしょうか。 これを確認する方法は多くあります。 例えば，次のようにします。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(<span class="fu">sub</span>(<span class="st">"年"</span>, <span class="st">""</span>, df<span class="sc">$</span><span class="st">`</span><span class="at">時間軸（年次）</span><span class="st">`</span>) <span class="sc">==</span> <span class="fu">sub</span>(<span class="st">"000000$"</span>, <span class="st">""</span>, df<span class="sc">$</span>time_code))</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+TRUE 
+8064 </code></pre>
+</div>
+</div>
+<p>年度の入力ミスはなさそうなので，どちらの列でもよく，今回は <code>時間軸（年次）</code> 列から年度の数値が得られることが分かります。</p>
+<p><code>str(df)</code>の返り値について，他の列について見ておきましょう。 <code>unit</code> 列は単位であり作図には使いませんが，数値の意味を確認する際に参照することを覚えておきます。 <code>value</code> は数値です。 この表はロングであるため，<code>ggplot2</code> として作図するのに扱いやすいです。</p>
+</section>
+<section id="データフレームの整形" class="level3" data-number="2.3">
+<h3 data-number="2.3" class="anchored" data-anchor-id="データフレームの整形"><span class="header-section-number">2.3</span> データフレームの整形</h3>
+<p>これまででデータの構造がおおよそ把握できました。 ここで，データを扱いやすくなるように変更します。</p>
+<p>その際，元のデータフレームは残したまま，新しいデータフレームを作成するようにしましょう。 以降は新しいデータフレームで作業し，もし間違った場合は，ここに戻ってくれば最初からやり直さずににすむためです。</p>
+<p>まず，全国のみのデータを抽出してもよいですが，後で都道府県別のデータを扱うときに手間をかけないようにするために，全国のみのデータにするのは最後にしましょう。 それ以外の整形をまずやります。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>df2 <span class="ot">&lt;-</span> df</span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>df2<span class="sc">$</span>年 <span class="ot">&lt;-</span> <span class="fu">as.double</span>(<span class="fu">sub</span>(<span class="st">"年"</span>, <span class="st">""</span>, df2<span class="sc">$</span><span class="st">`</span><span class="at">時間軸（年次）</span><span class="st">`</span>))</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>最初にみた <code>組合</code> 列を改めて確認します。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">unique</span>(<span class="fu">data.frame</span>(df2[, <span class="st">"組合"</span>]))</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                         組合
+1    正組合員数及び准組合員数
+673                正組合員数
+1345               准組合員数
+6721             正組合員戸数
+7393             准組合員戸数</code></pre>
+</div>
+</div>
+<p>ここで，この列が正組合員と准組合員といった分類であることが分かります。 念のため，ここで <code>unit</code> 列との対応を確認しておきます。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(<span class="fu">apply</span>(df2[, <span class="fu">c</span>(<span class="st">"組合"</span>, <span class="st">"個人・団体"</span>, <span class="st">"unit"</span>)], <span class="dv">1</span>, paste, <span class="at">collapse =</span> <span class="st">" "</span>))</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+            准組合員戸数 戸数 戸                 准組合員数 計 人 
+                             672                              672 
+              准組合員数 個人 人               准組合員数 団体 人 
+                             672                              672 
+            正組合員戸数 戸数 戸                 正組合員数 計 人 
+                             672                              672 
+              正組合員数 個人 人          正組合員数 個人_女性 人 
+                             672                              672 
+              正組合員数 団体 人   正組合員数及び准組合員数 計 人 
+                             672                              672 
+正組合員数及び准組合員数 個人 人 正組合員数及び准組合員数 団体 人 
+                             672                              672 </code></pre>
+</div>
+</div>
+<p>団体も単位は <code>"人"</code> になっているようです。</p>
+<p>最後に，全国のデータを抽出する。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>df3 <span class="ot">&lt;-</span> df2[df2<span class="sc">$</span>都道府県 <span class="sc">==</span> <span class="st">"全国"</span>, ]</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="作図" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="作図"><span class="header-section-number">3</span> 作図</h2>
+<p>作図のためには，ここまでで整形したデータフレームから，作図に必要な行を抽出すればよいです。</p>
+<section id="折れ線グラフの作図" class="level3" data-number="3.1">
+<h3 data-number="3.1" class="anchored" data-anchor-id="折れ線グラフの作図"><span class="header-section-number">3.1</span> 折れ線グラフの作図</h3>
+<p>まず，組合員の合計の折れ線グラフを描くことにしましょう。 必要なデータのみを抽出します。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>df_JAmembers <span class="ot">&lt;-</span> df3[<span class="fu">grep</span>(<span class="st">"計"</span>, df3<span class="sc">$</span><span class="st">`</span><span class="at">個人・団体</span><span class="st">`</span>), ]</span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>df_JAmembers</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 42 × 12
+   cat01_code `個人・団体` cat02_code 組合          area_code 都道府県 time_code
+   &lt;chr&gt;      &lt;chr&gt;        &lt;chr&gt;      &lt;chr&gt;         &lt;chr&gt;     &lt;chr&gt;    &lt;chr&gt;    
+ 1 100        計           100        正組合員数及び准組合員数… 00000     全国     20060000…
+ 2 100        計           100        正組合員数及び准組合員数… 00000     全国     20050000…
+ 3 100        計           100        正組合員数及び准組合員数… 00000     全国     20040000…
+ 4 100        計           100        正組合員数及び准組合員数… 00000     全国     20030000…
+ 5 100        計           100        正組合員数及び准組合員数… 00000     全国     20020000…
+ 6 100        計           100        正組合員数及び准組合員数… 00000     全国     20010000…
+ 7 100        計           100        正組合員数及び准組合員数… 00000     全国     20000000…
+ 8 100        計           100        正組合員数及び准組合員数… 00000     全国     19990000…
+ 9 100        計           100        正組合員数及び准組合員数… 00000     全国     19980000…
+10 100        計           100        正組合員数及び准組合員数… 00000     全国     19970000…
+# ℹ 32 more rows
+# ℹ 5 more variables: `時間軸（年次）` &lt;chr&gt;, unit &lt;chr&gt;, value &lt;dbl&gt;,
+#   annotation &lt;chr&gt;, 年 &lt;dbl&gt;</code></pre>
+</div>
+</div>
+<p>あるいは，tidyverse では次のようになります。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>df_JAmembers <span class="ot">&lt;-</span> df3 <span class="sc">|&gt;</span></span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">grepl</span>(<span class="st">"計"</span>, <span class="st">`</span><span class="at">個人・団体</span><span class="st">`</span>))</span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a>df_JAmembers</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 42 × 12
+   cat01_code `個人・団体` cat02_code 組合          area_code 都道府県 time_code
+   &lt;chr&gt;      &lt;chr&gt;        &lt;chr&gt;      &lt;chr&gt;         &lt;chr&gt;     &lt;chr&gt;    &lt;chr&gt;    
+ 1 100        計           100        正組合員数及び准組合員数… 00000     全国     20060000…
+ 2 100        計           100        正組合員数及び准組合員数… 00000     全国     20050000…
+ 3 100        計           100        正組合員数及び准組合員数… 00000     全国     20040000…
+ 4 100        計           100        正組合員数及び准組合員数… 00000     全国     20030000…
+ 5 100        計           100        正組合員数及び准組合員数… 00000     全国     20020000…
+ 6 100        計           100        正組合員数及び准組合員数… 00000     全国     20010000…
+ 7 100        計           100        正組合員数及び准組合員数… 00000     全国     20000000…
+ 8 100        計           100        正組合員数及び准組合員数… 00000     全国     19990000…
+ 9 100        計           100        正組合員数及び准組合員数… 00000     全国     19980000…
+10 100        計           100        正組合員数及び准組合員数… 00000     全国     19970000…
+# ℹ 32 more rows
+# ℹ 5 more variables: `時間軸（年次）` &lt;chr&gt;, unit &lt;chr&gt;, value &lt;dbl&gt;,
+#   annotation &lt;chr&gt;, 年 &lt;dbl&gt;</code></pre>
+</div>
+</div>
+<p>tidyverse の方が分かりやすいとの評判ですが，個人的にはどちらでも同じです。 今回は同じですが，tidyverse の方がコードが短くなることはよくあります。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(scales)</span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggsci)</span>
+<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data =</span> df_JAmembers, <span class="fu">aes</span>(<span class="at">x =</span> 年, <span class="at">y =</span> value, <span class="at">group =</span> 組合, <span class="at">colour =</span> 組合)) <span class="sc">+</span></span>
+<span id="cb50-6"><a href="#cb50-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb50-7"><a href="#cb50-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb50-8"><a href="#cb50-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="cn">NA</span>), <span class="at">labels =</span> scales<span class="sc">::</span>comma, <span class="at">name =</span> <span class="st">"組合員数"</span>) <span class="sc">+</span></span>
+<span id="cb50-9"><a href="#cb50-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb50-10"><a href="#cb50-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"農業協同組合の組合員数の推移"</span>,</span>
+<span id="cb50-11"><a href="#cb50-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">caption =</span> <span class="st">"出所：農林水産省「総合農協統計表」"</span>,</span>
+<span id="cb50-12"><a href="#cb50-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="cn">NULL</span>,</span>
+<span id="cb50-13"><a href="#cb50-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">shape =</span> <span class="cn">NULL</span></span>
+<span id="cb50-14"><a href="#cb50-14" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb50-15"><a href="#cb50-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb50-16"><a href="#cb50-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_d3</span>()</span>
+<span id="cb50-17"><a href="#cb50-17" aria-hidden="true" tabindex="-1"></a>g <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">text =</span> <span class="fu">element_text</span>(<span class="at">family =</span> <span class="st">"HiraKakuProN-W3"</span>))</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="08_data_formatting2_files/figure-html/unnamed-chunk-23-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="データ追加" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="データ追加"><span class="header-section-number">4</span> データ追加</h2>
+<p>最近のデータを追加しましょう。</p>
+<section id="年" class="level3" data-number="4.1">
+<h3 data-number="4.1" class="anchored" data-anchor-id="年"><span class="header-section-number">4.1</span> 2022年</h3>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+農業協同組合及び同連合会一斉調査 / 確報 総合農協統計表 令和４事業年度総合農協統計表
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-3" class="callout-3-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><a href="https://www.e-stat.go.jp/stat-search/database?statdisp_id=0002110844" target="_blank">https://www.e-stat.go.jp/stat-search/database?statdisp_id=0002110844</a></p>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>statsDataId <span class="ot">&lt;-</span> <span class="st">"0002110844"</span></span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a>(meta_info <span class="ot">&lt;-</span> <span class="fu">estat_getMetaInfo</span>(<span class="at">appId =</span> appId, <span class="at">statsDataId =</span> statsDataId))</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$cat01
+# A tibble: 58 × 3
+   `@code` `@name`         `@level`
+   &lt;chr&gt;   &lt;chr&gt;           &lt;chr&gt;   
+ 1 1001    全国            1       
+ 2 1002    １組合当たり    1       
+ 3 1003    地域_北海道     1       
+ 4 1004    地域_東北       1       
+ 5 1005    地域_関東       1       
+ 6 1006    地域_北陸       1       
+ 7 1007    地域_東海       1       
+ 8 1008    地域_近畿       1       
+ 9 1009    地域_中国・四国 1       
+10 1010    地域_九州       1       
+# ℹ 48 more rows
+
+$cat02
+# A tibble: 19 × 5
+   `@code` `@name`                                `@level` `@unit` `@parentCode`
+   &lt;chr&gt;   &lt;chr&gt;                                  &lt;chr&gt;    &lt;chr&gt;   &lt;chr&gt;        
+ 1 1001    合計                                   1        人+団体 &lt;NA&gt;         
+ 2 1002    個人                                   1        人      &lt;NA&gt;         
+ 3 1003    法人・団体                             1        団体    &lt;NA&gt;         
+ 4 1004    一戸複数正組合員制実施組合数           1        組合    &lt;NA&gt;         
+ 5 1005    正組合員_計                            1        人+団体 &lt;NA&gt;         
+ 6 1006    正組合員_個人                          1        人      &lt;NA&gt;         
+ 7 1007    正組合員_個人_女性                     2        人      1006         
+ 8 1008    正組合員_個人_組合員たる地位を失わない者…… 2        人      1006         
+ 9 1009    正組合員_法人_小計                     1        団体    &lt;NA&gt;         
+10 1010    正組合員_法人_農事組合法人             1        団体    &lt;NA&gt;         
+11 1011    正組合員_法人_その他法人               1        社      &lt;NA&gt;         
+12 1012    正組合員戸数                           1        戸      &lt;NA&gt;         
+13 1013    准組合員_計                            1        人+団体 &lt;NA&gt;         
+14 1014    准組合員_個人                          1        人      &lt;NA&gt;         
+15 1015    准組合員_法人・団体_小計               1        団体    &lt;NA&gt;         
+16 1016    准組合員_法人・団体_農業協同組合       1        団体    &lt;NA&gt;         
+17 1017    准組合員_法人・団体_農事組合法人       1        団体    &lt;NA&gt;         
+18 1018    准組合員_法人・団体_その他団体         1        社      &lt;NA&gt;         
+19 1019    准組合員戸数                           1        戸      &lt;NA&gt;         
+
+$.names
+# A tibble: 2 × 2
+  id    name                                     
+  &lt;chr&gt; &lt;chr&gt;                                    
+1 cat01 (NOUKYOU1-22-2-004)地域・1組合当たり     
+2 cat02 (NOUKYOU1-22-1-004)組合員数及び組合員戸数</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>df2022 <span class="ot">&lt;-</span> <span class="fu">estat_getStatsData</span>(</span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">appId =</span> appId,</span>
+<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">statsDataId =</span> statsDataId</span>
+<span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Fetching record 1-1102... (total: 1102 records)</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(df2022)</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>tibble [1,102 × 7] (S3: tbl_df/tbl/data.frame)
+ $ cat01_code                               : chr [1:1102] "1001" "1001" "1001" "1001" ...
+ $ (NOUKYOU1-22-2-004)地域・1組合当たり     : chr [1:1102] "全国" "全国" "全国" "全国" ...
+ $ cat02_code                               : chr [1:1102] "1001" "1002" "1003" "1004" ...
+ $ (NOUKYOU1-22-1-004)組合員数及び組合員戸数: chr [1:1102] "合計" "個人" "法人・団体" "一戸複数正組合員制実施組合数" ...
+ $ unit                                     : chr [1:1102] "人+団体" "人" "団体" "組合" ...
+ $ value                                    : num [1:1102] 10271584 10168913 102671 536 3932592 ...
+ $ annotation                               : chr [1:1102] NA NA NA NA ...</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df2022<span class="sc">$</span><span class="st">`</span><span class="at">(NOUKYOU1-22-2-004)地域・1組合当たり</span><span class="st">`</span>)</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+   １組合当たり            全国       地域_沖縄       地域_関東       地域_近畿 
+             19              19              19              19              19 
+      地域_九州 地域_中国・四国       地域_東海       地域_東北     地域_北海道 
+             19              19              19              19              19 
+      地域_北陸   都道府県_愛知   都道府県_愛媛   都道府県_茨城   都道府県_岡山 
+             19              19              19              19              19 
+  都道府県_沖縄   都道府県_岩手   都道府県_岐阜   都道府県_宮崎   都道府県_宮城 
+             19              19              19              19              19 
+  都道府県_京都   都道府県_熊本   都道府県_群馬   都道府県_広島   都道府県_香川 
+             19              19              19              19              19 
+  都道府県_高知   都道府県_佐賀   都道府県_埼玉   都道府県_三重   都道府県_山形 
+             19              19              19              19              19 
+  都道府県_山口   都道府県_山梨   都道府県_滋賀 都道府県_鹿児島   都道府県_秋田 
+             19              19              19              19              19 
+  都道府県_新潟 都道府県_神奈川   都道府県_青森   都道府県_静岡   都道府県_石川 
+             19              19              19              19              19 
+  都道府県_千葉   都道府県_大阪   都道府県_大分   都道府県_長崎   都道府県_長野 
+             19              19              19              19              19 
+  都道府県_鳥取   都道府県_島根   都道府県_東京   都道府県_徳島   都道府県_栃木 
+             19              19              19              19              19 
+  都道府県_奈良   都道府県_富山   都道府県_福井   都道府県_福岡   都道府県_福島 
+             19              19              19              19              19 
+  都道府県_兵庫 都道府県_北海道 都道府県_和歌山 
+             19              19              19 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(df2022)[<span class="dv">2</span>] <span class="ot">&lt;-</span> <span class="st">"都道府県"</span></span>
+<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a>df2022<span class="sc">$</span>都道府県 <span class="ot">&lt;-</span> <span class="fu">sub</span>(<span class="st">"都道府県_"</span>, <span class="st">""</span>, df2022<span class="sc">$</span>都道府県)</span>
+<span id="cb59-3"><a href="#cb59-3" aria-hidden="true" tabindex="-1"></a>df2022 <span class="ot">&lt;-</span> df2022[<span class="sc">!</span><span class="fu">grepl</span>(<span class="st">"１組合当たり|地域_"</span>, df2022<span class="sc">$</span>都道府県), ]</span>
+<span id="cb59-4"><a href="#cb59-4" aria-hidden="true" tabindex="-1"></a>df2022<span class="sc">$</span>年 <span class="ot">&lt;-</span> <span class="dv">2022</span></span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="年-1" class="level3" data-number="4.2">
+<h3 data-number="4.2" class="anchored" data-anchor-id="年-1"><span class="header-section-number">4.2</span> 2021年</h3>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+農業協同組合及び同連合会一斉調査 / 確報 総合農協統計表 令和３事業年度総合農協統計表
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-4" class="callout-4-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><a href="https://www.e-stat.go.jp/stat-search/database?statdisp_id=0002063186" target="_blank">https://www.e-stat.go.jp/stat-search/database?statdisp_id=0002063186</a></p>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a>statsDataId <span class="ot">&lt;-</span> <span class="st">"0002063186"</span></span>
+<span id="cb60-2"><a href="#cb60-2" aria-hidden="true" tabindex="-1"></a>(meta_info <span class="ot">&lt;-</span> <span class="fu">estat_getMetaInfo</span>(<span class="at">appId =</span> appId, <span class="at">statsDataId =</span> statsDataId))</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$cat01
+# A tibble: 58 × 3
+   `@code` `@name`         `@level`
+   &lt;chr&gt;   &lt;chr&gt;           &lt;chr&gt;   
+ 1 1001    全国            1       
+ 2 1002    1組合当たり     1       
+ 3 1003    地域_北海道     1       
+ 4 1004    地域_東北       1       
+ 5 1005    地域_関東       1       
+ 6 1006    地域_北陸       1       
+ 7 1007    地域_東海       1       
+ 8 1008    地域_近畿       1       
+ 9 1009    地域_中国・四国 1       
+10 1010    地域_九州       1       
+# ℹ 48 more rows
+
+$cat02
+# A tibble: 19 × 5
+   `@code` `@name`                                `@level` `@unit` `@parentCode`
+   &lt;chr&gt;   &lt;chr&gt;                                  &lt;chr&gt;    &lt;chr&gt;   &lt;chr&gt;        
+ 1 1001    計                                     1        人+団体 &lt;NA&gt;         
+ 2 1002    個人                                   1        人      &lt;NA&gt;         
+ 3 1003    法人・団体                             1        団体    &lt;NA&gt;         
+ 4 1004    一戸複数正組合員制実施組合数           1        組合    &lt;NA&gt;         
+ 5 1005    一戸複数正組合員制実施組合数_正組合員_小計…… 2        人+団体 1004         
+ 6 1006    一戸複数正組合員制実施組合数_正組合員_個人…… 2        人      1004         
+ 7 1007    一戸複数正組合員制実施組合数_正組合員_個人_女性…… 3        人      1006         
+ 8 1008    一戸複数正組合員制実施組合数_正組合員_個人_組合員たる地位_を失わない者… 3        人      1006         
+ 9 1009    一戸複数正組合員制実施組合数_正組合員_法人_計…… 2        団体    1004         
+10 1010    一戸複数正組合員制実施組合数_正組合員_法人_農事組合法人…… 2        団体    1004         
+11 1011    一戸複数正組合員制実施組合数_正組合員_法人_その他法人…… 2        社      1004         
+12 1012    一戸複数正組合員制実施組合数_正組合員戸数…… 2        戸      1004         
+13 1013    一戸複数正組合員制実施組合数_准組合員_小計…… 2        人+団体 1004         
+14 1014    一戸複数正組合員制実施組合数_准組合員_個人…… 2        人      1004         
+15 1015    一戸複数正組合員制実施組合数_准組合員_個人_法人・団体_計…… 3        団体    1014         
+16 1016    一戸複数正組合員制実施組合数_准組合員_個人_法人・団体_農業協同組合…… 3        団体    1014         
+17 1017    一戸複数正組合員制実施組合数_准組合員_個人_法人・団体_農事組合法人…… 3        団体    1014         
+18 1018    一戸複数正組合員制実施組合数_准組合員_個人_法人・団体_その他団体…… 3        社      1014         
+19 1019    准組合員戸数                           1        戸      &lt;NA&gt;         
+
+$.names
+# A tibble: 2 × 2
+  id    name                                     
+  &lt;chr&gt; &lt;chr&gt;                                    
+1 cat01 (NOUKYOU1-21-2-004)地域・1組合当たり     
+2 cat02 (NOUKYOU1-21-1-004)組合員数及び組合員戸数</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a>df2021 <span class="ot">&lt;-</span> <span class="fu">estat_getStatsData</span>(</span>
+<span id="cb62-2"><a href="#cb62-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">appId =</span> appId,</span>
+<span id="cb62-3"><a href="#cb62-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">statsDataId =</span> statsDataId</span>
+<span id="cb62-4"><a href="#cb62-4" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Fetching record 1-1102... (total: 1102 records)</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb64"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(df2021)</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>tibble [1,102 × 7] (S3: tbl_df/tbl/data.frame)
+ $ cat01_code                               : chr [1:1102] "1001" "1001" "1001" "1001" ...
+ $ (NOUKYOU1-21-2-004)地域・1組合当たり     : chr [1:1102] "全国" "全国" "全国" "全国" ...
+ $ cat02_code                               : chr [1:1102] "1001" "1002" "1003" "1004" ...
+ $ (NOUKYOU1-21-1-004)組合員数及び組合員戸数: chr [1:1102] "計" "個人" "法人・団体" "一戸複数正組合員制実施組合数" ...
+ $ unit                                     : chr [1:1102] "人+団体" "人" "団体" "組合" ...
+ $ value                                    : num [1:1102] 10361171 10259448 101723 549 4017945 ...
+ $ annotation                               : chr [1:1102] NA NA NA NA ...</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb66"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df2021<span class="sc">$</span><span class="st">`</span><span class="at">(NOUKYOU1-21-2-004)地域・1組合当たり</span><span class="st">`</span>)</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    1組合当たり            全国       地域_沖縄       地域_関東       地域_近畿 
+             19              19              19              19              19 
+      地域_九州 地域_中国・四国       地域_東海       地域_東北     地域_北海道 
+             19              19              19              19              19 
+      地域_北陸   都道府県_愛知   都道府県_愛媛   都道府県_茨城   都道府県_岡山 
+             19              19              19              19              19 
+  都道府県_沖縄   都道府県_岩手   都道府県_岐阜   都道府県_宮崎   都道府県_宮城 
+             19              19              19              19              19 
+  都道府県_京都   都道府県_熊本   都道府県_群馬   都道府県_広島   都道府県_香川 
+             19              19              19              19              19 
+  都道府県_高知   都道府県_佐賀   都道府県_埼玉   都道府県_三重   都道府県_山形 
+             19              19              19              19              19 
+  都道府県_山口   都道府県_山梨   都道府県_滋賀 都道府県_鹿児島   都道府県_秋田 
+             19              19              19              19              19 
+  都道府県_新潟 都道府県_神奈川   都道府県_青森   都道府県_静岡   都道府県_石川 
+             19              19              19              19              19 
+  都道府県_千葉   都道府県_大阪   都道府県_大分   都道府県_長崎   都道府県_長野 
+             19              19              19              19              19 
+  都道府県_鳥取   都道府県_島根   都道府県_東京   都道府県_徳島   都道府県_栃木 
+             19              19              19              19              19 
+  都道府県_奈良   都道府県_富山   都道府県_福井   都道府県_福岡   都道府県_福島 
+             19              19              19              19              19 
+  都道府県_兵庫 都道府県_北海道 都道府県_和歌山 
+             19              19              19 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb68"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(df2021)[<span class="dv">2</span>] <span class="ot">&lt;-</span> <span class="st">"都道府県"</span></span>
+<span id="cb68-2"><a href="#cb68-2" aria-hidden="true" tabindex="-1"></a>df2021<span class="sc">$</span>都道府県 <span class="ot">&lt;-</span> <span class="fu">sub</span>(<span class="st">"都道府県_"</span>, <span class="st">""</span>, df2021<span class="sc">$</span>都道府県)</span>
+<span id="cb68-3"><a href="#cb68-3" aria-hidden="true" tabindex="-1"></a>df2021 <span class="ot">&lt;-</span> df2021[<span class="sc">!</span><span class="fu">grepl</span>(<span class="st">"1組合当たり|地域_"</span>, df2021<span class="sc">$</span>都道府県), ]</span>
+<span id="cb68-4"><a href="#cb68-4" aria-hidden="true" tabindex="-1"></a>df2021<span class="sc">$</span>年 <span class="ot">&lt;-</span> <span class="dv">2021</span></span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="年-2" class="level3" data-number="4.3">
+<h3 data-number="4.3" class="anchored" data-anchor-id="年-2"><span class="header-section-number">4.3</span> 2020年</h3>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+農業協同組合及び同連合会一斉調査 / 確報 総合農協統計表 令和２事業年度総合農協統計表
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-5" class="callout-5-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><a href="https://www.e-stat.go.jp/stat-search/database?statdisp_id=0001998576" target="_blank">https://www.e-stat.go.jp/stat-search/database?statdisp_id=0001998576</a></p>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb69"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a>statsDataId <span class="ot">&lt;-</span> <span class="st">"0001998576"</span></span>
+<span id="cb69-2"><a href="#cb69-2" aria-hidden="true" tabindex="-1"></a>(meta_info <span class="ot">&lt;-</span> <span class="fu">estat_getMetaInfo</span>(<span class="at">appId =</span> appId, <span class="at">statsDataId =</span> statsDataId))</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$cat01
+# A tibble: 63 × 3
+   `@code` `@name`         `@level`
+   &lt;chr&gt;   &lt;chr&gt;           &lt;chr&gt;   
+ 1 1001    平.27           1       
+ 2 1002    平.28           1       
+ 3 1003    平.29           1       
+ 4 1004    平.30           1       
+ 5 1005    令.元           1       
+ 6 1006    令.2            1       
+ 7 1007    1組合当たり     1       
+ 8 1008    【地域】_北海道 1       
+ 9 1009    【地域】_東北   1       
+10 1010    【地域】_関東   1       
+# ℹ 53 more rows
+
+$cat02
+# A tibble: 19 × 4
+   `@code` `@name`                                  `@level` `@unit`
+   &lt;chr&gt;   &lt;chr&gt;                                    &lt;chr&gt;    &lt;chr&gt;  
+ 1 1001    計                                       1        人+団体
+ 2 1002    個人                                     1        人     
+ 3 1003    法人・団体                               1        団体   
+ 4 1004    一戸複数正組合員制実施組合数             1        組合   
+ 5 1005    正組合員_小計                            1        人+団体
+ 6 1006    正組合員_個人                            1        人     
+ 7 1007    正組合員_個人_女性                       1        人     
+ 8 1008    正組合員_個人_組合員たる地位を失わない者 1        人     
+ 9 1009    正組合員_法人_計                         1        団体   
+10 1010    正組合員_法人_農事組合法人               1        団体   
+11 1011    正組合員_法人_その他法人                 1        社     
+12 1012    正組合員戸数                             1        戸     
+13 1013    准組合員_小計                            1        人+団体
+14 1014    准組合員_個人                            1        人     
+15 1015    准組合員_法人・団体                      1        団体   
+16 1016    准組合員_法人・団体_農業協同組合         1        団体   
+17 1017    准組合員_法人・団体_農事組合法人         1        団体   
+18 1018    准組合員_法人・団体_その他団体           1        社     
+19 1019    准組合員戸数                             1        戸     
+
+$.names
+# A tibble: 2 × 2
+  id    name                                 
+  &lt;chr&gt; &lt;chr&gt;                                
+1 cat01 (R001-02-2-004)事業年度              
+2 cat02 (R001-02-1-004)組合員数及び組合員戸数</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb71"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a>df2020 <span class="ot">&lt;-</span> <span class="fu">estat_getStatsData</span>(</span>
+<span id="cb71-2"><a href="#cb71-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">appId =</span> appId,</span>
+<span id="cb71-3"><a href="#cb71-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">statsDataId =</span> statsDataId</span>
+<span id="cb71-4"><a href="#cb71-4" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Fetching record 1-1197... (total: 1197 records)</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb73"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(df2020)</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>tibble [1,197 × 7] (S3: tbl_df/tbl/data.frame)
+ $ cat01_code                           : chr [1:1197] "1001" "1001" "1001" "1001" ...
+ $ (R001-02-2-004)事業年度              : chr [1:1197] "平.27" "平.27" "平.27" "平.27" ...
+ $ cat02_code                           : chr [1:1197] "1001" "1002" "1003" "1004" ...
+ $ (R001-02-1-004)組合員数及び組合員戸数: chr [1:1197] "計" "個人" "法人・団体" "一戸複数正組合員制実施組合数" ...
+ $ unit                                 : chr [1:1197] "人+団体" "人" "団体" "組合" ...
+ $ value                                : num [1:1197] 10370172 10272942 97230 653 4433389 ...
+ $ annotation                           : chr [1:1197] NA NA NA NA ...</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb75"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df2020<span class="sc">$</span><span class="st">`</span><span class="at">(R001-02-2-004)事業年度</span><span class="st">`</span>)</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+      【地域】_沖縄       【地域】_関東       【地域】_近畿       【地域】_九州 
+                 19                  19                  19                  19 
+【地域】_中国・四国       【地域】_東海       【地域】_東北     【地域】_北海道 
+                 19                  19                  19                  19 
+      【地域】_北陸   【都道府県】_愛知   【都道府県】_愛媛   【都道府県】_茨城 
+                 19                  19                  19                  19 
+  【都道府県】_岡山   【都道府県】_沖縄   【都道府県】_岩手   【都道府県】_岐阜 
+                 19                  19                  19                  19 
+  【都道府県】_宮崎   【都道府県】_宮城   【都道府県】_京都   【都道府県】_熊本 
+                 19                  19                  19                  19 
+  【都道府県】_群馬   【都道府県】_広島   【都道府県】_香川   【都道府県】_高知 
+                 19                  19                  19                  19 
+  【都道府県】_佐賀   【都道府県】_埼玉   【都道府県】_三重   【都道府県】_山形 
+                 19                  19                  19                  19 
+  【都道府県】_山口   【都道府県】_山梨   【都道府県】_滋賀 【都道府県】_鹿児島 
+                 19                  19                  19                  19 
+  【都道府県】_秋田   【都道府県】_新潟 【都道府県】_神奈川   【都道府県】_青森 
+                 19                  19                  19                  19 
+  【都道府県】_静岡   【都道府県】_石川   【都道府県】_千葉   【都道府県】_大坂 
+                 19                  19                  19                  19 
+  【都道府県】_大分   【都道府県】_長崎   【都道府県】_長野   【都道府県】_鳥取 
+                 19                  19                  19                  19 
+  【都道府県】_島根   【都道府県】_東京   【都道府県】_徳島   【都道府県】_栃木 
+                 19                  19                  19                  19 
+  【都道府県】_奈良   【都道府県】_富山   【都道府県】_福井   【都道府県】_福岡 
+                 19                  19                  19                  19 
+  【都道府県】_福島   【都道府県】_兵庫 【都道府県】_北海道 【都道府県】_和歌山 
+                 19                  19                  19                  19 
+        1組合当たり               平.27               平.28               平.29 
+                 19                  19                  19                  19 
+              平.30                令.2               令.元 
+                 19                  19                  19 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb77"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(df2020)[<span class="dv">2</span>] <span class="ot">&lt;-</span> <span class="st">"都道府県"</span></span>
+<span id="cb77-2"><a href="#cb77-2" aria-hidden="true" tabindex="-1"></a>df2020<span class="sc">$</span>都道府県 <span class="ot">&lt;-</span> <span class="fu">sub</span>(<span class="st">"【都道府県】_"</span>, <span class="st">""</span>, df2020<span class="sc">$</span>都道府県)</span>
+<span id="cb77-3"><a href="#cb77-3" aria-hidden="true" tabindex="-1"></a>df2020<span class="sc">$</span>都道府県 <span class="ot">&lt;-</span> <span class="fu">sub</span>(<span class="st">"令.2"</span>, <span class="st">"全国"</span>, df2020<span class="sc">$</span>都道府県)</span>
+<span id="cb77-4"><a href="#cb77-4" aria-hidden="true" tabindex="-1"></a>df2020 <span class="ot">&lt;-</span> df2020[<span class="sc">!</span><span class="fu">grepl</span>(<span class="st">"1組合当たり|【地域】_|平</span><span class="sc">\\</span><span class="st">.|令</span><span class="sc">\\</span><span class="st">."</span>, df2020<span class="sc">$</span>都道府県), ]</span>
+<span id="cb77-5"><a href="#cb77-5" aria-hidden="true" tabindex="-1"></a>df2020<span class="sc">$</span>年 <span class="ot">&lt;-</span> <span class="dv">2020</span></span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="年-3" class="level3" data-number="4.4">
+<h3 data-number="4.4" class="anchored" data-anchor-id="年-3"><span class="header-section-number">4.4</span> 2021年</h3>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+農業協同組合及び同連合会一斉調査 / 確報 総合農協統計表 令和元事業年度総合農協統計表
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-6" class="callout-6-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><a href="https://www.e-stat.go.jp/stat-search/database?statdisp_id=0002015583" target="_blank">https://www.e-stat.go.jp/stat-search/database?statdisp_id=0002015583</a></p>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb78"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a>statsDataId <span class="ot">&lt;-</span> <span class="st">"0002015583"</span></span>
+<span id="cb78-2"><a href="#cb78-2" aria-hidden="true" tabindex="-1"></a>(meta_info <span class="ot">&lt;-</span> <span class="fu">estat_getMetaInfo</span>(<span class="at">appId =</span> appId, <span class="at">statsDataId =</span> statsDataId))</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$cat01
+# A tibble: 61 × 3
+   `@code` `@name`      `@level`
+   &lt;chr&gt;   &lt;chr&gt;        &lt;chr&gt;   
+ 1 1001    平26(2014)   1       
+ 2 1002    平27(2015)   1       
+ 3 1003    平28(2016)   1       
+ 4 1004    平29(2017)   1       
+ 5 1005    平30(2018)   1       
+ 6 1006    令元(2019)   1       
+ 7 1007    1組合当たり  1       
+ 8 1008    東北_1北海道 1       
+ 9 1009    東北_2青森   1       
+10 1010    東北_3岩手   1       
+# ℹ 51 more rows
+
+$cat02
+# A tibble: 19 × 5
+   `@code` `@name`                                `@level` `@unit` `@parentCode`
+   &lt;chr&gt;   &lt;chr&gt;                                  &lt;chr&gt;    &lt;chr&gt;   &lt;chr&gt;        
+ 1 1001    正組合員_個人                          1        人      &lt;NA&gt;         
+ 2 1002    正組合員_個人_うち女性                 2        人      1001         
+ 3 1003    正組合員_個人_うち組合員たる地位を失わない者…… 2        人      1001         
+ 4 1004    正組合員_法人                          1        団体    &lt;NA&gt;         
+ 5 1005    正組合員_法人_農事組合法人             2        団体    1004         
+ 6 1006    正組合員_法人_その他法人               2        社      1004         
+ 7 1007    正組合員_計                            1        人+団体 &lt;NA&gt;         
+ 8 1008    正組合員戸数                           1        戸      &lt;NA&gt;         
+ 9 1009    准組合員_個人                          1        人      &lt;NA&gt;         
+10 1010    准組合員_法人・団体                    1        団体    &lt;NA&gt;         
+11 1011    准組合員_法人・団体_農業協同組合       2        団体    1010         
+12 1012    准組合員_法人・団体_農事組合法人       2        団体    1010         
+13 1013    准組合員_法人・団体_その他団体         2        社      1010         
+14 1014    准組合員_計                            1        人+団体 &lt;NA&gt;         
+15 1015    准組合員戸数                           1        戸      &lt;NA&gt;         
+16 1016    合計_個人                              1        人      &lt;NA&gt;         
+17 1017    合計_法人・団体                        1        団体    &lt;NA&gt;         
+18 1018    合計_計                                1        人+団体 &lt;NA&gt;         
+19 1019    一戸複数正組合_員制実施組合数          1        組合    &lt;NA&gt;         
+
+$.names
+# A tibble: 2 × 2
+  id    name                                 
+  &lt;chr&gt; &lt;chr&gt;                                
+1 cat01 (r001-01-2-004)事業年度及び地域      
+2 cat02 (r001-01-1-004)組合員数及び組合員戸数</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb80"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb80-1"><a href="#cb80-1" aria-hidden="true" tabindex="-1"></a>df2019 <span class="ot">&lt;-</span> <span class="fu">estat_getStatsData</span>(</span>
+<span id="cb80-2"><a href="#cb80-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">appId =</span> appId,</span>
+<span id="cb80-3"><a href="#cb80-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">statsDataId =</span> statsDataId</span>
+<span id="cb80-4"><a href="#cb80-4" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Fetching record 1-1159... (total: 1159 records)</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb82"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb82-1"><a href="#cb82-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(df2019)</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>tibble [1,159 × 7] (S3: tbl_df/tbl/data.frame)
+ $ cat01_code                           : chr [1:1159] "1001" "1001" "1001" "1001" ...
+ $ (r001-01-2-004)事業年度及び地域      : chr [1:1159] "平26(2014)" "平26(2014)" "平26(2014)" "平26(2014)" ...
+ $ cat02_code                           : chr [1:1159] "1001" "1002" "1003" "1004" ...
+ $ (r001-01-1-004)組合員数及び組合員戸数: chr [1:1159] "正組合員_個人" "正組合員_個人_うち女性" "正組合員_個人_うち組合員たる地位を失わない者" "正組合員_法人" ...
+ $ unit                                 : chr [1:1159] "人" "人" "人" "団体" ...
+ $ value                                : num [1:1159] 4478620 932121 945 16486 5035 ...
+ $ annotation                           : chr [1:1159] NA NA NA NA ...</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb84"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb84-1"><a href="#cb84-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df2019<span class="sc">$</span><span class="st">`</span><span class="at">(r001-01-2-004)事業年度及び地域</span><span class="st">`</span>)</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+      1組合当たり            47沖縄       関東_10群馬       関東_11埼玉 
+               19                19                19                19 
+      関東_12千葉       関東_13東京     関東_14神奈川       関東_15山梨 
+               19                19                19                19 
+      関東_16長野       関東_17静岡        関東_8茨城        関東_9栃木 
+               19                19                19                19 
+        関東_小計       近畿_25滋賀       近畿_26京都       近畿_27大阪 
+               19                19                19                19 
+      近畿_28兵庫       近畿_29奈良     近畿_30和歌山         近畿_小計 
+               19                19                19                19 
+      九州_40福岡       九州_41佐賀       九州_42長崎       九州_43熊本 
+               19                19                19                19 
+      九州_44大分       九州_45宮崎     九州_46鹿児島         九州_小計 
+               19                19                19                19 
+中国・四国_31鳥取 中国・四国_32島根 中国・四国_33岡山 中国・四国_34広島 
+               19                19                19                19 
+中国・四国_35山口 中国・四国_36徳島 中国・四国_37香川 中国・四国_38愛媛 
+               19                19                19                19 
+中国・四国_39高知   中国・四国_小計       東海_22岐阜       東海_23愛知 
+               19                19                19                19 
+      東海_24三重         東海_小計      東北_1北海道        東北_2青森 
+               19                19                19                19 
+       東北_3岩手        東北_4宮城        東北_5秋田        東北_6山形 
+               19                19                19                19 
+       東北_7福島         東北_小計        平26(2014)        平27(2015) 
+               19                19                19                19 
+       平28(2016)        平29(2017)        平30(2018)       北陸_18新潟 
+               19                19                19                19 
+      北陸_19富山       北陸_20石川       北陸_21福井         北陸_小計 
+               19                19                19                19 
+       令元(2019) 
+               19 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb86"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb86-1"><a href="#cb86-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(df2019)[<span class="dv">2</span>] <span class="ot">&lt;-</span> <span class="st">"都道府県"</span></span>
+<span id="cb86-2"><a href="#cb86-2" aria-hidden="true" tabindex="-1"></a>df2019<span class="sc">$</span>都道府県 <span class="ot">&lt;-</span> <span class="fu">sub</span>(<span class="st">"(東北|関東|東海|北陸|近畿|九州|中国・四国)_[0-9]{1,2}"</span>, <span class="st">""</span>, df2019<span class="sc">$</span>都道府県)</span>
+<span id="cb86-3"><a href="#cb86-3" aria-hidden="true" tabindex="-1"></a>df2019<span class="sc">$</span>都道府県 <span class="ot">&lt;-</span> <span class="fu">sub</span>(<span class="st">"47沖縄"</span>, <span class="st">"沖縄"</span>, df2019<span class="sc">$</span>都道府県)</span>
+<span id="cb86-4"><a href="#cb86-4" aria-hidden="true" tabindex="-1"></a>df2019<span class="sc">$</span>都道府県 <span class="ot">&lt;-</span> <span class="fu">sub</span>(<span class="st">"令元</span><span class="sc">\\</span><span class="st">(2019</span><span class="sc">\\</span><span class="st">)"</span>, <span class="st">"全国"</span>, df2019<span class="sc">$</span>都道府県)</span>
+<span id="cb86-5"><a href="#cb86-5" aria-hidden="true" tabindex="-1"></a>df2019 <span class="ot">&lt;-</span> df2019[<span class="sc">!</span><span class="fu">grepl</span>(<span class="st">"1組合当たり|_小計|平[0-9]|令[0-9]"</span>, df2019<span class="sc">$</span>都道府県), ]</span>
+<span id="cb86-6"><a href="#cb86-6" aria-hidden="true" tabindex="-1"></a>df2019<span class="sc">$</span>年 <span class="ot">&lt;-</span> <span class="dv">2019</span></span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="追加" class="level3" data-number="4.5">
+<h3 data-number="4.5" class="anchored" data-anchor-id="追加"><span class="header-section-number">4.5</span> 追加</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb87"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb87-1"><a href="#cb87-1" aria-hidden="true" tabindex="-1"></a>rdf2 <span class="ot">&lt;-</span> df2 <span class="sc">|&gt;</span></span>
+<span id="cb87-2"><a href="#cb87-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">grepl</span>(<span class="st">"計"</span>, <span class="st">`</span><span class="at">個人・団体</span><span class="st">`</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb87-3"><a href="#cb87-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(組合 <span class="ot">=</span> <span class="fu">sub</span>(<span class="st">"正組合員数及び准組合員数"</span>, <span class="st">"合計"</span>, 組合)) <span class="sc">|&gt;</span></span>
+<span id="cb87-4"><a href="#cb87-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(組合 <span class="ot">=</span> <span class="fu">sub</span>(<span class="st">"数"</span>, <span class="st">""</span>, 組合)) <span class="sc">|&gt;</span></span>
+<span id="cb87-5"><a href="#cb87-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(都道府県, 年, 組合, value)</span>
+<span id="cb87-6"><a href="#cb87-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb87-7"><a href="#cb87-7" aria-hidden="true" tabindex="-1"></a>rdf2019 <span class="ot">&lt;-</span> df2019 <span class="sc">|&gt;</span></span>
+<span id="cb87-8"><a href="#cb87-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(組合 <span class="ot">=</span> <span class="st">`</span><span class="at">(r001-01-1-004)組合員数及び組合員戸数</span><span class="st">`</span>) <span class="sc">|&gt;</span></span>
+<span id="cb87-9"><a href="#cb87-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(組合 <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"正組合員_計"</span>, <span class="st">"准組合員_計"</span>, <span class="st">"合計_計"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb87-10"><a href="#cb87-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(組合 <span class="ot">=</span> <span class="fu">sub</span>(<span class="st">"_計"</span>, <span class="st">""</span>, 組合)) <span class="sc">|&gt;</span></span>
+<span id="cb87-11"><a href="#cb87-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(都道府県, 年, 組合, value)</span>
+<span id="cb87-12"><a href="#cb87-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb87-13"><a href="#cb87-13" aria-hidden="true" tabindex="-1"></a>rdf2020 <span class="ot">&lt;-</span> df2020 <span class="sc">|&gt;</span></span>
+<span id="cb87-14"><a href="#cb87-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(組合 <span class="ot">=</span> <span class="st">`</span><span class="at">(R001-02-1-004)組合員数及び組合員戸数</span><span class="st">`</span>) <span class="sc">|&gt;</span></span>
+<span id="cb87-15"><a href="#cb87-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(組合 <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"正組合員_小計"</span>, <span class="st">"准組合員_小計"</span>, <span class="st">"計"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb87-16"><a href="#cb87-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(組合 <span class="ot">=</span> <span class="fu">sub</span>(<span class="st">"_小計"</span>, <span class="st">""</span>, 組合)) <span class="sc">|&gt;</span></span>
+<span id="cb87-17"><a href="#cb87-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(組合 <span class="ot">=</span> <span class="fu">sub</span>(<span class="st">"計"</span>, <span class="st">"合計"</span>, 組合)) <span class="sc">|&gt;</span></span>
+<span id="cb87-18"><a href="#cb87-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(都道府県, 年, 組合, value)</span>
+<span id="cb87-19"><a href="#cb87-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb87-20"><a href="#cb87-20" aria-hidden="true" tabindex="-1"></a>rdf2021 <span class="ot">&lt;-</span> df2021 <span class="sc">|&gt;</span></span>
+<span id="cb87-21"><a href="#cb87-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(組合 <span class="ot">=</span> <span class="st">`</span><span class="at">(NOUKYOU1-21-1-004)組合員数及び組合員戸数</span><span class="st">`</span>) <span class="sc">|&gt;</span></span>
+<span id="cb87-22"><a href="#cb87-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(組合 <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"一戸複数正組合員制実施組合数_正組合員_小計"</span>, <span class="st">"一戸複数正組合員制実施組合数_准組合員_小計"</span>, <span class="st">"計"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb87-23"><a href="#cb87-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(組合 <span class="ot">=</span> <span class="fu">gsub</span>(<span class="st">"一戸複数正組合員制実施組合数_|_小計"</span>, <span class="st">""</span>, 組合)) <span class="sc">|&gt;</span></span>
+<span id="cb87-24"><a href="#cb87-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(組合 <span class="ot">=</span> <span class="fu">sub</span>(<span class="st">"計"</span>, <span class="st">"合計"</span>, 組合)) <span class="sc">|&gt;</span></span>
+<span id="cb87-25"><a href="#cb87-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(都道府県, 年, 組合, value)</span>
+<span id="cb87-26"><a href="#cb87-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb87-27"><a href="#cb87-27" aria-hidden="true" tabindex="-1"></a>rdf2022 <span class="ot">&lt;-</span> df2022 <span class="sc">|&gt;</span></span>
+<span id="cb87-28"><a href="#cb87-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(組合 <span class="ot">=</span> <span class="st">`</span><span class="at">(NOUKYOU1-22-1-004)組合員数及び組合員戸数</span><span class="st">`</span>) <span class="sc">|&gt;</span></span>
+<span id="cb87-29"><a href="#cb87-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(組合 <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"正組合員_計"</span>, <span class="st">"准組合員_計"</span>, <span class="st">"合計"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb87-30"><a href="#cb87-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(組合 <span class="ot">=</span> <span class="fu">sub</span>(<span class="st">"_計"</span>, <span class="st">""</span>, 組合)) <span class="sc">|&gt;</span></span>
+<span id="cb87-31"><a href="#cb87-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(都道府県, 年, 組合, value)</span>
+<span id="cb87-32"><a href="#cb87-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb87-33"><a href="#cb87-33" aria-hidden="true" tabindex="-1"></a>new_df <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(</span>
+<span id="cb87-34"><a href="#cb87-34" aria-hidden="true" tabindex="-1"></a>  rdf2,</span>
+<span id="cb87-35"><a href="#cb87-35" aria-hidden="true" tabindex="-1"></a>  rdf2019,</span>
+<span id="cb87-36"><a href="#cb87-36" aria-hidden="true" tabindex="-1"></a>  rdf2020,</span>
+<span id="cb87-37"><a href="#cb87-37" aria-hidden="true" tabindex="-1"></a>  rdf2021,</span>
+<span id="cb87-38"><a href="#cb87-38" aria-hidden="true" tabindex="-1"></a>  rdf2022</span>
+<span id="cb87-39"><a href="#cb87-39" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb87-40"><a href="#cb87-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb87-41"><a href="#cb87-41" aria-hidden="true" tabindex="-1"></a><span class="co"># 以下のデータはe-Statにないため，手入力</span></span>
+<span id="cb87-42"><a href="#cb87-42" aria-hidden="true" tabindex="-1"></a>df2007_2016 <span class="ot">&lt;-</span> <span class="fu">tribble</span>(</span>
+<span id="cb87-43"><a href="#cb87-43" aria-hidden="true" tabindex="-1"></a>  <span class="sc">~</span>年,    <span class="sc">~</span>合計,     <span class="sc">~</span>正組合員, <span class="sc">~</span>准組合員,</span>
+<span id="cb87-44"><a href="#cb87-44" aria-hidden="true" tabindex="-1"></a>  <span class="dv">2016</span>, <span class="dv">10444426</span>, <span class="dv">4367858</span>, <span class="dv">6076568</span>,</span>
+<span id="cb87-45"><a href="#cb87-45" aria-hidden="true" tabindex="-1"></a>  <span class="dv">2015</span>, <span class="dv">10370172</span>, <span class="dv">4433389</span>, <span class="dv">5936783</span>,</span>
+<span id="cb87-46"><a href="#cb87-46" aria-hidden="true" tabindex="-1"></a>  <span class="dv">2014</span>, <span class="dv">10267614</span>, <span class="dv">4495106</span>, <span class="dv">5772508</span>,</span>
+<span id="cb87-47"><a href="#cb87-47" aria-hidden="true" tabindex="-1"></a>  <span class="dv">2013</span>, <span class="dv">10145363</span>, <span class="dv">4561504</span>, <span class="dv">5583859</span>,</span>
+<span id="cb87-48"><a href="#cb87-48" aria-hidden="true" tabindex="-1"></a>  <span class="dv">2012</span>,  <span class="dv">9977967</span>, <span class="dv">4614306</span>, <span class="dv">5363661</span>,</span>
+<span id="cb87-49"><a href="#cb87-49" aria-hidden="true" tabindex="-1"></a>  <span class="dv">2011</span>,  <span class="dv">9834031</span>, <span class="dv">4668961</span>, <span class="dv">5165070</span>,</span>
+<span id="cb87-50"><a href="#cb87-50" aria-hidden="true" tabindex="-1"></a>  <span class="dv">2010</span>,  <span class="dv">9693855</span>, <span class="dv">4720274</span>, <span class="dv">4973581</span>,</span>
+<span id="cb87-51"><a href="#cb87-51" aria-hidden="true" tabindex="-1"></a>  <span class="dv">2009</span>,  <span class="dv">9579441</span>, <span class="dv">4775204</span>, <span class="dv">4804237</span>,</span>
+<span id="cb87-52"><a href="#cb87-52" aria-hidden="true" tabindex="-1"></a>  <span class="dv">2008</span>,  <span class="dv">9494334</span>, <span class="dv">4828192</span>, <span class="dv">4666142</span>,</span>
+<span id="cb87-53"><a href="#cb87-53" aria-hidden="true" tabindex="-1"></a>  <span class="dv">2007</span>,  <span class="dv">9432809</span>, <span class="dv">4888449</span>, <span class="dv">4544360</span></span>
+<span id="cb87-54"><a href="#cb87-54" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb87-55"><a href="#cb87-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb87-56"><a href="#cb87-56" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr)</span>
+<span id="cb87-57"><a href="#cb87-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb87-58"><a href="#cb87-58" aria-hidden="true" tabindex="-1"></a>df_long <span class="ot">&lt;-</span> df2007_2016 <span class="sc">|&gt;</span></span>
+<span id="cb87-59"><a href="#cb87-59" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(</span>
+<span id="cb87-60"><a href="#cb87-60" aria-hidden="true" tabindex="-1"></a>    <span class="at">cols =</span> <span class="sc">-</span>年,</span>
+<span id="cb87-61"><a href="#cb87-61" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_to =</span> <span class="st">"組合"</span></span>
+<span id="cb87-62"><a href="#cb87-62" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb87-63"><a href="#cb87-63" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(都道府県 <span class="ot">=</span> <span class="st">"全国"</span>)</span>
+<span id="cb87-64"><a href="#cb87-64" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb87-65"><a href="#cb87-65" aria-hidden="true" tabindex="-1"></a>new_df <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(</span>
+<span id="cb87-66"><a href="#cb87-66" aria-hidden="true" tabindex="-1"></a>  new_df,</span>
+<span id="cb87-67"><a href="#cb87-67" aria-hidden="true" tabindex="-1"></a>  df_long</span>
+<span id="cb87-68"><a href="#cb87-68" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="作図-1" class="level2" data-number="5">
+<h2 data-number="5" class="anchored" data-anchor-id="作図-1"><span class="header-section-number">5</span> 作図</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb88"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb88-1"><a href="#cb88-1" aria-hidden="true" tabindex="-1"></a>df_JAmembers <span class="ot">&lt;-</span> new_df <span class="sc">|&gt;</span></span>
+<span id="cb88-2"><a href="#cb88-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(都道府県 <span class="sc">==</span> <span class="st">"全国"</span>)</span>
+<span id="cb88-3"><a href="#cb88-3" aria-hidden="true" tabindex="-1"></a>df_JAmembers</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 84 × 4
+   都道府県    年 組合    value
+   &lt;chr&gt;    &lt;dbl&gt; &lt;chr&gt;   &lt;dbl&gt;
+ 1 全国      2006 合計  9322431
+ 2 全国      2005 合計  9188153
+ 3 全国      2004 合計  9145856
+ 4 全国      2003 合計  9100072
+ 5 全国      2002 合計  9071894
+ 6 全国      2001 合計  9082535
+ 7 全国      2000 合計  9108596
+ 8 全国      1999 合計  9125267
+ 9 全国      1998 合計  9128476
+10 全国      1997 合計  9122861
+# ℹ 74 more rows</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb90"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb90-1"><a href="#cb90-1" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data =</span> df_JAmembers <span class="sc">|&gt;</span> <span class="fu">filter</span>(組合 <span class="sc">==</span> <span class="st">"合計"</span>), <span class="fu">aes</span>(<span class="at">x =</span> 年, <span class="at">y =</span> value, <span class="at">group =</span> 組合, <span class="at">colour =</span> 組合)) <span class="sc">+</span></span>
+<span id="cb90-2"><a href="#cb90-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb90-3"><a href="#cb90-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb90-4"><a href="#cb90-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="cn">NA</span>), <span class="at">labels =</span> scales<span class="sc">::</span>comma, <span class="at">name =</span> <span class="st">"組合員数"</span>) <span class="sc">+</span></span>
+<span id="cb90-5"><a href="#cb90-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb90-6"><a href="#cb90-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"農業協同組合の組合員数の推移"</span>,</span>
+<span id="cb90-7"><a href="#cb90-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">caption =</span> <span class="st">"出所：農林水産省「総合農協統計表」"</span></span>
+<span id="cb90-8"><a href="#cb90-8" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb90-9"><a href="#cb90-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb90-10"><a href="#cb90-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>) <span class="sc">+</span></span>
+<span id="cb90-11"><a href="#cb90-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_d3</span>()</span>
+<span id="cb90-12"><a href="#cb90-12" aria-hidden="true" tabindex="-1"></a>g <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">text =</span> <span class="fu">element_text</span>(<span class="at">family =</span> <span class="st">"HiraKakuProN-W3"</span>))</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="08_data_formatting2_files/figure-html/unnamed-chunk-29-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb91"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb91-1"><a href="#cb91-1" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data =</span> df_JAmembers <span class="sc">|&gt;</span> <span class="fu">filter</span>(組合 <span class="sc">!=</span> <span class="st">"合計"</span>), <span class="fu">aes</span>(<span class="at">x =</span> 年, <span class="at">y =</span> value, <span class="at">group =</span> 組合, <span class="at">colour =</span> 組合)) <span class="sc">+</span></span>
+<span id="cb91-2"><a href="#cb91-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb91-3"><a href="#cb91-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb91-4"><a href="#cb91-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="cn">NA</span>), <span class="at">labels =</span> scales<span class="sc">::</span>comma, <span class="at">name =</span> <span class="st">"組合員数"</span>) <span class="sc">+</span></span>
+<span id="cb91-5"><a href="#cb91-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb91-6"><a href="#cb91-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"農業協同組合の組合員数の推移"</span>,</span>
+<span id="cb91-7"><a href="#cb91-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">caption =</span> <span class="st">"出所：農林水産省「総合農協統計表」"</span>,</span>
+<span id="cb91-8"><a href="#cb91-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="cn">NULL</span>,</span>
+<span id="cb91-9"><a href="#cb91-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">shape =</span> <span class="cn">NULL</span></span>
+<span id="cb91-10"><a href="#cb91-10" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb91-11"><a href="#cb91-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb91-12"><a href="#cb91-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_d3</span>()</span>
+<span id="cb91-13"><a href="#cb91-13" aria-hidden="true" tabindex="-1"></a>g <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">text =</span> <span class="fu">element_text</span>(<span class="at">family =</span> <span class="st">"HiraKakuProN-W3"</span>))</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="08_data_formatting2_files/figure-html/unnamed-chunk-31-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "コピーしました");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "コピーしました");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

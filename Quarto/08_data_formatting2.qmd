@@ -1,0 +1,491 @@
+---
+project:
+  type: website
+  output-dir: docs
+title: "データの整形"
+format:
+  html:
+    toc: true
+    toc-title: 目次
+    toc_float: true
+    toc-depth: 3
+    number-sections: true
+    theme: lumen
+lang: ja
+---
+
+ここでは，農業協同組合の組合員数の推移の把握を試みます。
+
+::: {.callout-note collapse="true" icon="true"}
+## ~~農業協同組合及び同連合会一斉調査 確報 総合農協統計表~~
+
+[https://www.e-stat.go.jp/dbview?sid=0003406360](https://www.e-stat.go.jp/dbview?sid=0003406360){target="_blank"}
+:::
+
+::: {.callout-note collapse="true" icon="true"}
+## 農業協同組合及び同連合会一斉調査 / 長期累年
+
+[https://www.e-stat.go.jp/stat-search/database?statdisp_id=0003410051](https://www.e-stat.go.jp/stat-search/database?statdisp_id=0003410051){target="_blank"}
+:::
+
+これまで，e-Statから取得したデータをグラフにするまで，何の迷いもなくRのコードを書いているかのように，説明してきました。
+しかし実際には，図をどう描くか考える前に，データがどのような構造になっているのかを調べ，試行錯誤しています。
+ここでは，統計データを取得した後，そのデータの構造を確認しながら，データを整形していく方法を紹介します。
+
+
+## e-Statからデータ取得
+
+次のコードを実行し，欲しいデータを取得しましょう。
+次のコードにある ~~`statsDataId = "0003406360"`~~ `statsDataId = "0003410051"` の数字はアクセスしたい統計データのIDです。
+```{r}
+library(estatapi)
+
+appId <- keyring::key_get("e-stat")
+statsDataId <- "0003410051"
+(meta_info <- estat_getMetaInfo(appId = appId, statsDataId = statsDataId))
+
+# 統計データ取得
+df <- estat_getStatsData(
+  appId = appId,
+  statsDataId = statsDataId
+)
+df
+```
+
+このデータはどういう構造になっているのか想像できない。
+そこで，データの構造を詳細に確認してみる。
+
+
+## データ整形
+
+まず，`dplyr` パッケージを使えるようにします。
+```{r}
+library(dplyr)
+```
+
+データの構造を確認するには，次のコマンドを実行するとよいでしょう。
+先頭のみを表示します。
+```{r}
+df |> head() |> data.frame()
+```
+
+データの最後の部分のみを表示します。
+```{r}
+df |> tail() |> data.frame()
+```
+
+データの構造を確認します。
+```{r}
+str(df)
+```
+
+まず，`組合` の列に `正組合員数及び准組合員数` と `准組合員戸数` があるのが確認できます。
+つまり，`組合` の列は組合員の区分に対応していることが想像できる。
+ただし，組合員をどのように区分しているのか，正確にはわからない。
+
+データフレームのそれぞれの列にどういう値が入っているか確認するには，文字列型の場合，`table()` または `unique()` を使えばよいです。
+```{r}
+table(df$組合)
+unique(df$組合)
+```
+
+`table()` と `unique()` は似た結果が出力されます。
+`table()` からはそれぞれのレコード数が分かり，`unique()` からは表にある順番が分かります。
+
+このデータでは，`組合` 列の下のカテゴリーに `個人・団体` 列があります。
+```{r}
+table(df$組合, df$`個人・団体`)
+```
+あるいは，次のようにします。
+```{r}
+df |> 
+  count(組合, `個人・団体`)
+```
+
+この結果から，人数に関するデータと戸数に関するデータが混ざっていることがわかります。
+
+### データフレームの列
+
+ここでデータフレームの列の指定方法について，簡単に説明しておきます。
+最も簡単かつ短い書き方は次のとおりです。
+```{r}
+#| eval: false
+df$都道府県
+```
+
+ただし，日本語の列名をそのまま使うのは不安です。
+例えば，次のようにするとエラーが出ます。
+```{r}
+#| eval: false
+df$時間軸（年次）
+```
+
+なぜでしょうか。
+Rを使い慣れている人だとこの種のエラーへの対策は分かるはずです。
+例えば，データフレームがこの列名を変えたがることに気づいたことがあるでしょう。
+そう，`data.frame()` で指定する `check.names =` はこうした問題に対応するための引数です。
+
+こうしたエラーの回避策はあります。
+次のようにするとエラーが出ず，欲しい結果が得られます。
+```{r}
+#| eval: false
+df$`時間軸（年次）`
+```
+
+ただし，こういった書き方をするくらいであれば，`df[, "時間軸（年次）"]` といった表記に統一した方がスマートではないでしょうか。
+しかし，この表記はtidyverse（tibble）的には好ましくないようである。
+base R のデータフレームでは，`[]` 内がスカラー（1次元のベクトル）なら返り値はベクトルで，`[]` 内がベクトル（2次元以上）なら返り値はデータフレームです。
+tibbleの場合，`[]` 内が何であれ，返り値は tibble になります。
+```{r}
+#| eval: false
+df[, "時間軸（年次）"]
+data.frame(df, check.names = FALSE)[, "時間軸（年次）"]
+df[, "時間軸（年次）", drop = TRUE]
+```
+
+### データフレームの列間関係
+
+`head(df)`の返り値を詳細に見てみましょう。
+`area_code` が `"00000"` である行は，`"全国"` に対応していることが想像できます。
+本当にそうなっているか，確認してみましょう。
+```{r}
+#| eval: false
+table(df$area_code, df$都道府県)
+```
+
+このようにしてもよいですが，出力が大きすぎるため，ピンポイントで結果が得られるコードを書く必要があります。
+```{r}
+table(df$area_code[df$都道府県 == "全国"])
+df[df$都道府県 != "全国" & df$area_code == "00000", ]
+```
+
+次に，`時間軸（年次）` 列がそのまま年度が入力されていることが想像できます。
+そして，`"2016年度"`，`"2015年度"`，`"2014年度"` といったように文字列となっていることから，`"年度"` を削除して，数値型に変換する必要があることまで見通せます。
+一方，`time_code` 列は，`"2006000000"`，`"2005000000"`，`"2004000000"` という値が入っており，文字列です。
+これが `時間軸（年次）` 列と同じ情報かどうかは，これだけでは分かりません。
+`"2006"` に続く `"000000"` の数字は何を意味するのでしょうか。
+`time_code` 列を確認してみます。
+```{r}
+table(df$time_code)
+```
+`time_code` 列の値の後半部分 `"000000"` は，ここでは意味がなく，`sub()` で削除してもよさそうです。
+それでは，`time_code` 列は `時間軸（年次）` 列と1対1で対応しているでしょうか。
+すなわち，`時間軸（年次）` 列から`"年度"` を取り除いた値と`time_code` 列から`"000000"`を取り除いた値は一致するでしょうか。
+これを確認する方法は多くあります。
+例えば，次のようにします。
+```{r}
+table(sub("年", "", df$`時間軸（年次）`) == sub("000000$", "", df$time_code))
+```
+年度の入力ミスはなさそうなので，どちらの列でもよく，今回は `時間軸（年次）` 列から年度の数値が得られることが分かります。
+
+`str(df)`の返り値について，他の列について見ておきましょう。
+`unit` 列は単位であり作図には使いませんが，数値の意味を確認する際に参照することを覚えておきます。
+`value` は数値です。
+この表はロングであるため，`ggplot2` として作図するのに扱いやすいです。
+
+### データフレームの整形
+
+これまででデータの構造がおおよそ把握できました。
+ここで，データを扱いやすくなるように変更します。
+
+その際，元のデータフレームは残したまま，新しいデータフレームを作成するようにしましょう。
+以降は新しいデータフレームで作業し，もし間違った場合は，ここに戻ってくれば最初からやり直さずににすむためです。
+
+まず，全国のみのデータを抽出してもよいですが，後で都道府県別のデータを扱うときに手間をかけないようにするために，全国のみのデータにするのは最後にしましょう。
+それ以外の整形をまずやります。
+```{r}
+df2 <- df
+
+df2$年 <- as.double(sub("年", "", df2$`時間軸（年次）`))
+```
+
+最初にみた `組合` 列を改めて確認します。
+```{r}
+unique(data.frame(df2[, "組合"]))
+```
+ここで，この列が正組合員と准組合員といった分類であることが分かります。
+念のため，ここで `unit` 列との対応を確認しておきます。
+```{r}
+table(apply(df2[, c("組合", "個人・団体", "unit")], 1, paste, collapse = " "))
+```
+団体も単位は `"人"` になっているようです。
+
+最後に，全国のデータを抽出する。
+```{r}
+df3 <- df2[df2$都道府県 == "全国", ]
+```
+
+
+## 作図
+
+作図のためには，ここまでで整形したデータフレームから，作図に必要な行を抽出すればよいです。
+
+### 折れ線グラフの作図
+
+まず，組合員の合計の折れ線グラフを描くことにしましょう。
+必要なデータのみを抽出します。
+```{r}
+df_JAmembers <- df3[grep("計", df3$`個人・団体`), ]
+df_JAmembers
+```
+あるいは，tidyverse では次のようになります。
+```{r}
+df_JAmembers <- df3 |>
+  filter(grepl("計", `個人・団体`))
+df_JAmembers
+```
+tidyverse の方が分かりやすいとの評判ですが，個人的にはどちらでも同じです。
+今回は同じですが，tidyverse の方がコードが短くなることはよくあります。
+
+```{r}
+#| message: false
+#| warning: false
+library(ggplot2)
+library(scales)
+library(ggsci)
+
+g <- ggplot(data = df_JAmembers, aes(x = 年, y = value, group = 組合, colour = 組合)) +
+  geom_line() +
+  geom_point() +
+  scale_y_continuous(limits = c(0, NA), labels = scales::comma, name = "組合員数") +
+  labs(
+    title = "農業協同組合の組合員数の推移",
+    caption = "出所：農林水産省「総合農協統計表」",
+    color = NULL,
+    shape = NULL
+  ) +
+  theme_bw() +
+  scale_color_d3()
+g + theme(text = element_text(family = "HiraKakuProN-W3"))
+```
+
+
+## データ追加
+
+最近のデータを追加しましょう。
+
+### 2022年
+
+::: {.callout-note collapse="true" icon="true"}
+## 農業協同組合及び同連合会一斉調査 / 確報 総合農協統計表 令和４事業年度総合農協統計表
+
+[https://www.e-stat.go.jp/stat-search/database?statdisp_id=0002110844](https://www.e-stat.go.jp/stat-search/database?statdisp_id=0002110844){target="_blank"}
+:::
+
+```{r}
+statsDataId <- "0002110844"
+(meta_info <- estat_getMetaInfo(appId = appId, statsDataId = statsDataId))
+
+df2022 <- estat_getStatsData(
+  appId = appId,
+  statsDataId = statsDataId
+)
+str(df2022)
+
+table(df2022$`(NOUKYOU1-22-2-004)地域・1組合当たり`)
+names(df2022)[2] <- "都道府県"
+df2022$都道府県 <- sub("都道府県_", "", df2022$都道府県)
+df2022 <- df2022[!grepl("１組合当たり|地域_", df2022$都道府県), ]
+df2022$年 <- 2022
+```
+
+### 2021年
+
+::: {.callout-note collapse="true" icon="true"}
+## 農業協同組合及び同連合会一斉調査 / 確報 総合農協統計表 令和３事業年度総合農協統計表
+
+[https://www.e-stat.go.jp/stat-search/database?statdisp_id=0002063186](https://www.e-stat.go.jp/stat-search/database?statdisp_id=0002063186){target="_blank"}
+:::
+
+```{r}
+statsDataId <- "0002063186"
+(meta_info <- estat_getMetaInfo(appId = appId, statsDataId = statsDataId))
+
+df2021 <- estat_getStatsData(
+  appId = appId,
+  statsDataId = statsDataId
+)
+str(df2021)
+
+table(df2021$`(NOUKYOU1-21-2-004)地域・1組合当たり`)
+names(df2021)[2] <- "都道府県"
+df2021$都道府県 <- sub("都道府県_", "", df2021$都道府県)
+df2021 <- df2021[!grepl("1組合当たり|地域_", df2021$都道府県), ]
+df2021$年 <- 2021
+```
+
+### 2020年
+
+::: {.callout-note collapse="true" icon="true"}
+## 農業協同組合及び同連合会一斉調査 / 確報 総合農協統計表 令和２事業年度総合農協統計表
+
+[https://www.e-stat.go.jp/stat-search/database?statdisp_id=0001998576](https://www.e-stat.go.jp/stat-search/database?statdisp_id=0001998576){target="_blank"}
+:::
+
+```{r}
+statsDataId <- "0001998576"
+(meta_info <- estat_getMetaInfo(appId = appId, statsDataId = statsDataId))
+
+df2020 <- estat_getStatsData(
+  appId = appId,
+  statsDataId = statsDataId
+)
+str(df2020)
+
+table(df2020$`(R001-02-2-004)事業年度`)
+names(df2020)[2] <- "都道府県"
+df2020$都道府県 <- sub("【都道府県】_", "", df2020$都道府県)
+df2020$都道府県 <- sub("令.2", "全国", df2020$都道府県)
+df2020 <- df2020[!grepl("1組合当たり|【地域】_|平\\.|令\\.", df2020$都道府県), ]
+df2020$年 <- 2020
+```
+
+### 2021年
+
+::: {.callout-note collapse="true" icon="true"}
+## 農業協同組合及び同連合会一斉調査 / 確報 総合農協統計表 令和元事業年度総合農協統計表
+
+[https://www.e-stat.go.jp/stat-search/database?statdisp_id=0002015583](https://www.e-stat.go.jp/stat-search/database?statdisp_id=0002015583){target="_blank"}
+:::
+
+```{r}
+statsDataId <- "0002015583"
+(meta_info <- estat_getMetaInfo(appId = appId, statsDataId = statsDataId))
+
+df2019 <- estat_getStatsData(
+  appId = appId,
+  statsDataId = statsDataId
+)
+str(df2019)
+
+table(df2019$`(r001-01-2-004)事業年度及び地域`)
+names(df2019)[2] <- "都道府県"
+df2019$都道府県 <- sub("(東北|関東|東海|北陸|近畿|九州|中国・四国)_[0-9]{1,2}", "", df2019$都道府県)
+df2019$都道府県 <- sub("47沖縄", "沖縄", df2019$都道府県)
+df2019$都道府県 <- sub("令元\\(2019\\)", "全国", df2019$都道府県)
+df2019 <- df2019[!grepl("1組合当たり|_小計|平[0-9]|令[0-9]", df2019$都道府県), ]
+df2019$年 <- 2019
+```
+
+### 追加
+
+```{r}
+rdf2 <- df2 |>
+  filter(grepl("計", `個人・団体`)) |>
+  mutate(組合 = sub("正組合員数及び准組合員数", "合計", 組合)) |>
+  mutate(組合 = sub("数", "", 組合)) |>
+  select(都道府県, 年, 組合, value)
+
+rdf2019 <- df2019 |>
+  rename(組合 = `(r001-01-1-004)組合員数及び組合員戸数`) |>
+  filter(組合 %in% c("正組合員_計", "准組合員_計", "合計_計")) |>
+  mutate(組合 = sub("_計", "", 組合)) |>
+  select(都道府県, 年, 組合, value)
+
+rdf2020 <- df2020 |>
+  rename(組合 = `(R001-02-1-004)組合員数及び組合員戸数`) |>
+  filter(組合 %in% c("正組合員_小計", "准組合員_小計", "計")) |>
+  mutate(組合 = sub("_小計", "", 組合)) |>
+  mutate(組合 = sub("計", "合計", 組合)) |>
+  select(都道府県, 年, 組合, value)
+
+rdf2021 <- df2021 |>
+  rename(組合 = `(NOUKYOU1-21-1-004)組合員数及び組合員戸数`) |>
+  filter(組合 %in% c("一戸複数正組合員制実施組合数_正組合員_小計", "一戸複数正組合員制実施組合数_准組合員_小計", "計")) |>
+  mutate(組合 = gsub("一戸複数正組合員制実施組合数_|_小計", "", 組合)) |>
+  mutate(組合 = sub("計", "合計", 組合)) |>
+  select(都道府県, 年, 組合, value)
+
+rdf2022 <- df2022 |>
+  rename(組合 = `(NOUKYOU1-22-1-004)組合員数及び組合員戸数`) |>
+  filter(組合 %in% c("正組合員_計", "准組合員_計", "合計")) |>
+  mutate(組合 = sub("_計", "", 組合)) |>
+  select(都道府県, 年, 組合, value)
+
+new_df <- bind_rows(
+  rdf2,
+  rdf2019,
+  rdf2020,
+  rdf2021,
+  rdf2022
+)
+
+# 以下のデータはe-Statにないため，手入力
+df2007_2016 <- tribble(
+  ~年,    ~合計,     ~正組合員, ~准組合員,
+  2016, 10444426, 4367858, 6076568,
+  2015, 10370172, 4433389, 5936783,
+  2014, 10267614, 4495106, 5772508,
+  2013, 10145363, 4561504, 5583859,
+  2012,  9977967, 4614306, 5363661,
+  2011,  9834031, 4668961, 5165070,
+  2010,  9693855, 4720274, 4973581,
+  2009,  9579441, 4775204, 4804237,
+  2008,  9494334, 4828192, 4666142,
+  2007,  9432809, 4888449, 4544360
+)
+
+library(tidyr)
+
+df_long <- df2007_2016 |>
+  pivot_longer(
+    cols = -年,
+    names_to = "組合"
+  ) |>
+  mutate(都道府県 = "全国")
+
+new_df <- bind_rows(
+  new_df,
+  df_long
+)
+```
+
+## 作図
+
+```{r}
+df_JAmembers <- new_df |>
+  filter(都道府県 == "全国")
+df_JAmembers
+
+g <- ggplot(data = df_JAmembers |> filter(組合 == "合計"), aes(x = 年, y = value, group = 組合, colour = 組合)) +
+  geom_line() +
+  geom_point() +
+  scale_y_continuous(limits = c(0, NA), labels = scales::comma, name = "組合員数") +
+  labs(
+    title = "農業協同組合の組合員数の推移",
+    caption = "出所：農林水産省「総合農協統計表」"
+  ) +
+  theme_bw() +
+  theme(legend.position = "none") +
+  scale_color_d3()
+g + theme(text = element_text(family = "HiraKakuProN-W3"))
+```
+```{r}
+#| include: false
+#| warning: false
+outdir <- "../fig"
+dir.create(outdir, showWarnings = FALSE)
+
+ggsave(file = "ja_members_1993-2022.pdf", plot = g, path = outdir, width = 8, height = 4)
+```
+
+```{r}
+g <- ggplot(data = df_JAmembers |> filter(組合 != "合計"), aes(x = 年, y = value, group = 組合, colour = 組合)) +
+  geom_line() +
+  geom_point() +
+  scale_y_continuous(limits = c(0, NA), labels = scales::comma, name = "組合員数") +
+  labs(
+    title = "農業協同組合の組合員数の推移",
+    caption = "出所：農林水産省「総合農協統計表」",
+    color = NULL,
+    shape = NULL
+  ) +
+  theme_bw() +
+  scale_color_d3()
+g + theme(text = element_text(family = "HiraKakuProN-W3"))
+```
+```{r}
+#| include: false
+#| warning: false
+ggsave(file = "ja_members_sei_vs_jun_1993-2022.pdf", plot = g, path = outdir, width = 8, height = 4)
+```

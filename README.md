@@ -12,7 +12,8 @@
 1. [顔認識](https://takeshinishimura.github.io/Cooperative/05_face.html)
 1. [ダイアグラム](https://takeshinishimura.github.io/Cooperative/06_graphviz.html)
 1. [棒グラフ](https://takeshinishimura.github.io/Cooperative/07_barplot.html)
-1. [データの整形](https://takeshinishimura.github.io/Cooperative/08_data_formatting.html)
+1. ~~[データの整形](https://takeshinishimura.github.io/Cooperative/08_data_formatting.html)~~
+1. [データの整形](https://takeshinishimura.github.io/Cooperative/08_data_formatting2.html)
 1. [地図](https://takeshinishimura.github.io/Cooperative/09_map.html) -> [Pythonを使う場合](./map.ipynb)
 
 質問等はメールで連絡するか，直接聞いてください。
