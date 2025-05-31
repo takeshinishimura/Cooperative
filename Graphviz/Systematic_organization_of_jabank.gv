@@ -1,4 +1,4 @@
-digraph ja_bank {
+digraph ja {
   graph [rankdir = LR]
 
   node [fontname = Helvetica,
@@ -10,10 +10,12 @@ digraph ja_bank {
   JA（単協）
   node [width = 2.2]
   JA共済連; JA都道府県中央会; JA全農; 農林中金; JA全中
-  node [width = 2.2,
-    shape = box,
-    style = "dashed,filled"]
+  node [style = "dashed,filled"]
   JA経済連; JA信連
+
+  JA（単協） [color = "#228B22", penwidth = 5]
+  JA信連 [color = "#228B22", penwidth = 5]
+  農林中金 [color = "#228B22", penwidth = 5]
 
   edge []
   組合員 -> JA（単協）
@@ -22,13 +24,20 @@ digraph ja_bank {
   JA（単協） -> JA信連 -> 農林中金
   JA（単協） -> JA都道府県中央会 -> JA全中
 
-  {rank = sink; JA全農; JA共済連; JA全中}
-  subgraph cluster2 {
-    label = "JAバンク"
+  subgraph cluster1 {
+    label = "都道府県段階"
     fontname = Helvetica
-    fontcolor = white
-    bgcolor = "#008000"
-    color = none
-    JA（単協）; JA信連; 農林中金
+    bgcolor = ivory
+    style = rounded
+    JA信連 -> JA経済連 -> JA都道府県中央会 [style=invis, constraint=true]
+    {rank = same; JA経済連; JA信連; JA都道府県中央会}
+  }
+  subgraph cluster0 {
+    label = "全国段階"
+    fontname = Helvetica
+    bgcolor = honeydew
+    style = rounded
+    農林中金 -> JA全農 -> JA全中 -> JA共済連 [style=invis, constraint=false]
+    {rank = same; JA全農; JA共済連; 農林中金; JA全中}
   }
 }

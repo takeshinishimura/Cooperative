@@ -60,23 +60,32 @@ df
 
 まず，`dplyr` パッケージを使えるようにします。
 ```{r}
+#| message: false
 library(dplyr)
 ```
 
 データの構造を確認するには，次のコマンドを実行するとよいでしょう。
 先頭のみを表示します。
 ```{r}
-df |> head() |> data.frame()
+df |>
+  head() |>
+  data.frame()
 ```
 
 データの最後の部分のみを表示します。
 ```{r}
-df |> tail() |> data.frame()
+df |>
+  tail() |>
+  data.frame()
 ```
 
 データの構造を確認します。
 ```{r}
 str(df)
+```
+または，次のようにします。
+```{r}
+glimpse(df)
 ```
 
 まず，`組合` の列に `正組合員数及び准組合員数` と `准組合員戸数` があるのが確認できます。
@@ -133,9 +142,9 @@ df$`時間軸（年次）`
 ```
 
 ただし，こういった書き方をするくらいであれば，`df[, "時間軸（年次）"]` といった表記に統一した方がスマートではないでしょうか。
-しかし，この表記はtidyverse（tibble）的には好ましくないようである。
+しかし，この表記は tidyverse（tibble） 的には好ましくないようです。
 base R のデータフレームでは，`[]` 内がスカラー（1次元のベクトル）なら返り値はベクトルで，`[]` 内がベクトル（2次元以上）なら返り値はデータフレームです。
-tibbleの場合，`[]` 内が何であれ，返り値は tibble になります。
+tibble の場合，`[]` 内が何であれ，返り値は tibble になります。
 ```{r}
 #| eval: false
 df[, "時間軸（年次）"]
@@ -196,7 +205,7 @@ table(sub("年", "", df$`時間軸（年次）`) == sub("000000$", "", df$time_c
 ```{r}
 df2 <- df
 
-df2$年 <- as.double(sub("年", "", df2$`時間軸（年次）`))
+df2$年 <- as.integer(sub("年", "", df2$`時間軸（年次）`))
 ```
 
 最初にみた `組合` 列を改めて確認します。
@@ -212,7 +221,7 @@ table(apply(df2[, c("組合", "個人・団体", "unit")], 1, paste, collapse = 
 
 最後に，全国のデータを抽出する。
 ```{r}
-df3 <- df2[df2$都道府県 == "全国", ]
+df_zenkoku <- df2[df2$都道府県 == "全国", ]
 ```
 
 
@@ -225,12 +234,11 @@ df3 <- df2[df2$都道府県 == "全国", ]
 まず，組合員の合計の折れ線グラフを描くことにしましょう。
 必要なデータのみを抽出します。
 ```{r}
-df_JAmembers <- df3[grep("計", df3$`個人・団体`), ]
-df_JAmembers
+(df_JAmembers <- df_zenkoku[grep("計", df_zenkoku$`個人・団体`), ])
 ```
 あるいは，tidyverse では次のようになります。
 ```{r}
-df_JAmembers <- df3 |>
+df_JAmembers <- df_zenkoku |>
   filter(grepl("計", `個人・団体`))
 df_JAmembers
 ```
@@ -340,7 +348,7 @@ df2020 <- df2020[!grepl("1組合当たり|【地域】_|平\\.|令\\.", df2020$�
 df2020$年 <- 2020
 ```
 
-### 2021年
+### 2019年
 
 ::: {.callout-note collapse="true" icon="true"}
 ## 農業協同組合及び同連合会一斉調査 / 確報 総合農協統計表 令和元事業年度総合農協統計表
@@ -401,6 +409,19 @@ rdf2022 <- df2022 |>
   filter(組合 %in% c("正組合員_計", "准組合員_計", "合計")) |>
   mutate(組合 = sub("_計", "", 組合)) |>
   select(都道府県, 年, 組合, value)
+
+rdf2019$都道府県 <- ifelse(rdf2019$都道府県 %in% c("全国", "北海道", "東京", "京都", "大阪"),
+              paste0(rdf2019$都道府県, c("", "", "都", "府", "府")[match(rdf2019$都道府県, c("全国", "北海道", "東京", "京都", "大阪"))]),
+              paste0(rdf2019$都道府県, "県"))
+rdf2020$都道府県 <- ifelse(rdf2020$都道府県 %in% c("全国", "北海道", "東京", "京都", "大阪"),
+              paste0(rdf2020$都道府県, c("", "", "都", "府", "府")[match(rdf2020$都道府県, c("全国", "北海道", "東京", "京都", "大阪"))]),
+              paste0(rdf2020$都道府県, "県"))
+rdf2021$都道府県 <- ifelse(rdf2021$都道府県 %in% c("全国", "北海道", "東京", "京都", "大阪"),
+              paste0(rdf2021$都道府県, c("", "", "都", "府", "府")[match(rdf2021$都道府県, c("全国", "北海道", "東京", "京都", "大阪"))]),
+              paste0(rdf2021$都道府県, "県"))
+rdf2022$都道府県 <- ifelse(rdf2022$都道府県 %in% c("全国", "北海道", "東京", "京都", "大阪"),
+              paste0(rdf2022$都道府県, c("", "", "都", "府", "府")[match(rdf2022$都道府県, c("全国", "北海道", "東京", "京都", "大阪"))]),
+              paste0(rdf2022$都道府県, "県"))
 
 new_df <- bind_rows(
   rdf2,
@@ -488,4 +509,122 @@ g + theme(text = element_text(family = "HiraKakuProN-W3"))
 #| include: false
 #| warning: false
 ggsave(file = "ja_members_sei_vs_jun_1993-2022.pdf", plot = g, path = outdir, width = 8, height = 4)
+```
+
+```{r}
+library(gghighlight)
+
+g <- ggplot(data = new_df |> filter(都道府県 != "全国", 組合 == "合計"), aes(x = 年, y = value, group = 都道府県, colour = 都道府県)) +
+  geom_line() +
+  geom_point() +
+  scale_y_continuous(limits = c(0, NA), labels = scales::comma, name = "組合員数") +
+  labs(
+    title = "農業協同組合の組合員数の推移（都道府県別）",
+    caption = "出所：農林水産省「総合農協統計表」"
+  ) +
+  theme_bw() +
+  theme(legend.position = "none") +
+  scale_color_d3() +
+  gghighlight(都道府県 %in% c("愛知県", "愛媛県"))
+g + theme(text = element_text(family = "HiraKakuProN-W3"))
+```
+```{r}
+#| include: false
+#| warning: false
+ggsave(file = "ja_members_sei_vs_jun_by_pref.pdf", plot = g, path = outdir, width = 8, height = 4)
+```
+
+```{r}
+g <- ggplot(data = new_df |> filter(都道府県 == "愛媛県", 組合 != "合計"), aes(x = 年, y = value, group = 組合, colour = 組合)) +
+  geom_line() +
+  geom_point() +
+  scale_y_continuous(limits = c(0, NA), labels = scales::comma, name = "組合員数") +
+  labs(
+    title = "農業協同組合の組合員数の推移（愛媛県）",
+    caption = "出所：農林水産省「総合農協統計表」"
+  ) +
+  theme_bw() +
+  scale_color_d3()
+g + theme(text = element_text(family = "HiraKakuProN-W3"))
+```
+```{r}
+#| include: false
+#| warning: false
+ggsave(file = "ja_members_sei_vs_jun_Ehime.pdf", plot = g, path = outdir, width = 8, height = 4)
+```
+
+```{r}
+g <- ggplot(data = new_df |> filter(都道府県 == "北海道", 組合 != "合計"), aes(x = 年, y = value, group = 組合, colour = 組合)) +
+  geom_line() +
+  geom_point() +
+  scale_y_continuous(limits = c(0, NA), labels = scales::comma, name = "組合員数") +
+  labs(
+    title = "農業協同組合の組合員数の推移（北海道）",
+    caption = "出所：農林水産省「総合農協統計表」"
+  ) +
+  theme_bw() +
+  scale_color_d3()
+g + theme(text = element_text(family = "HiraKakuProN-W3"))
+```
+```{r}
+#| include: false
+#| warning: false
+ggsave(file = "ja_members_sei_vs_jun_Hokkaido.pdf", plot = g, path = outdir, width = 8, height = 4)
+```
+
+```{r}
+g <- ggplot(data = new_df |> filter(都道府県 == "愛知県", 組合 != "合計"), aes(x = 年, y = value, group = 組合, colour = 組合)) +
+  geom_line() +
+  geom_point() +
+  scale_y_continuous(limits = c(0, NA), labels = scales::comma, name = "組合員数") +
+  labs(
+    title = "農業協同組合の組合員数の推移（愛知県）",
+    caption = "出所：農林水産省「総合農協統計表」"
+  ) +
+  theme_bw() +
+  scale_color_d3()
+g + theme(text = element_text(family = "HiraKakuProN-W3"))
+```
+```{r}
+#| include: false
+#| warning: false
+ggsave(file = "ja_members_sei_vs_jun_Aichi.pdf", plot = g, path = outdir, width = 8, height = 4)
+```
+
+```{r}
+g <- ggplot(data = new_df |> filter(都道府県 == "京都府", 組合 != "合計"), aes(x = 年, y = value, group = 組合, colour = 組合)) +
+  geom_line() +
+  geom_point() +
+  scale_y_continuous(limits = c(0, NA), labels = scales::comma, name = "組合員数") +
+  labs(
+    title = "農業協同組合の組合員数の推移（京都府）",
+    caption = "出所：農林水産省「総合農協統計表」"
+  ) +
+  theme_bw() +
+  scale_color_d3()
+g + theme(text = element_text(family = "HiraKakuProN-W3"))
+```
+```{r}
+#| include: false
+#| warning: false
+ggsave(file = "ja_members_sei_vs_jun_Kyoto.pdf", plot = g, path = outdir, width = 8, height = 4)
+```
+
+```{r}
+g <- ggplot(data = new_df |> filter(都道府県 == "徳島県", 組合 != "合計"), aes(x = 年, y = value, group = 組合, colour = 組合)) +
+  geom_line() +
+  geom_point() +
+  scale_y_continuous(limits = c(0, NA), labels = scales::comma, name = "組合員数") +
+  labs(
+    title = "農業協同組合の組合員数の推移（徳島県）",
+    caption = "出所：農林水産省「総合農協統計表」"
+  ) +
+  theme_bw() +
+  scale_color_d3()
+g + theme(text = element_text(family = "HiraKakuProN-W3"))
+```
+```{r}
+#| include: false
+#| warning: false
+ggsave(file = "ja_members_sei_vs_jun_Tokushima.pdf", plot = g, path = outdir, width = 8, height = 4)
 ```
