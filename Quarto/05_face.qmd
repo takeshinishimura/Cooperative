@@ -29,7 +29,7 @@ Wikipediaで使われている画像はどこから来たものだろうか。
 調べると，大英博物館に所蔵されていることがわかる。
 そして，CC BY-NC-SA 4.0ライセンスの下，大英博物館の次のページで公開されているところまでたどり着ける。
 
-::: {.callout-note collapse="true" icon="true"}
+::: {.callout-note collapse="false" icon="true"}
 ## William Hogarth (1751) *Gin Lane*
 
 [William Hogarth "Gin Lane" © The Trustees of the British Museum](https://www.britishmuseum.org/collection/object/P_1868-0822-1595){target="_blank"}

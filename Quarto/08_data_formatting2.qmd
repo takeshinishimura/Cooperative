@@ -16,13 +16,13 @@ lang: ja
 
 ここでは，農業協同組合の組合員数の推移の把握を試みます。
 
-::: {.callout-note collapse="true" icon="true"}
+::: {.callout-note collapse="false" icon="true"}
 ## ~~農業協同組合及び同連合会一斉調査 確報 総合農協統計表~~
 
 [https://www.e-stat.go.jp/dbview?sid=0003406360](https://www.e-stat.go.jp/dbview?sid=0003406360){target="_blank"}
 :::
 
-::: {.callout-note collapse="true" icon="true"}
+::: {.callout-note collapse="false" icon="true"}
 ## 農業協同組合及び同連合会一斉調査 / 長期累年
 
 [https://www.e-stat.go.jp/stat-search/database?statdisp_id=0003410051](https://www.e-stat.go.jp/stat-search/database?statdisp_id=0003410051){target="_blank"}
@@ -252,19 +252,19 @@ library(ggplot2)
 library(scales)
 library(ggsci)
 
-g <- ggplot(data = df_JAmembers, aes(x = 年, y = value, group = 組合, colour = 組合)) +
+p <- ggplot(data = df_JAmembers, aes(x = 年, y = value, colour = 組合)) +
   geom_line() +
   geom_point() +
   scale_y_continuous(limits = c(0, NA), labels = scales::comma, name = "組合員数") +
+  scale_color_d3() +
   labs(
     title = "農業協同組合の組合員数の推移",
     caption = "出所：農林水産省「総合農協統計表」",
     color = NULL,
     shape = NULL
   ) +
-  theme_bw() +
-  scale_color_d3()
-g + theme(text = element_text(family = "HiraKakuProN-W3"))
+  theme_bw()
+p + theme(text = element_text(family = "HiraKakuProN-W3"))
 ```
 
 
@@ -274,7 +274,7 @@ g + theme(text = element_text(family = "HiraKakuProN-W3"))
 
 ### 2022年
 
-::: {.callout-note collapse="true" icon="true"}
+::: {.callout-note collapse="false" icon="true"}
 ## 農業協同組合及び同連合会一斉調査 / 確報 総合農協統計表 令和４事業年度総合農協統計表
 
 [https://www.e-stat.go.jp/stat-search/database?statdisp_id=0002110844](https://www.e-stat.go.jp/stat-search/database?statdisp_id=0002110844){target="_blank"}
@@ -299,7 +299,7 @@ df2022$年 <- 2022
 
 ### 2021年
 
-::: {.callout-note collapse="true" icon="true"}
+::: {.callout-note collapse="false" icon="true"}
 ## 農業協同組合及び同連合会一斉調査 / 確報 総合農協統計表 令和３事業年度総合農協統計表
 
 [https://www.e-stat.go.jp/stat-search/database?statdisp_id=0002063186](https://www.e-stat.go.jp/stat-search/database?statdisp_id=0002063186){target="_blank"}
@@ -324,7 +324,7 @@ df2021$年 <- 2021
 
 ### 2020年
 
-::: {.callout-note collapse="true" icon="true"}
+::: {.callout-note collapse="false" icon="true"}
 ## 農業協同組合及び同連合会一斉調査 / 確報 総合農協統計表 令和２事業年度総合農協統計表
 
 [https://www.e-stat.go.jp/stat-search/database?statdisp_id=0001998576](https://www.e-stat.go.jp/stat-search/database?statdisp_id=0001998576){target="_blank"}
@@ -350,7 +350,7 @@ df2020$年 <- 2020
 
 ### 2019年
 
-::: {.callout-note collapse="true" icon="true"}
+::: {.callout-note collapse="false" icon="true"}
 ## 農業協同組合及び同連合会一斉調査 / 確報 総合農協統計表 令和元事業年度総合農協統計表
 
 [https://www.e-stat.go.jp/stat-search/database?statdisp_id=0002015583](https://www.e-stat.go.jp/stat-search/database?statdisp_id=0002015583){target="_blank"}
@@ -380,8 +380,10 @@ df2019$年 <- 2019
 ```{r}
 rdf2 <- df2 |>
   filter(grepl("計", `個人・団体`)) |>
-  mutate(組合 = sub("正組合員数及び准組合員数", "合計", 組合)) |>
-  mutate(組合 = sub("数", "", 組合)) |>
+  mutate(
+    組合 = sub("正組合員数及び准組合員数", "合計", 組合),
+    組合 = sub("数", "", 組合)
+  ) |>
   select(都道府県, 年, 組合, value)
 
 rdf2019 <- df2019 |>
@@ -393,15 +395,19 @@ rdf2019 <- df2019 |>
 rdf2020 <- df2020 |>
   rename(組合 = `(R001-02-1-004)組合員数及び組合員戸数`) |>
   filter(組合 %in% c("正組合員_小計", "准組合員_小計", "計")) |>
-  mutate(組合 = sub("_小計", "", 組合)) |>
-  mutate(組合 = sub("計", "合計", 組合)) |>
+  mutate(
+    組合 = sub("_小計", "", 組合),
+    組合 = sub("計", "合計", 組合)
+  ) |>
   select(都道府県, 年, 組合, value)
 
 rdf2021 <- df2021 |>
   rename(組合 = `(NOUKYOU1-21-1-004)組合員数及び組合員戸数`) |>
   filter(組合 %in% c("一戸複数正組合員制実施組合数_正組合員_小計", "一戸複数正組合員制実施組合数_准組合員_小計", "計")) |>
-  mutate(組合 = gsub("一戸複数正組合員制実施組合数_|_小計", "", 組合)) |>
-  mutate(組合 = sub("計", "合計", 組合)) |>
+  mutate(
+    組合 = gsub("一戸複数正組合員制実施組合数_|_小計", "", 組合),
+    組合 = sub("計", "合計", 組合)
+  ) |>
   select(都道府県, 年, 組合, value)
 
 rdf2022 <- df2022 |>
@@ -468,18 +474,18 @@ df_JAmembers <- new_df |>
   filter(都道府県 == "全国")
 df_JAmembers
 
-g <- ggplot(data = df_JAmembers |> filter(組合 == "合計"), aes(x = 年, y = value, group = 組合, colour = 組合)) +
+p <- ggplot(data = df_JAmembers |> filter(組合 == "合計"), aes(x = 年, y = value, colour = 組合)) +
   geom_line() +
   geom_point() +
   scale_y_continuous(limits = c(0, NA), labels = scales::comma, name = "組合員数") +
+  scale_color_d3() +
   labs(
     title = "農業協同組合の組合員数の推移",
     caption = "出所：農林水産省「総合農協統計表」"
   ) +
   theme_bw() +
-  theme(legend.position = "none") +
-  scale_color_d3()
-g + theme(text = element_text(family = "HiraKakuProN-W3"))
+  theme(legend.position = "none")
+p + theme(text = element_text(family = "HiraKakuProN-W3"))
 ```
 ```{r}
 #| include: false
@@ -487,144 +493,144 @@ g + theme(text = element_text(family = "HiraKakuProN-W3"))
 outdir <- "../fig"
 dir.create(outdir, showWarnings = FALSE)
 
-ggsave(file = "ja_members_1993-2022.pdf", plot = g, path = outdir, width = 8, height = 4)
+ggsave(file = "ja_members_1993-2022.pdf", plot = p, path = outdir, width = 8, height = 4)
 ```
 
 ```{r}
-g <- ggplot(data = df_JAmembers |> filter(組合 != "合計"), aes(x = 年, y = value, group = 組合, colour = 組合)) +
+p <- ggplot(data = df_JAmembers |> filter(組合 != "合計"), aes(x = 年, y = value, colour = 組合)) +
   geom_line() +
   geom_point() +
   scale_y_continuous(limits = c(0, NA), labels = scales::comma, name = "組合員数") +
+  scale_color_d3() +
   labs(
     title = "農業協同組合の組合員数の推移",
     caption = "出所：農林水産省「総合農協統計表」",
     color = NULL,
     shape = NULL
   ) +
-  theme_bw() +
-  scale_color_d3()
-g + theme(text = element_text(family = "HiraKakuProN-W3"))
+  theme_bw()
+p + theme(text = element_text(family = "HiraKakuProN-W3"))
 ```
 ```{r}
 #| include: false
 #| warning: false
-ggsave(file = "ja_members_sei_vs_jun_1993-2022.pdf", plot = g, path = outdir, width = 8, height = 4)
+ggsave(file = "ja_members_sei_vs_jun_1993-2022.pdf", plot = p, path = outdir, width = 8, height = 4)
 ```
 
 ```{r}
 library(gghighlight)
 
-g <- ggplot(data = new_df |> filter(都道府県 != "全国", 組合 == "合計"), aes(x = 年, y = value, group = 都道府県, colour = 都道府県)) +
+p <- ggplot(data = new_df |> filter(都道府県 != "全国", 組合 == "合計"), aes(x = 年, y = value, colour = 都道府県)) +
   geom_line() +
   geom_point() +
+  gghighlight(都道府県 %in% c("愛知県", "愛媛県")) +
   scale_y_continuous(limits = c(0, NA), labels = scales::comma, name = "組合員数") +
+  scale_color_d3() +
   labs(
     title = "農業協同組合の組合員数の推移（都道府県別）",
     caption = "出所：農林水産省「総合農協統計表」"
   ) +
   theme_bw() +
-  theme(legend.position = "none") +
-  scale_color_d3() +
-  gghighlight(都道府県 %in% c("愛知県", "愛媛県"))
-g + theme(text = element_text(family = "HiraKakuProN-W3"))
+  theme(legend.position = "none")
+p + theme(text = element_text(family = "HiraKakuProN-W3"))
 ```
 ```{r}
 #| include: false
 #| warning: false
-ggsave(file = "ja_members_sei_vs_jun_by_pref.pdf", plot = g, path = outdir, width = 8, height = 4)
+ggsave(file = "ja_members_sei_vs_jun_by_pref.pdf", plot = p, path = outdir, width = 8, height = 4)
 ```
 
 ```{r}
-g <- ggplot(data = new_df |> filter(都道府県 == "愛媛県", 組合 != "合計"), aes(x = 年, y = value, group = 組合, colour = 組合)) +
+p <- ggplot(data = new_df |> filter(都道府県 == "愛媛県", 組合 != "合計"), aes(x = 年, y = value, colour = 組合)) +
   geom_line() +
   geom_point() +
   scale_y_continuous(limits = c(0, NA), labels = scales::comma, name = "組合員数") +
+  scale_color_d3() +
   labs(
     title = "農業協同組合の組合員数の推移（愛媛県）",
     caption = "出所：農林水産省「総合農協統計表」"
   ) +
-  theme_bw() +
-  scale_color_d3()
-g + theme(text = element_text(family = "HiraKakuProN-W3"))
+  theme_bw()
+p + theme(text = element_text(family = "HiraKakuProN-W3"))
 ```
 ```{r}
 #| include: false
 #| warning: false
-ggsave(file = "ja_members_sei_vs_jun_Ehime.pdf", plot = g, path = outdir, width = 8, height = 4)
+ggsave(file = "ja_members_sei_vs_jun_Ehime.pdf", plot = p, path = outdir, width = 8, height = 4)
 ```
 
 ```{r}
-g <- ggplot(data = new_df |> filter(都道府県 == "北海道", 組合 != "合計"), aes(x = 年, y = value, group = 組合, colour = 組合)) +
+p <- ggplot(data = new_df |> filter(都道府県 == "北海道", 組合 != "合計"), aes(x = 年, y = value, colour = 組合)) +
   geom_line() +
   geom_point() +
   scale_y_continuous(limits = c(0, NA), labels = scales::comma, name = "組合員数") +
+  scale_color_d3() +
   labs(
     title = "農業協同組合の組合員数の推移（北海道）",
     caption = "出所：農林水産省「総合農協統計表」"
   ) +
-  theme_bw() +
-  scale_color_d3()
-g + theme(text = element_text(family = "HiraKakuProN-W3"))
+  theme_bw()
+p + theme(text = element_text(family = "HiraKakuProN-W3"))
 ```
 ```{r}
 #| include: false
 #| warning: false
-ggsave(file = "ja_members_sei_vs_jun_Hokkaido.pdf", plot = g, path = outdir, width = 8, height = 4)
+ggsave(file = "ja_members_sei_vs_jun_Hokkaido.pdf", plot = p, path = outdir, width = 8, height = 4)
 ```
 
 ```{r}
-g <- ggplot(data = new_df |> filter(都道府県 == "愛知県", 組合 != "合計"), aes(x = 年, y = value, group = 組合, colour = 組合)) +
+p <- ggplot(data = new_df |> filter(都道府県 == "愛知県", 組合 != "合計"), aes(x = 年, y = value, colour = 組合)) +
   geom_line() +
   geom_point() +
   scale_y_continuous(limits = c(0, NA), labels = scales::comma, name = "組合員数") +
+  scale_color_d3() +
   labs(
     title = "農業協同組合の組合員数の推移（愛知県）",
     caption = "出所：農林水産省「総合農協統計表」"
   ) +
-  theme_bw() +
-  scale_color_d3()
-g + theme(text = element_text(family = "HiraKakuProN-W3"))
+  theme_bw()
+p + theme(text = element_text(family = "HiraKakuProN-W3"))
 ```
 ```{r}
 #| include: false
 #| warning: false
-ggsave(file = "ja_members_sei_vs_jun_Aichi.pdf", plot = g, path = outdir, width = 8, height = 4)
+ggsave(file = "ja_members_sei_vs_jun_Aichi.pdf", plot = p, path = outdir, width = 8, height = 4)
 ```
 
 ```{r}
-g <- ggplot(data = new_df |> filter(都道府県 == "京都府", 組合 != "合計"), aes(x = 年, y = value, group = 組合, colour = 組合)) +
+p <- ggplot(data = new_df |> filter(都道府県 == "京都府", 組合 != "合計"), aes(x = 年, y = value, colour = 組合)) +
   geom_line() +
   geom_point() +
   scale_y_continuous(limits = c(0, NA), labels = scales::comma, name = "組合員数") +
+  scale_color_d3() +
   labs(
     title = "農業協同組合の組合員数の推移（京都府）",
     caption = "出所：農林水産省「総合農協統計表」"
   ) +
-  theme_bw() +
-  scale_color_d3()
-g + theme(text = element_text(family = "HiraKakuProN-W3"))
+  theme_bw()
+p + theme(text = element_text(family = "HiraKakuProN-W3"))
 ```
 ```{r}
 #| include: false
 #| warning: false
-ggsave(file = "ja_members_sei_vs_jun_Kyoto.pdf", plot = g, path = outdir, width = 8, height = 4)
+ggsave(file = "ja_members_sei_vs_jun_Kyoto.pdf", plot = p, path = outdir, width = 8, height = 4)
 ```
 
 ```{r}
-g <- ggplot(data = new_df |> filter(都道府県 == "徳島県", 組合 != "合計"), aes(x = 年, y = value, group = 組合, colour = 組合)) +
+p <- ggplot(data = new_df |> filter(都道府県 == "徳島県", 組合 != "合計"), aes(x = 年, y = value, colour = 組合)) +
   geom_line() +
   geom_point() +
   scale_y_continuous(limits = c(0, NA), labels = scales::comma, name = "組合員数") +
+  scale_color_d3() +
   labs(
     title = "農業協同組合の組合員数の推移（徳島県）",
     caption = "出所：農林水産省「総合農協統計表」"
   ) +
-  theme_bw() +
-  scale_color_d3()
-g + theme(text = element_text(family = "HiraKakuProN-W3"))
+  theme_bw()
+p + theme(text = element_text(family = "HiraKakuProN-W3"))
 ```
 ```{r}
 #| include: false
 #| warning: false
-ggsave(file = "ja_members_sei_vs_jun_Tokushima.pdf", plot = g, path = outdir, width = 8, height = 4)
+ggsave(file = "ja_members_sei_vs_jun_Tokushima.pdf", plot = p, path = outdir, width = 8, height = 4)
 ```

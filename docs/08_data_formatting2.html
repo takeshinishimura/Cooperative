@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.7.31">
+<meta name="generator" content="quarto-1.8.27">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -61,14 +61,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="08_data_formatting2_files/libs/clipboard/clipboard.min.js"></script>
 <script src="08_data_formatting2_files/libs/quarto-html/quarto.js" type="module"></script>
 <script src="08_data_formatting2_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="08_data_formatting2_files/libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="08_data_formatting2_files/libs/quarto-html/popper.min.js"></script>
 <script src="08_data_formatting2_files/libs/quarto-html/tippy.umd.min.js"></script>
 <script src="08_data_formatting2_files/libs/quarto-html/anchor.min.js"></script>
 <link href="08_data_formatting2_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="08_data_formatting2_files/libs/quarto-html/quarto-syntax-highlighting-e1a5c8363afafaef2c763b6775fbf3ca.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="08_data_formatting2_files/libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="08_data_formatting2_files/libs/bootstrap/bootstrap.min.js"></script>
 <link href="08_data_formatting2_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="08_data_formatting2_files/libs/bootstrap/bootstrap-6b52511c24a4b4358e78ab8b0b52160a.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="08_data_formatting2_files/libs/bootstrap/bootstrap-eba68a96035bbb4df607db32d986b3bd.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 
 
 </head>
@@ -127,32 +128,32 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <p>ここでは，農業協同組合の組合員数の推移の把握を試みます。</p>
 <div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="true" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<del>農業協同組合及び同連合会一斉調査 確報 総合農協統計表</del>
+<span class="screen-reader-only">ノート</span><del>農業協同組合及び同連合会一斉調査 確報 総合農協統計表</del>
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-1" class="callout-1-contents callout-collapse collapse">
+<div id="callout-1" class="callout-1-contents callout-collapse collapse show">
 <div class="callout-body-container callout-body">
 <p><a href="https://www.e-stat.go.jp/dbview?sid=0003406360" target="_blank">https://www.e-stat.go.jp/dbview?sid=0003406360</a></p>
 </div>
 </div>
 </div>
 <div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="true" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-農業協同組合及び同連合会一斉調査 / 長期累年
+<span class="screen-reader-only">ノート</span>農業協同組合及び同連合会一斉調査 / 長期累年
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-2" class="callout-2-contents callout-collapse collapse">
+<div id="callout-2" class="callout-2-contents callout-collapse collapse show">
 <div class="callout-body-container callout-body">
 <p><a href="https://www.e-stat.go.jp/stat-search/database?statdisp_id=0003410051" target="_blank">https://www.e-stat.go.jp/stat-search/database?statdisp_id=0003410051</a></p>
 </div>
@@ -163,13 +164,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 data-number="1" class="anchored" data-anchor-id="e-statからデータ取得"><span class="header-section-number">1</span> e-Statからデータ取得</h2>
 <p>次のコードを実行し，欲しいデータを取得しましょう。 次のコードにある <del><code>statsDataId = "0003406360"</code></del> <code>statsDataId = "0003410051"</code> の数字はアクセスしたい統計データのIDです。</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(estatapi)</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(estatapi)</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>このサービスは、政府統計総合窓口(e-Stat)のAPI機能を使用していますが、サービスの内容は国によって保証されたものではありません。</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>appId <span class="ot">&lt;-</span> keyring<span class="sc">::</span><span class="fu">key_get</span>(<span class="st">"e-stat"</span>)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>appId <span class="ot">&lt;-</span> keyring<span class="sc">::</span><span class="fu">key_get</span>(<span class="st">"e-stat"</span>)</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>statsDataId <span class="ot">&lt;-</span> <span class="st">"0003410051"</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>(meta_info <span class="ot">&lt;-</span> <span class="fu">estat_getMetaInfo</span>(<span class="at">appId =</span> appId, <span class="at">statsDataId =</span> statsDataId))</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>(meta_info <span class="ot">&lt;-</span> <span class="fu">estat_getMetaInfo</span>(<span class="at">appId =</span> appId, <span class="at">statsDataId =</span> statsDataId))</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: `update_list()` was deprecated in purrr 1.0.0.
+ℹ The deprecated feature was likely used in the estatapi package.
+  Please report the issue at
+  &lt;https://github.com/yutannihilation/estatapi/issues&gt;.</code></pre>
+</div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$cat01
 # A tibble: 5 × 5
@@ -235,15 +242,15 @@ $.names
 3 area  都道府県      
 4 time  時間軸（年次）</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 統計データ取得</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">estat_getStatsData</span>(</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">appId =</span> appId,</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">statsDataId =</span> statsDataId</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 統計データ取得</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">estat_getStatsData</span>(</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">appId =</span> appId,</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">statsDataId =</span> statsDataId</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Fetching record 1-8064... (total: 8064 records)</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>df</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>df</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 8,064 × 11
    cat01_code `個人・団体` cat02_code 組合          area_code 都道府県 time_code
@@ -269,13 +276,13 @@ $.names
 <h2 data-number="2" class="anchored" data-anchor-id="データ整形"><span class="header-section-number">2</span> データ整形</h2>
 <p>まず，<code>dplyr</code> パッケージを使えるようにします。</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>データの構造を確認するには，次のコマンドを実行するとよいでしょう。 先頭のみを表示します。</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>df <span class="sc">|&gt;</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>() <span class="sc">|&gt;</span></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.frame</span>()</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>df <span class="sc">|&gt;</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>() <span class="sc">|&gt;</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.frame</span>()</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  cat01_code 個人.団体 cat02_code                     組合 area_code 都道府県
 1        100        計        100 正組合員数及び准組合員数     00000     全国
@@ -295,9 +302,9 @@ $.names
 </div>
 <p>データの最後の部分のみを表示します。</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>df <span class="sc">|&gt;</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tail</span>() <span class="sc">|&gt;</span></span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.frame</span>()</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>df <span class="sc">|&gt;</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tail</span>() <span class="sc">|&gt;</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.frame</span>()</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  cat01_code 個人.団体 cat02_code         組合 area_code 都道府県  time_code
 1        140      戸数        180 准組合員戸数     47000   沖縄県 1998000000
@@ -317,7 +324,7 @@ $.names
 </div>
 <p>データの構造を確認します。</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(df)</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(df)</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>tibble [8,064 × 11] (S3: tbl_df/tbl/data.frame)
  $ cat01_code    : chr [1:8064] "100" "100" "100" "100" ...
@@ -335,7 +342,7 @@ $.names
 </div>
 <p>または，次のようにします。</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(df)</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(df)</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Rows: 8,064
 Columns: 11
@@ -355,7 +362,7 @@ $ annotation       &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N
 <p>まず，<code>組合</code> の列に <code>正組合員数及び准組合員数</code> と <code>准組合員戸数</code> があるのが確認できます。 つまり，<code>組合</code> の列は組合員の区分に対応していることが想像できる。 ただし，組合員をどのように区分しているのか，正確にはわからない。</p>
 <p>データフレームのそれぞれの列にどういう値が入っているか確認するには，文字列型の場合，<code>table()</code> または <code>unique()</code> を使えばよいです。</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>組合)</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>組合)</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
             准組合員戸数               准組合員数             正組合員戸数 
@@ -363,7 +370,7 @@ $ annotation       &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N
               正組合員数 正組合員数及び准組合員数 
                     2688                     2016 </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">unique</span>(df<span class="sc">$</span>組合)</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">unique</span>(df<span class="sc">$</span>組合)</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "正組合員数及び准組合員数" "正組合員数"              
 [3] "准組合員数"               "正組合員戸数"            
@@ -373,21 +380,21 @@ $ annotation       &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N
 <p><code>table()</code> と <code>unique()</code> は似た結果が出力されます。 <code>table()</code> からはそれぞれのレコード数が分かり，<code>unique()</code> からは表にある順番が分かります。</p>
 <p>このデータでは，<code>組合</code> 列の下のカテゴリーに <code>個人・団体</code> 列があります。</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>組合, df<span class="sc">$</span><span class="st">`</span><span class="at">個人・団体</span><span class="st">`</span>)</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>組合, df<span class="sc">$</span><span class="st">`</span><span class="at">個人・団体</span><span class="st">`</span>)</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                          
-                            計 個人 個人_女性 戸数 団体
-  准組合員戸数               0    0         0  672    0
-  准組合員数               672  672         0    0  672
-  正組合員戸数               0    0         0  672    0
-  正組合員数               672  672       672    0  672
-  正組合員数及び准組合員数 672  672         0    0  672</code></pre>
+                           個人 個人_女性 団体 戸数  計
+  准組合員戸数                0         0    0  672   0
+  准組合員数                672         0  672    0 672
+  正組合員戸数                0         0    0  672   0
+  正組合員数                672       672  672    0 672
+  正組合員数及び准組合員数  672         0  672    0 672</code></pre>
 </div>
 </div>
 <p>あるいは，次のようにします。</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>df <span class="sc">|&gt;</span> </span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(組合, <span class="st">`</span><span class="at">個人・団体</span><span class="st">`</span>)</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>df <span class="sc">|&gt;</span> </span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(組合, <span class="st">`</span><span class="at">個人・団体</span><span class="st">`</span>)</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 12 × 3
    組合                     `個人・団体`     n
@@ -411,39 +418,39 @@ $ annotation       &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N
 <h3 data-number="2.1" class="anchored" data-anchor-id="データフレームの列"><span class="header-section-number">2.1</span> データフレームの列</h3>
 <p>ここでデータフレームの列の指定方法について，簡単に説明しておきます。 最も簡単かつ短い書き方は次のとおりです。</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>都道府県</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>都道府県</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>ただし，日本語の列名をそのまま使うのは不安です。 例えば，次のようにするとエラーが出ます。</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>時間軸（年次）</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>時間軸（年次）</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>なぜでしょうか。 Rを使い慣れている人だとこの種のエラーへの対策は分かるはずです。 例えば，データフレームがこの列名を変えたがることに気づいたことがあるでしょう。 そう，<code>data.frame()</code> で指定する <code>check.names =</code> はこうした問題に対応するための引数です。</p>
 <p>こうしたエラーの回避策はあります。 次のようにするとエラーが出ず，欲しい結果が得られます。</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span><span class="st">`</span><span class="at">時間軸（年次）</span><span class="st">`</span></span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span><span class="st">`</span><span class="at">時間軸（年次）</span><span class="st">`</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>ただし，こういった書き方をするくらいであれば，<code>df[, "時間軸（年次）"]</code> といった表記に統一した方がスマートではないでしょうか。 しかし，この表記は tidyverse（tibble） 的には好ましくないようです。 base R のデータフレームでは，<code>[]</code> 内がスカラー（1次元のベクトル）なら返り値はベクトルで，<code>[]</code> 内がベクトル（2次元以上）なら返り値はデータフレームです。 tibble の場合，<code>[]</code> 内が何であれ，返り値は tibble になります。</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>df[, <span class="st">"時間軸（年次）"</span>]</span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(df, <span class="at">check.names =</span> <span class="cn">FALSE</span>)[, <span class="st">"時間軸（年次）"</span>]</span>
-<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>df[, <span class="st">"時間軸（年次）"</span>, drop <span class="ot">=</span> <span class="cn">TRUE</span>]</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>df[, <span class="st">"時間軸（年次）"</span>]</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(df, <span class="at">check.names =</span> <span class="cn">FALSE</span>)[, <span class="st">"時間軸（年次）"</span>]</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>df[, <span class="st">"時間軸（年次）"</span>, drop <span class="ot">=</span> <span class="cn">TRUE</span>]</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="データフレームの列間関係" class="level3" data-number="2.2">
 <h3 data-number="2.2" class="anchored" data-anchor-id="データフレームの列間関係"><span class="header-section-number">2.2</span> データフレームの列間関係</h3>
 <p><code>head(df)</code>の返り値を詳細に見てみましょう。 <code>area_code</code> が <code>"00000"</code> である行は，<code>"全国"</code> に対応していることが想像できます。 本当にそうなっているか，確認してみましょう。</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>area_code, df<span class="sc">$</span>都道府県)</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>area_code, df<span class="sc">$</span>都道府県)</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>このようにしてもよいですが，出力が大きすぎるため，ピンポイントで結果が得られるコードを書く必要があります。</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>area_code[df<span class="sc">$</span>都道府県 <span class="sc">==</span> <span class="st">"全国"</span>])</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>area_code[df<span class="sc">$</span>都道府県 <span class="sc">==</span> <span class="st">"全国"</span>])</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 00000 
   168 </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>df[df<span class="sc">$</span>都道府県 <span class="sc">!=</span> <span class="st">"全国"</span> <span class="sc">&amp;</span> df<span class="sc">$</span>area_code <span class="sc">==</span> <span class="st">"00000"</span>, ]</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>df[df<span class="sc">$</span>都道府県 <span class="sc">!=</span> <span class="st">"全国"</span> <span class="sc">&amp;</span> df<span class="sc">$</span>area_code <span class="sc">==</span> <span class="st">"00000"</span>, ]</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 0 × 11
 # ℹ 11 variables: cat01_code &lt;chr&gt;, 個人・団体 &lt;chr&gt;, cat02_code &lt;chr&gt;,
@@ -453,7 +460,7 @@ $ annotation       &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N
 </div>
 <p>次に，<code>時間軸（年次）</code> 列がそのまま年度が入力されていることが想像できます。 そして，<code>"2016年度"</code>，<code>"2015年度"</code>，<code>"2014年度"</code> といったように文字列となっていることから，<code>"年度"</code> を削除して，数値型に変換する必要があることまで見通せます。 一方，<code>time_code</code> 列は，<code>"2006000000"</code>，<code>"2005000000"</code>，<code>"2004000000"</code> という値が入っており，文字列です。 これが <code>時間軸（年次）</code> 列と同じ情報かどうかは，これだけでは分かりません。 <code>"2006"</code> に続く <code>"000000"</code> の数字は何を意味するのでしょうか。 <code>time_code</code> 列を確認してみます。</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>time_code)</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>time_code)</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 1993000000 1994000000 1995000000 1996000000 1997000000 1998000000 1999000000 
@@ -464,7 +471,7 @@ $ annotation       &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N
 </div>
 <p><code>time_code</code> 列の値の後半部分 <code>"000000"</code> は，ここでは意味がなく，<code>sub()</code> で削除してもよさそうです。 それでは，<code>time_code</code> 列は <code>時間軸（年次）</code> 列と1対1で対応しているでしょうか。 すなわち，<code>時間軸（年次）</code> 列から<code>"年度"</code> を取り除いた値と<code>time_code</code> 列から<code>"000000"</code>を取り除いた値は一致するでしょうか。 これを確認する方法は多くあります。 例えば，次のようにします。</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(<span class="fu">sub</span>(<span class="st">"年"</span>, <span class="st">""</span>, df<span class="sc">$</span><span class="st">`</span><span class="at">時間軸（年次）</span><span class="st">`</span>) <span class="sc">==</span> <span class="fu">sub</span>(<span class="st">"000000$"</span>, <span class="st">""</span>, df<span class="sc">$</span>time_code))</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(<span class="fu">sub</span>(<span class="st">"年"</span>, <span class="st">""</span>, df<span class="sc">$</span><span class="st">`</span><span class="at">時間軸（年次）</span><span class="st">`</span>) <span class="sc">==</span> <span class="fu">sub</span>(<span class="st">"000000$"</span>, <span class="st">""</span>, df<span class="sc">$</span>time_code))</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 TRUE 
@@ -480,13 +487,13 @@ TRUE
 <p>その際，元のデータフレームは残したまま，新しいデータフレームを作成するようにしましょう。 以降は新しいデータフレームで作業し，もし間違った場合は，ここに戻ってくれば最初からやり直さずににすむためです。</p>
 <p>まず，全国のみのデータを抽出してもよいですが，後で都道府県別のデータを扱うときに手間をかけないようにするために，全国のみのデータにするのは最後にしましょう。 それ以外の整形をまずやります。</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>df2 <span class="ot">&lt;-</span> df</span>
-<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>df2<span class="sc">$</span>年 <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(<span class="fu">sub</span>(<span class="st">"年"</span>, <span class="st">""</span>, df2<span class="sc">$</span><span class="st">`</span><span class="at">時間軸（年次）</span><span class="st">`</span>))</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>df2 <span class="ot">&lt;-</span> df</span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>df2<span class="sc">$</span>年 <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(<span class="fu">sub</span>(<span class="st">"年"</span>, <span class="st">""</span>, df2<span class="sc">$</span><span class="st">`</span><span class="at">時間軸（年次）</span><span class="st">`</span>))</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>最初にみた <code>組合</code> 列を改めて確認します。</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">unique</span>(<span class="fu">data.frame</span>(df2[, <span class="st">"組合"</span>]))</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">unique</span>(<span class="fu">data.frame</span>(df2[, <span class="st">"組合"</span>]))</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                         組合
 1    正組合員数及び准組合員数
@@ -498,27 +505,27 @@ TRUE
 </div>
 <p>ここで，この列が正組合員と准組合員といった分類であることが分かります。 念のため，ここで <code>unit</code> 列との対応を確認しておきます。</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(<span class="fu">apply</span>(df2[, <span class="fu">c</span>(<span class="st">"組合"</span>, <span class="st">"個人・団体"</span>, <span class="st">"unit"</span>)], <span class="dv">1</span>, paste, <span class="at">collapse =</span> <span class="st">" "</span>))</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(<span class="fu">apply</span>(df2[, <span class="fu">c</span>(<span class="st">"組合"</span>, <span class="st">"個人・団体"</span>, <span class="st">"unit"</span>)], <span class="dv">1</span>, paste, <span class="at">collapse =</span> <span class="st">" "</span>))</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
-            准組合員戸数 戸数 戸                 准組合員数 計 人 
+            准組合員戸数 戸数 戸               准組合員数 個人 人 
                              672                              672 
-              准組合員数 個人 人               准組合員数 団体 人 
+              准組合員数 団体 人                 准組合員数 計 人 
                              672                              672 
-            正組合員戸数 戸数 戸                 正組合員数 計 人 
+            正組合員戸数 戸数 戸               正組合員数 個人 人 
                              672                              672 
-              正組合員数 個人 人          正組合員数 個人_女性 人 
+         正組合員数 個人_女性 人               正組合員数 団体 人 
                              672                              672 
-              正組合員数 団体 人   正組合員数及び准組合員数 計 人 
+                正組合員数 計 人 正組合員数及び准組合員数 個人 人 
                              672                              672 
-正組合員数及び准組合員数 個人 人 正組合員数及び准組合員数 団体 人 
+正組合員数及び准組合員数 団体 人   正組合員数及び准組合員数 計 人 
                              672                              672 </code></pre>
 </div>
 </div>
 <p>団体も単位は <code>"人"</code> になっているようです。</p>
 <p>最後に，全国のデータを抽出する。</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>df_zenkoku <span class="ot">&lt;-</span> df2[df2<span class="sc">$</span>都道府県 <span class="sc">==</span> <span class="st">"全国"</span>, ]</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>df_zenkoku <span class="ot">&lt;-</span> df2[df2<span class="sc">$</span>都道府県 <span class="sc">==</span> <span class="st">"全国"</span>, ]</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 </section>
@@ -529,7 +536,7 @@ TRUE
 <h3 data-number="3.1" class="anchored" data-anchor-id="折れ線グラフの作図"><span class="header-section-number">3.1</span> 折れ線グラフの作図</h3>
 <p>まず，組合員の合計の折れ線グラフを描くことにしましょう。 必要なデータのみを抽出します。</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>(df_JAmembers <span class="ot">&lt;-</span> df_zenkoku[<span class="fu">grep</span>(<span class="st">"計"</span>, df_zenkoku<span class="sc">$</span><span class="st">`</span><span class="at">個人・団体</span><span class="st">`</span>), ])</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>(df_JAmembers <span class="ot">&lt;-</span> df_zenkoku[<span class="fu">grep</span>(<span class="st">"計"</span>, df_zenkoku<span class="sc">$</span><span class="st">`</span><span class="at">個人・団体</span><span class="st">`</span>), ])</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 42 × 12
    cat01_code `個人・団体` cat02_code 組合          area_code 都道府県 time_code
@@ -551,9 +558,9 @@ TRUE
 </div>
 <p>あるいは，tidyverse では次のようになります。</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>df_JAmembers <span class="ot">&lt;-</span> df_zenkoku <span class="sc">|&gt;</span></span>
-<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">grepl</span>(<span class="st">"計"</span>, <span class="st">`</span><span class="at">個人・団体</span><span class="st">`</span>))</span>
-<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>df_JAmembers</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>df_JAmembers <span class="ot">&lt;-</span> df_zenkoku <span class="sc">|&gt;</span></span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">grepl</span>(<span class="st">"計"</span>, <span class="st">`</span><span class="at">個人・団体</span><span class="st">`</span>))</span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a>df_JAmembers</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 42 × 12
    cat01_code `個人・団体` cat02_code 組合          area_code 都道府県 time_code
@@ -575,23 +582,23 @@ TRUE
 </div>
 <p>tidyverse の方が分かりやすいとの評判ですが，個人的にはどちらでも同じです。 今回は同じですが，tidyverse の方がコードが短くなることはよくあります。</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
-<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(scales)</span>
-<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggsci)</span>
-<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb49-5"><a href="#cb49-5" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data =</span> df_JAmembers, <span class="fu">aes</span>(<span class="at">x =</span> 年, <span class="at">y =</span> value, <span class="at">group =</span> 組合, <span class="at">colour =</span> 組合)) <span class="sc">+</span></span>
-<span id="cb49-6"><a href="#cb49-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
-<span id="cb49-7"><a href="#cb49-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
-<span id="cb49-8"><a href="#cb49-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="cn">NA</span>), <span class="at">labels =</span> scales<span class="sc">::</span>comma, <span class="at">name =</span> <span class="st">"組合員数"</span>) <span class="sc">+</span></span>
-<span id="cb49-9"><a href="#cb49-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb49-10"><a href="#cb49-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"農業協同組合の組合員数の推移"</span>,</span>
-<span id="cb49-11"><a href="#cb49-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">caption =</span> <span class="st">"出所：農林水産省「総合農協統計表」"</span>,</span>
-<span id="cb49-12"><a href="#cb49-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="cn">NULL</span>,</span>
-<span id="cb49-13"><a href="#cb49-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">shape =</span> <span class="cn">NULL</span></span>
-<span id="cb49-14"><a href="#cb49-14" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb49-15"><a href="#cb49-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
-<span id="cb49-16"><a href="#cb49-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_d3</span>()</span>
-<span id="cb49-17"><a href="#cb49-17" aria-hidden="true" tabindex="-1"></a>g <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">text =</span> <span class="fu">element_text</span>(<span class="at">family =</span> <span class="st">"HiraKakuProN-W3"</span>))</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(scales)</span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggsci)</span>
+<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data =</span> df_JAmembers, <span class="fu">aes</span>(<span class="at">x =</span> 年, <span class="at">y =</span> value, <span class="at">colour =</span> 組合)) <span class="sc">+</span></span>
+<span id="cb50-6"><a href="#cb50-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb50-7"><a href="#cb50-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb50-8"><a href="#cb50-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="cn">NA</span>), <span class="at">labels =</span> scales<span class="sc">::</span>comma, <span class="at">name =</span> <span class="st">"組合員数"</span>) <span class="sc">+</span></span>
+<span id="cb50-9"><a href="#cb50-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_d3</span>() <span class="sc">+</span></span>
+<span id="cb50-10"><a href="#cb50-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb50-11"><a href="#cb50-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"農業協同組合の組合員数の推移"</span>,</span>
+<span id="cb50-12"><a href="#cb50-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">caption =</span> <span class="st">"出所：農林水産省「総合農協統計表」"</span>,</span>
+<span id="cb50-13"><a href="#cb50-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="cn">NULL</span>,</span>
+<span id="cb50-14"><a href="#cb50-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">shape =</span> <span class="cn">NULL</span></span>
+<span id="cb50-15"><a href="#cb50-15" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb50-16"><a href="#cb50-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span>
+<span id="cb50-17"><a href="#cb50-17" aria-hidden="true" tabindex="-1"></a>p <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">text =</span> <span class="fu">element_text</span>(<span class="at">family =</span> <span class="st">"HiraKakuProN-W3"</span>))</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -608,24 +615,24 @@ TRUE
 <section id="年" class="level3" data-number="4.1">
 <h3 data-number="4.1" class="anchored" data-anchor-id="年"><span class="header-section-number">4.1</span> 2022年</h3>
 <div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="true" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-農業協同組合及び同連合会一斉調査 / 確報 総合農協統計表 令和４事業年度総合農協統計表
+<span class="screen-reader-only">ノート</span>農業協同組合及び同連合会一斉調査 / 確報 総合農協統計表 令和４事業年度総合農協統計表
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-3" class="callout-3-contents callout-collapse collapse">
+<div id="callout-3" class="callout-3-contents callout-collapse collapse show">
 <div class="callout-body-container callout-body">
 <p><a href="https://www.e-stat.go.jp/stat-search/database?statdisp_id=0002110844" target="_blank">https://www.e-stat.go.jp/stat-search/database?statdisp_id=0002110844</a></p>
 </div>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>statsDataId <span class="ot">&lt;-</span> <span class="st">"0002110844"</span></span>
-<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>(meta_info <span class="ot">&lt;-</span> <span class="fu">estat_getMetaInfo</span>(<span class="at">appId =</span> appId, <span class="at">statsDataId =</span> statsDataId))</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>statsDataId <span class="ot">&lt;-</span> <span class="st">"0002110844"</span></span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a>(meta_info <span class="ot">&lt;-</span> <span class="fu">estat_getMetaInfo</span>(<span class="at">appId =</span> appId, <span class="at">statsDataId =</span> statsDataId))</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$cat01
 # A tibble: 58 × 3
@@ -674,14 +681,14 @@ $.names
 1 cat01 (NOUKYOU1-22-2-004)地域・1組合当たり     
 2 cat02 (NOUKYOU1-22-1-004)組合員数及び組合員戸数</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>df2022 <span class="ot">&lt;-</span> <span class="fu">estat_getStatsData</span>(</span>
-<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">appId =</span> appId,</span>
-<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">statsDataId =</span> statsDataId</span>
-<span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>df2022 <span class="ot">&lt;-</span> <span class="fu">estat_getStatsData</span>(</span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">appId =</span> appId,</span>
+<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">statsDataId =</span> statsDataId</span>
+<span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Fetching record 1-1102... (total: 1102 records)</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(df2022)</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(df2022)</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>tibble [1,102 × 7] (S3: tbl_df/tbl/data.frame)
  $ cat01_code                               : chr [1:1102] "1001" "1001" "1001" "1001" ...
@@ -692,61 +699,61 @@ $.names
  $ value                                    : num [1:1102] 10271584 10168913 102671 536 3932592 ...
  $ annotation                               : chr [1:1102] NA NA NA NA ...</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df2022<span class="sc">$</span><span class="st">`</span><span class="at">(NOUKYOU1-22-2-004)地域・1組合当たり</span><span class="st">`</span>)</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df2022<span class="sc">$</span><span class="st">`</span><span class="at">(NOUKYOU1-22-2-004)地域・1組合当たり</span><span class="st">`</span>)</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
-   １組合当たり            全国       地域_沖縄       地域_関東       地域_近畿 
+   １組合当たり            全国 地域_中国・四国       地域_九州     地域_北海道 
              19              19              19              19              19 
-      地域_九州 地域_中国・四国       地域_東海       地域_東北     地域_北海道 
+      地域_北陸       地域_東北       地域_東海       地域_沖縄       地域_近畿 
              19              19              19              19              19 
-      地域_北陸   都道府県_愛知   都道府県_愛媛   都道府県_茨城   都道府県_岡山 
+      地域_関東   都道府県_三重   都道府県_京都   都道府県_佐賀   都道府県_兵庫 
              19              19              19              19              19 
-  都道府県_沖縄   都道府県_岩手   都道府県_岐阜   都道府県_宮崎   都道府県_宮城 
+都道府県_北海道   都道府県_千葉 都道府県_和歌山   都道府県_埼玉   都道府県_大分 
              19              19              19              19              19 
-  都道府県_京都   都道府県_熊本   都道府県_群馬   都道府県_広島   都道府県_香川 
+  都道府県_大阪   都道府県_奈良   都道府県_宮城   都道府県_宮崎   都道府県_富山 
              19              19              19              19              19 
-  都道府県_高知   都道府県_佐賀   都道府県_埼玉   都道府県_三重   都道府県_山形 
+  都道府県_山口   都道府県_山形   都道府県_山梨   都道府県_岐阜   都道府県_岡山 
              19              19              19              19              19 
-  都道府県_山口   都道府県_山梨   都道府県_滋賀 都道府県_鹿児島   都道府県_秋田 
+  都道府県_岩手   都道府県_島根   都道府県_広島   都道府県_徳島   都道府県_愛媛 
              19              19              19              19              19 
-  都道府県_新潟 都道府県_神奈川   都道府県_青森   都道府県_静岡   都道府県_石川 
+  都道府県_愛知   都道府県_新潟   都道府県_東京   都道府県_栃木   都道府県_沖縄 
              19              19              19              19              19 
-  都道府県_千葉   都道府県_大阪   都道府県_大分   都道府県_長崎   都道府県_長野 
+  都道府県_滋賀   都道府県_熊本   都道府県_石川 都道府県_神奈川   都道府県_福井 
              19              19              19              19              19 
-  都道府県_鳥取   都道府県_島根   都道府県_東京   都道府県_徳島   都道府県_栃木 
+  都道府県_福岡   都道府県_福島   都道府県_秋田   都道府県_群馬   都道府県_茨城 
              19              19              19              19              19 
-  都道府県_奈良   都道府県_富山   都道府県_福井   都道府県_福岡   都道府県_福島 
+  都道府県_長崎   都道府県_長野   都道府県_青森   都道府県_静岡   都道府県_香川 
              19              19              19              19              19 
-  都道府県_兵庫 都道府県_北海道 都道府県_和歌山 
+  都道府県_高知   都道府県_鳥取 都道府県_鹿児島 
              19              19              19 </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(df2022)[<span class="dv">2</span>] <span class="ot">&lt;-</span> <span class="st">"都道府県"</span></span>
-<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a>df2022<span class="sc">$</span>都道府県 <span class="ot">&lt;-</span> <span class="fu">sub</span>(<span class="st">"都道府県_"</span>, <span class="st">""</span>, df2022<span class="sc">$</span>都道府県)</span>
-<span id="cb58-3"><a href="#cb58-3" aria-hidden="true" tabindex="-1"></a>df2022 <span class="ot">&lt;-</span> df2022[<span class="sc">!</span><span class="fu">grepl</span>(<span class="st">"１組合当たり|地域_"</span>, df2022<span class="sc">$</span>都道府県), ]</span>
-<span id="cb58-4"><a href="#cb58-4" aria-hidden="true" tabindex="-1"></a>df2022<span class="sc">$</span>年 <span class="ot">&lt;-</span> <span class="dv">2022</span></span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(df2022)[<span class="dv">2</span>] <span class="ot">&lt;-</span> <span class="st">"都道府県"</span></span>
+<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a>df2022<span class="sc">$</span>都道府県 <span class="ot">&lt;-</span> <span class="fu">sub</span>(<span class="st">"都道府県_"</span>, <span class="st">""</span>, df2022<span class="sc">$</span>都道府県)</span>
+<span id="cb59-3"><a href="#cb59-3" aria-hidden="true" tabindex="-1"></a>df2022 <span class="ot">&lt;-</span> df2022[<span class="sc">!</span><span class="fu">grepl</span>(<span class="st">"１組合当たり|地域_"</span>, df2022<span class="sc">$</span>都道府県), ]</span>
+<span id="cb59-4"><a href="#cb59-4" aria-hidden="true" tabindex="-1"></a>df2022<span class="sc">$</span>年 <span class="ot">&lt;-</span> <span class="dv">2022</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="年-1" class="level3" data-number="4.2">
 <h3 data-number="4.2" class="anchored" data-anchor-id="年-1"><span class="header-section-number">4.2</span> 2021年</h3>
 <div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="true" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-農業協同組合及び同連合会一斉調査 / 確報 総合農協統計表 令和３事業年度総合農協統計表
+<span class="screen-reader-only">ノート</span>農業協同組合及び同連合会一斉調査 / 確報 総合農協統計表 令和３事業年度総合農協統計表
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-4" class="callout-4-contents callout-collapse collapse">
+<div id="callout-4" class="callout-4-contents callout-collapse collapse show">
 <div class="callout-body-container callout-body">
 <p><a href="https://www.e-stat.go.jp/stat-search/database?statdisp_id=0002063186" target="_blank">https://www.e-stat.go.jp/stat-search/database?statdisp_id=0002063186</a></p>
 </div>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a>statsDataId <span class="ot">&lt;-</span> <span class="st">"0002063186"</span></span>
-<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a>(meta_info <span class="ot">&lt;-</span> <span class="fu">estat_getMetaInfo</span>(<span class="at">appId =</span> appId, <span class="at">statsDataId =</span> statsDataId))</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a>statsDataId <span class="ot">&lt;-</span> <span class="st">"0002063186"</span></span>
+<span id="cb60-2"><a href="#cb60-2" aria-hidden="true" tabindex="-1"></a>(meta_info <span class="ot">&lt;-</span> <span class="fu">estat_getMetaInfo</span>(<span class="at">appId =</span> appId, <span class="at">statsDataId =</span> statsDataId))</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$cat01
 # A tibble: 58 × 3
@@ -795,14 +802,14 @@ $.names
 1 cat01 (NOUKYOU1-21-2-004)地域・1組合当たり     
 2 cat02 (NOUKYOU1-21-1-004)組合員数及び組合員戸数</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb61"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a>df2021 <span class="ot">&lt;-</span> <span class="fu">estat_getStatsData</span>(</span>
-<span id="cb61-2"><a href="#cb61-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">appId =</span> appId,</span>
-<span id="cb61-3"><a href="#cb61-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">statsDataId =</span> statsDataId</span>
-<span id="cb61-4"><a href="#cb61-4" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a>df2021 <span class="ot">&lt;-</span> <span class="fu">estat_getStatsData</span>(</span>
+<span id="cb62-2"><a href="#cb62-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">appId =</span> appId,</span>
+<span id="cb62-3"><a href="#cb62-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">statsDataId =</span> statsDataId</span>
+<span id="cb62-4"><a href="#cb62-4" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Fetching record 1-1102... (total: 1102 records)</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb63"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(df2021)</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb64"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(df2021)</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>tibble [1,102 × 7] (S3: tbl_df/tbl/data.frame)
  $ cat01_code                               : chr [1:1102] "1001" "1001" "1001" "1001" ...
@@ -813,61 +820,61 @@ $.names
  $ value                                    : num [1:1102] 10361171 10259448 101723 549 4017945 ...
  $ annotation                               : chr [1:1102] NA NA NA NA ...</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb65"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df2021<span class="sc">$</span><span class="st">`</span><span class="at">(NOUKYOU1-21-2-004)地域・1組合当たり</span><span class="st">`</span>)</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb66"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df2021<span class="sc">$</span><span class="st">`</span><span class="at">(NOUKYOU1-21-2-004)地域・1組合当たり</span><span class="st">`</span>)</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
-    1組合当たり            全国       地域_沖縄       地域_関東       地域_近畿 
+    1組合当たり            全国 地域_中国・四国       地域_九州     地域_北海道 
              19              19              19              19              19 
-      地域_九州 地域_中国・四国       地域_東海       地域_東北     地域_北海道 
+      地域_北陸       地域_東北       地域_東海       地域_沖縄       地域_近畿 
              19              19              19              19              19 
-      地域_北陸   都道府県_愛知   都道府県_愛媛   都道府県_茨城   都道府県_岡山 
+      地域_関東   都道府県_三重   都道府県_京都   都道府県_佐賀   都道府県_兵庫 
              19              19              19              19              19 
-  都道府県_沖縄   都道府県_岩手   都道府県_岐阜   都道府県_宮崎   都道府県_宮城 
+都道府県_北海道   都道府県_千葉 都道府県_和歌山   都道府県_埼玉   都道府県_大分 
              19              19              19              19              19 
-  都道府県_京都   都道府県_熊本   都道府県_群馬   都道府県_広島   都道府県_香川 
+  都道府県_大阪   都道府県_奈良   都道府県_宮城   都道府県_宮崎   都道府県_富山 
              19              19              19              19              19 
-  都道府県_高知   都道府県_佐賀   都道府県_埼玉   都道府県_三重   都道府県_山形 
+  都道府県_山口   都道府県_山形   都道府県_山梨   都道府県_岐阜   都道府県_岡山 
              19              19              19              19              19 
-  都道府県_山口   都道府県_山梨   都道府県_滋賀 都道府県_鹿児島   都道府県_秋田 
+  都道府県_岩手   都道府県_島根   都道府県_広島   都道府県_徳島   都道府県_愛媛 
              19              19              19              19              19 
-  都道府県_新潟 都道府県_神奈川   都道府県_青森   都道府県_静岡   都道府県_石川 
+  都道府県_愛知   都道府県_新潟   都道府県_東京   都道府県_栃木   都道府県_沖縄 
              19              19              19              19              19 
-  都道府県_千葉   都道府県_大阪   都道府県_大分   都道府県_長崎   都道府県_長野 
+  都道府県_滋賀   都道府県_熊本   都道府県_石川 都道府県_神奈川   都道府県_福井 
              19              19              19              19              19 
-  都道府県_鳥取   都道府県_島根   都道府県_東京   都道府県_徳島   都道府県_栃木 
+  都道府県_福岡   都道府県_福島   都道府県_秋田   都道府県_群馬   都道府県_茨城 
              19              19              19              19              19 
-  都道府県_奈良   都道府県_富山   都道府県_福井   都道府県_福岡   都道府県_福島 
+  都道府県_長崎   都道府県_長野   都道府県_青森   都道府県_静岡   都道府県_香川 
              19              19              19              19              19 
-  都道府県_兵庫 都道府県_北海道 都道府県_和歌山 
+  都道府県_高知   都道府県_鳥取 都道府県_鹿児島 
              19              19              19 </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb67"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(df2021)[<span class="dv">2</span>] <span class="ot">&lt;-</span> <span class="st">"都道府県"</span></span>
-<span id="cb67-2"><a href="#cb67-2" aria-hidden="true" tabindex="-1"></a>df2021<span class="sc">$</span>都道府県 <span class="ot">&lt;-</span> <span class="fu">sub</span>(<span class="st">"都道府県_"</span>, <span class="st">""</span>, df2021<span class="sc">$</span>都道府県)</span>
-<span id="cb67-3"><a href="#cb67-3" aria-hidden="true" tabindex="-1"></a>df2021 <span class="ot">&lt;-</span> df2021[<span class="sc">!</span><span class="fu">grepl</span>(<span class="st">"1組合当たり|地域_"</span>, df2021<span class="sc">$</span>都道府県), ]</span>
-<span id="cb67-4"><a href="#cb67-4" aria-hidden="true" tabindex="-1"></a>df2021<span class="sc">$</span>年 <span class="ot">&lt;-</span> <span class="dv">2021</span></span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb68"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(df2021)[<span class="dv">2</span>] <span class="ot">&lt;-</span> <span class="st">"都道府県"</span></span>
+<span id="cb68-2"><a href="#cb68-2" aria-hidden="true" tabindex="-1"></a>df2021<span class="sc">$</span>都道府県 <span class="ot">&lt;-</span> <span class="fu">sub</span>(<span class="st">"都道府県_"</span>, <span class="st">""</span>, df2021<span class="sc">$</span>都道府県)</span>
+<span id="cb68-3"><a href="#cb68-3" aria-hidden="true" tabindex="-1"></a>df2021 <span class="ot">&lt;-</span> df2021[<span class="sc">!</span><span class="fu">grepl</span>(<span class="st">"1組合当たり|地域_"</span>, df2021<span class="sc">$</span>都道府県), ]</span>
+<span id="cb68-4"><a href="#cb68-4" aria-hidden="true" tabindex="-1"></a>df2021<span class="sc">$</span>年 <span class="ot">&lt;-</span> <span class="dv">2021</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="年-2" class="level3" data-number="4.3">
 <h3 data-number="4.3" class="anchored" data-anchor-id="年-2"><span class="header-section-number">4.3</span> 2020年</h3>
 <div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="true" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-農業協同組合及び同連合会一斉調査 / 確報 総合農協統計表 令和２事業年度総合農協統計表
+<span class="screen-reader-only">ノート</span>農業協同組合及び同連合会一斉調査 / 確報 総合農協統計表 令和２事業年度総合農協統計表
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-5" class="callout-5-contents callout-collapse collapse">
+<div id="callout-5" class="callout-5-contents callout-collapse collapse show">
 <div class="callout-body-container callout-body">
 <p><a href="https://www.e-stat.go.jp/stat-search/database?statdisp_id=0001998576" target="_blank">https://www.e-stat.go.jp/stat-search/database?statdisp_id=0001998576</a></p>
 </div>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb68"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a>statsDataId <span class="ot">&lt;-</span> <span class="st">"0001998576"</span></span>
-<span id="cb68-2"><a href="#cb68-2" aria-hidden="true" tabindex="-1"></a>(meta_info <span class="ot">&lt;-</span> <span class="fu">estat_getMetaInfo</span>(<span class="at">appId =</span> appId, <span class="at">statsDataId =</span> statsDataId))</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb69"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a>statsDataId <span class="ot">&lt;-</span> <span class="st">"0001998576"</span></span>
+<span id="cb69-2"><a href="#cb69-2" aria-hidden="true" tabindex="-1"></a>(meta_info <span class="ot">&lt;-</span> <span class="fu">estat_getMetaInfo</span>(<span class="at">appId =</span> appId, <span class="at">statsDataId =</span> statsDataId))</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$cat01
 # A tibble: 63 × 3
@@ -916,14 +923,14 @@ $.names
 1 cat01 (R001-02-2-004)事業年度              
 2 cat02 (R001-02-1-004)組合員数及び組合員戸数</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb70"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a>df2020 <span class="ot">&lt;-</span> <span class="fu">estat_getStatsData</span>(</span>
-<span id="cb70-2"><a href="#cb70-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">appId =</span> appId,</span>
-<span id="cb70-3"><a href="#cb70-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">statsDataId =</span> statsDataId</span>
-<span id="cb70-4"><a href="#cb70-4" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb71"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a>df2020 <span class="ot">&lt;-</span> <span class="fu">estat_getStatsData</span>(</span>
+<span id="cb71-2"><a href="#cb71-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">appId =</span> appId,</span>
+<span id="cb71-3"><a href="#cb71-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">statsDataId =</span> statsDataId</span>
+<span id="cb71-4"><a href="#cb71-4" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Fetching record 1-1197... (total: 1197 records)</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb72"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(df2020)</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb73"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(df2020)</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>tibble [1,197 × 7] (S3: tbl_df/tbl/data.frame)
  $ cat01_code                           : chr [1:1197] "1001" "1001" "1001" "1001" ...
@@ -934,70 +941,70 @@ $.names
  $ value                                : num [1:1197] 10370172 10272942 97230 653 4433389 ...
  $ annotation                           : chr [1:1197] NA NA NA NA ...</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb74"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df2020<span class="sc">$</span><span class="st">`</span><span class="at">(R001-02-2-004)事業年度</span><span class="st">`</span>)</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb75"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df2020<span class="sc">$</span><span class="st">`</span><span class="at">(R001-02-2-004)事業年度</span><span class="st">`</span>)</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
-      【地域】_沖縄       【地域】_関東       【地域】_近畿       【地域】_九州 
+【地域】_中国・四国       【地域】_九州     【地域】_北海道       【地域】_北陸 
                  19                  19                  19                  19 
-【地域】_中国・四国       【地域】_東海       【地域】_東北     【地域】_北海道 
+      【地域】_東北       【地域】_東海       【地域】_沖縄       【地域】_近畿 
                  19                  19                  19                  19 
-      【地域】_北陸   【都道府県】_愛知   【都道府県】_愛媛   【都道府県】_茨城 
+      【地域】_関東   【都道府県】_三重   【都道府県】_京都   【都道府県】_佐賀 
                  19                  19                  19                  19 
-  【都道府県】_岡山   【都道府県】_沖縄   【都道府県】_岩手   【都道府県】_岐阜 
+  【都道府県】_兵庫 【都道府県】_北海道   【都道府県】_千葉 【都道府県】_和歌山 
                  19                  19                  19                  19 
-  【都道府県】_宮崎   【都道府県】_宮城   【都道府県】_京都   【都道府県】_熊本 
+  【都道府県】_埼玉   【都道府県】_大分   【都道府県】_大坂   【都道府県】_奈良 
                  19                  19                  19                  19 
-  【都道府県】_群馬   【都道府県】_広島   【都道府県】_香川   【都道府県】_高知 
+  【都道府県】_宮城   【都道府県】_宮崎   【都道府県】_富山   【都道府県】_山口 
                  19                  19                  19                  19 
-  【都道府県】_佐賀   【都道府県】_埼玉   【都道府県】_三重   【都道府県】_山形 
+  【都道府県】_山形   【都道府県】_山梨   【都道府県】_岐阜   【都道府県】_岡山 
                  19                  19                  19                  19 
-  【都道府県】_山口   【都道府県】_山梨   【都道府県】_滋賀 【都道府県】_鹿児島 
+  【都道府県】_岩手   【都道府県】_島根   【都道府県】_広島   【都道府県】_徳島 
                  19                  19                  19                  19 
-  【都道府県】_秋田   【都道府県】_新潟 【都道府県】_神奈川   【都道府県】_青森 
+  【都道府県】_愛媛   【都道府県】_愛知   【都道府県】_新潟   【都道府県】_東京 
                  19                  19                  19                  19 
-  【都道府県】_静岡   【都道府県】_石川   【都道府県】_千葉   【都道府県】_大坂 
+  【都道府県】_栃木   【都道府県】_沖縄   【都道府県】_滋賀   【都道府県】_熊本 
                  19                  19                  19                  19 
-  【都道府県】_大分   【都道府県】_長崎   【都道府県】_長野   【都道府県】_鳥取 
+  【都道府県】_石川 【都道府県】_神奈川   【都道府県】_福井   【都道府県】_福岡 
                  19                  19                  19                  19 
-  【都道府県】_島根   【都道府県】_東京   【都道府県】_徳島   【都道府県】_栃木 
+  【都道府県】_福島   【都道府県】_秋田   【都道府県】_群馬   【都道府県】_茨城 
                  19                  19                  19                  19 
-  【都道府県】_奈良   【都道府県】_富山   【都道府県】_福井   【都道府県】_福岡 
+  【都道府県】_長崎   【都道府県】_長野   【都道府県】_青森   【都道府県】_静岡 
                  19                  19                  19                  19 
-  【都道府県】_福島   【都道府県】_兵庫 【都道府県】_北海道 【都道府県】_和歌山 
+  【都道府県】_香川   【都道府県】_高知   【都道府県】_鳥取 【都道府県】_鹿児島 
                  19                  19                  19                  19 
-        1組合当たり               平.27               平.28               平.29 
+        1組合当たり                令.2               令.元               平.27 
                  19                  19                  19                  19 
-              平.30                令.2               令.元 
+              平.28               平.29               平.30 
                  19                  19                  19 </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb76"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(df2020)[<span class="dv">2</span>] <span class="ot">&lt;-</span> <span class="st">"都道府県"</span></span>
-<span id="cb76-2"><a href="#cb76-2" aria-hidden="true" tabindex="-1"></a>df2020<span class="sc">$</span>都道府県 <span class="ot">&lt;-</span> <span class="fu">sub</span>(<span class="st">"【都道府県】_"</span>, <span class="st">""</span>, df2020<span class="sc">$</span>都道府県)</span>
-<span id="cb76-3"><a href="#cb76-3" aria-hidden="true" tabindex="-1"></a>df2020<span class="sc">$</span>都道府県 <span class="ot">&lt;-</span> <span class="fu">sub</span>(<span class="st">"令.2"</span>, <span class="st">"全国"</span>, df2020<span class="sc">$</span>都道府県)</span>
-<span id="cb76-4"><a href="#cb76-4" aria-hidden="true" tabindex="-1"></a>df2020 <span class="ot">&lt;-</span> df2020[<span class="sc">!</span><span class="fu">grepl</span>(<span class="st">"1組合当たり|【地域】_|平</span><span class="sc">\\</span><span class="st">.|令</span><span class="sc">\\</span><span class="st">."</span>, df2020<span class="sc">$</span>都道府県), ]</span>
-<span id="cb76-5"><a href="#cb76-5" aria-hidden="true" tabindex="-1"></a>df2020<span class="sc">$</span>年 <span class="ot">&lt;-</span> <span class="dv">2020</span></span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb77"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(df2020)[<span class="dv">2</span>] <span class="ot">&lt;-</span> <span class="st">"都道府県"</span></span>
+<span id="cb77-2"><a href="#cb77-2" aria-hidden="true" tabindex="-1"></a>df2020<span class="sc">$</span>都道府県 <span class="ot">&lt;-</span> <span class="fu">sub</span>(<span class="st">"【都道府県】_"</span>, <span class="st">""</span>, df2020<span class="sc">$</span>都道府県)</span>
+<span id="cb77-3"><a href="#cb77-3" aria-hidden="true" tabindex="-1"></a>df2020<span class="sc">$</span>都道府県 <span class="ot">&lt;-</span> <span class="fu">sub</span>(<span class="st">"令.2"</span>, <span class="st">"全国"</span>, df2020<span class="sc">$</span>都道府県)</span>
+<span id="cb77-4"><a href="#cb77-4" aria-hidden="true" tabindex="-1"></a>df2020 <span class="ot">&lt;-</span> df2020[<span class="sc">!</span><span class="fu">grepl</span>(<span class="st">"1組合当たり|【地域】_|平</span><span class="sc">\\</span><span class="st">.|令</span><span class="sc">\\</span><span class="st">."</span>, df2020<span class="sc">$</span>都道府県), ]</span>
+<span id="cb77-5"><a href="#cb77-5" aria-hidden="true" tabindex="-1"></a>df2020<span class="sc">$</span>年 <span class="ot">&lt;-</span> <span class="dv">2020</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="年-3" class="level3" data-number="4.4">
 <h3 data-number="4.4" class="anchored" data-anchor-id="年-3"><span class="header-section-number">4.4</span> 2019年</h3>
 <div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="true" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-農業協同組合及び同連合会一斉調査 / 確報 総合農協統計表 令和元事業年度総合農協統計表
+<span class="screen-reader-only">ノート</span>農業協同組合及び同連合会一斉調査 / 確報 総合農協統計表 令和元事業年度総合農協統計表
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-6" class="callout-6-contents callout-collapse collapse">
+<div id="callout-6" class="callout-6-contents callout-collapse collapse show">
 <div class="callout-body-container callout-body">
 <p><a href="https://www.e-stat.go.jp/stat-search/database?statdisp_id=0002015583" target="_blank">https://www.e-stat.go.jp/stat-search/database?statdisp_id=0002015583</a></p>
 </div>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb77"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a>statsDataId <span class="ot">&lt;-</span> <span class="st">"0002015583"</span></span>
-<span id="cb77-2"><a href="#cb77-2" aria-hidden="true" tabindex="-1"></a>(meta_info <span class="ot">&lt;-</span> <span class="fu">estat_getMetaInfo</span>(<span class="at">appId =</span> appId, <span class="at">statsDataId =</span> statsDataId))</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb78"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a>statsDataId <span class="ot">&lt;-</span> <span class="st">"0002015583"</span></span>
+<span id="cb78-2"><a href="#cb78-2" aria-hidden="true" tabindex="-1"></a>(meta_info <span class="ot">&lt;-</span> <span class="fu">estat_getMetaInfo</span>(<span class="at">appId =</span> appId, <span class="at">statsDataId =</span> statsDataId))</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$cat01
 # A tibble: 61 × 3
@@ -1046,14 +1053,14 @@ $.names
 1 cat01 (r001-01-2-004)事業年度及び地域      
 2 cat02 (r001-01-1-004)組合員数及び組合員戸数</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb79"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb79-1"><a href="#cb79-1" aria-hidden="true" tabindex="-1"></a>df2019 <span class="ot">&lt;-</span> <span class="fu">estat_getStatsData</span>(</span>
-<span id="cb79-2"><a href="#cb79-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">appId =</span> appId,</span>
-<span id="cb79-3"><a href="#cb79-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">statsDataId =</span> statsDataId</span>
-<span id="cb79-4"><a href="#cb79-4" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb80"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb80-1"><a href="#cb80-1" aria-hidden="true" tabindex="-1"></a>df2019 <span class="ot">&lt;-</span> <span class="fu">estat_getStatsData</span>(</span>
+<span id="cb80-2"><a href="#cb80-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">appId =</span> appId,</span>
+<span id="cb80-3"><a href="#cb80-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">statsDataId =</span> statsDataId</span>
+<span id="cb80-4"><a href="#cb80-4" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Fetching record 1-1159... (total: 1159 records)</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb81"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb81-1"><a href="#cb81-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(df2019)</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb82"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb82-1"><a href="#cb82-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(df2019)</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>tibble [1,159 × 7] (S3: tbl_df/tbl/data.frame)
  $ cat01_code                           : chr [1:1159] "1001" "1001" "1001" "1001" ...
@@ -1064,143 +1071,149 @@ $.names
  $ value                                : num [1:1159] 4478620 932121 945 16486 5035 ...
  $ annotation                           : chr [1:1159] NA NA NA NA ...</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb83"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb83-1"><a href="#cb83-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df2019<span class="sc">$</span><span class="st">`</span><span class="at">(r001-01-2-004)事業年度及び地域</span><span class="st">`</span>)</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb84"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb84-1"><a href="#cb84-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df2019<span class="sc">$</span><span class="st">`</span><span class="at">(r001-01-2-004)事業年度及び地域</span><span class="st">`</span>)</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
-      1組合当たり            47沖縄       関東_10群馬       関東_11埼玉 
+      1組合当たり            47沖縄 中国・四国_31鳥取 中国・四国_32島根 
                19                19                19                19 
-      関東_12千葉       関東_13東京     関東_14神奈川       関東_15山梨 
+中国・四国_33岡山 中国・四国_34広島 中国・四国_35山口 中国・四国_36徳島 
                19                19                19                19 
-      関東_16長野       関東_17静岡        関東_8茨城        関東_9栃木 
-               19                19                19                19 
-        関東_小計       近畿_25滋賀       近畿_26京都       近畿_27大阪 
-               19                19                19                19 
-      近畿_28兵庫       近畿_29奈良     近畿_30和歌山         近畿_小計 
+中国・四国_37香川 中国・四国_38愛媛 中国・四国_39高知   中国・四国_小計 
                19                19                19                19 
       九州_40福岡       九州_41佐賀       九州_42長崎       九州_43熊本 
                19                19                19                19 
       九州_44大分       九州_45宮崎     九州_46鹿児島         九州_小計 
                19                19                19                19 
-中国・四国_31鳥取 中国・四国_32島根 中国・四国_33岡山 中国・四国_34広島 
+       令元(2019)       北陸_18新潟       北陸_19富山       北陸_20石川 
                19                19                19                19 
-中国・四国_35山口 中国・四国_36徳島 中国・四国_37香川 中国・四国_38愛媛 
+      北陸_21福井         北陸_小計        平26(2014)        平27(2015) 
                19                19                19                19 
-中国・四国_39高知   中国・四国_小計       東海_22岐阜       東海_23愛知 
+       平28(2016)        平29(2017)        平30(2018)      東北_1北海道 
                19                19                19                19 
-      東海_24三重         東海_小計      東北_1北海道        東北_2青森 
+       東北_2青森        東北_3岩手        東北_4宮城        東北_5秋田 
                19                19                19                19 
-       東北_3岩手        東北_4宮城        東北_5秋田        東北_6山形 
+       東北_6山形        東北_7福島         東北_小計       東海_22岐阜 
                19                19                19                19 
-       東北_7福島         東北_小計        平26(2014)        平27(2015) 
+      東海_23愛知       東海_24三重         東海_小計       近畿_25滋賀 
                19                19                19                19 
-       平28(2016)        平29(2017)        平30(2018)       北陸_18新潟 
+      近畿_26京都       近畿_27大阪       近畿_28兵庫       近畿_29奈良 
                19                19                19                19 
-      北陸_19富山       北陸_20石川       北陸_21福井         北陸_小計 
+    近畿_30和歌山         近畿_小計       関東_10群馬       関東_11埼玉 
                19                19                19                19 
-       令元(2019) 
+      関東_12千葉       関東_13東京     関東_14神奈川       関東_15山梨 
+               19                19                19                19 
+      関東_16長野       関東_17静岡        関東_8茨城        関東_9栃木 
+               19                19                19                19 
+        関東_小計 
                19 </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb85"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb85-1"><a href="#cb85-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(df2019)[<span class="dv">2</span>] <span class="ot">&lt;-</span> <span class="st">"都道府県"</span></span>
-<span id="cb85-2"><a href="#cb85-2" aria-hidden="true" tabindex="-1"></a>df2019<span class="sc">$</span>都道府県 <span class="ot">&lt;-</span> <span class="fu">sub</span>(<span class="st">"(東北|関東|東海|北陸|近畿|九州|中国・四国)_[0-9]{1,2}"</span>, <span class="st">""</span>, df2019<span class="sc">$</span>都道府県)</span>
-<span id="cb85-3"><a href="#cb85-3" aria-hidden="true" tabindex="-1"></a>df2019<span class="sc">$</span>都道府県 <span class="ot">&lt;-</span> <span class="fu">sub</span>(<span class="st">"47沖縄"</span>, <span class="st">"沖縄"</span>, df2019<span class="sc">$</span>都道府県)</span>
-<span id="cb85-4"><a href="#cb85-4" aria-hidden="true" tabindex="-1"></a>df2019<span class="sc">$</span>都道府県 <span class="ot">&lt;-</span> <span class="fu">sub</span>(<span class="st">"令元</span><span class="sc">\\</span><span class="st">(2019</span><span class="sc">\\</span><span class="st">)"</span>, <span class="st">"全国"</span>, df2019<span class="sc">$</span>都道府県)</span>
-<span id="cb85-5"><a href="#cb85-5" aria-hidden="true" tabindex="-1"></a>df2019 <span class="ot">&lt;-</span> df2019[<span class="sc">!</span><span class="fu">grepl</span>(<span class="st">"1組合当たり|_小計|平[0-9]|令[0-9]"</span>, df2019<span class="sc">$</span>都道府県), ]</span>
-<span id="cb85-6"><a href="#cb85-6" aria-hidden="true" tabindex="-1"></a>df2019<span class="sc">$</span>年 <span class="ot">&lt;-</span> <span class="dv">2019</span></span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb86"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb86-1"><a href="#cb86-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(df2019)[<span class="dv">2</span>] <span class="ot">&lt;-</span> <span class="st">"都道府県"</span></span>
+<span id="cb86-2"><a href="#cb86-2" aria-hidden="true" tabindex="-1"></a>df2019<span class="sc">$</span>都道府県 <span class="ot">&lt;-</span> <span class="fu">sub</span>(<span class="st">"(東北|関東|東海|北陸|近畿|九州|中国・四国)_[0-9]{1,2}"</span>, <span class="st">""</span>, df2019<span class="sc">$</span>都道府県)</span>
+<span id="cb86-3"><a href="#cb86-3" aria-hidden="true" tabindex="-1"></a>df2019<span class="sc">$</span>都道府県 <span class="ot">&lt;-</span> <span class="fu">sub</span>(<span class="st">"47沖縄"</span>, <span class="st">"沖縄"</span>, df2019<span class="sc">$</span>都道府県)</span>
+<span id="cb86-4"><a href="#cb86-4" aria-hidden="true" tabindex="-1"></a>df2019<span class="sc">$</span>都道府県 <span class="ot">&lt;-</span> <span class="fu">sub</span>(<span class="st">"令元</span><span class="sc">\\</span><span class="st">(2019</span><span class="sc">\\</span><span class="st">)"</span>, <span class="st">"全国"</span>, df2019<span class="sc">$</span>都道府県)</span>
+<span id="cb86-5"><a href="#cb86-5" aria-hidden="true" tabindex="-1"></a>df2019 <span class="ot">&lt;-</span> df2019[<span class="sc">!</span><span class="fu">grepl</span>(<span class="st">"1組合当たり|_小計|平[0-9]|令[0-9]"</span>, df2019<span class="sc">$</span>都道府県), ]</span>
+<span id="cb86-6"><a href="#cb86-6" aria-hidden="true" tabindex="-1"></a>df2019<span class="sc">$</span>年 <span class="ot">&lt;-</span> <span class="dv">2019</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="追加" class="level3" data-number="4.5">
 <h3 data-number="4.5" class="anchored" data-anchor-id="追加"><span class="header-section-number">4.5</span> 追加</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb86"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb86-1"><a href="#cb86-1" aria-hidden="true" tabindex="-1"></a>rdf2 <span class="ot">&lt;-</span> df2 <span class="sc">|&gt;</span></span>
-<span id="cb86-2"><a href="#cb86-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">grepl</span>(<span class="st">"計"</span>, <span class="st">`</span><span class="at">個人・団体</span><span class="st">`</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb86-3"><a href="#cb86-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(組合 <span class="ot">=</span> <span class="fu">sub</span>(<span class="st">"正組合員数及び准組合員数"</span>, <span class="st">"合計"</span>, 組合)) <span class="sc">|&gt;</span></span>
-<span id="cb86-4"><a href="#cb86-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(組合 <span class="ot">=</span> <span class="fu">sub</span>(<span class="st">"数"</span>, <span class="st">""</span>, 組合)) <span class="sc">|&gt;</span></span>
-<span id="cb86-5"><a href="#cb86-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(都道府県, 年, 組合, value)</span>
-<span id="cb86-6"><a href="#cb86-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb86-7"><a href="#cb86-7" aria-hidden="true" tabindex="-1"></a>rdf2019 <span class="ot">&lt;-</span> df2019 <span class="sc">|&gt;</span></span>
-<span id="cb86-8"><a href="#cb86-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(組合 <span class="ot">=</span> <span class="st">`</span><span class="at">(r001-01-1-004)組合員数及び組合員戸数</span><span class="st">`</span>) <span class="sc">|&gt;</span></span>
-<span id="cb86-9"><a href="#cb86-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(組合 <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"正組合員_計"</span>, <span class="st">"准組合員_計"</span>, <span class="st">"合計_計"</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb86-10"><a href="#cb86-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(組合 <span class="ot">=</span> <span class="fu">sub</span>(<span class="st">"_計"</span>, <span class="st">""</span>, 組合)) <span class="sc">|&gt;</span></span>
-<span id="cb86-11"><a href="#cb86-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(都道府県, 年, 組合, value)</span>
-<span id="cb86-12"><a href="#cb86-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb86-13"><a href="#cb86-13" aria-hidden="true" tabindex="-1"></a>rdf2020 <span class="ot">&lt;-</span> df2020 <span class="sc">|&gt;</span></span>
-<span id="cb86-14"><a href="#cb86-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(組合 <span class="ot">=</span> <span class="st">`</span><span class="at">(R001-02-1-004)組合員数及び組合員戸数</span><span class="st">`</span>) <span class="sc">|&gt;</span></span>
-<span id="cb86-15"><a href="#cb86-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(組合 <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"正組合員_小計"</span>, <span class="st">"准組合員_小計"</span>, <span class="st">"計"</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb86-16"><a href="#cb86-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(組合 <span class="ot">=</span> <span class="fu">sub</span>(<span class="st">"_小計"</span>, <span class="st">""</span>, 組合)) <span class="sc">|&gt;</span></span>
-<span id="cb86-17"><a href="#cb86-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(組合 <span class="ot">=</span> <span class="fu">sub</span>(<span class="st">"計"</span>, <span class="st">"合計"</span>, 組合)) <span class="sc">|&gt;</span></span>
-<span id="cb86-18"><a href="#cb86-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(都道府県, 年, 組合, value)</span>
-<span id="cb86-19"><a href="#cb86-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb86-20"><a href="#cb86-20" aria-hidden="true" tabindex="-1"></a>rdf2021 <span class="ot">&lt;-</span> df2021 <span class="sc">|&gt;</span></span>
-<span id="cb86-21"><a href="#cb86-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(組合 <span class="ot">=</span> <span class="st">`</span><span class="at">(NOUKYOU1-21-1-004)組合員数及び組合員戸数</span><span class="st">`</span>) <span class="sc">|&gt;</span></span>
-<span id="cb86-22"><a href="#cb86-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(組合 <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"一戸複数正組合員制実施組合数_正組合員_小計"</span>, <span class="st">"一戸複数正組合員制実施組合数_准組合員_小計"</span>, <span class="st">"計"</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb86-23"><a href="#cb86-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(組合 <span class="ot">=</span> <span class="fu">gsub</span>(<span class="st">"一戸複数正組合員制実施組合数_|_小計"</span>, <span class="st">""</span>, 組合)) <span class="sc">|&gt;</span></span>
-<span id="cb86-24"><a href="#cb86-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(組合 <span class="ot">=</span> <span class="fu">sub</span>(<span class="st">"計"</span>, <span class="st">"合計"</span>, 組合)) <span class="sc">|&gt;</span></span>
-<span id="cb86-25"><a href="#cb86-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(都道府県, 年, 組合, value)</span>
-<span id="cb86-26"><a href="#cb86-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb86-27"><a href="#cb86-27" aria-hidden="true" tabindex="-1"></a>rdf2022 <span class="ot">&lt;-</span> df2022 <span class="sc">|&gt;</span></span>
-<span id="cb86-28"><a href="#cb86-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(組合 <span class="ot">=</span> <span class="st">`</span><span class="at">(NOUKYOU1-22-1-004)組合員数及び組合員戸数</span><span class="st">`</span>) <span class="sc">|&gt;</span></span>
-<span id="cb86-29"><a href="#cb86-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(組合 <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"正組合員_計"</span>, <span class="st">"准組合員_計"</span>, <span class="st">"合計"</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb86-30"><a href="#cb86-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(組合 <span class="ot">=</span> <span class="fu">sub</span>(<span class="st">"_計"</span>, <span class="st">""</span>, 組合)) <span class="sc">|&gt;</span></span>
-<span id="cb86-31"><a href="#cb86-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(都道府県, 年, 組合, value)</span>
-<span id="cb86-32"><a href="#cb86-32" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb86-33"><a href="#cb86-33" aria-hidden="true" tabindex="-1"></a>rdf2019<span class="sc">$</span>都道府県 <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(rdf2019<span class="sc">$</span>都道府県 <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"全国"</span>, <span class="st">"北海道"</span>, <span class="st">"東京"</span>, <span class="st">"京都"</span>, <span class="st">"大阪"</span>),</span>
-<span id="cb86-34"><a href="#cb86-34" aria-hidden="true" tabindex="-1"></a>              <span class="fu">paste0</span>(rdf2019<span class="sc">$</span>都道府県, <span class="fu">c</span>(<span class="st">""</span>, <span class="st">""</span>, <span class="st">"都"</span>, <span class="st">"府"</span>, <span class="st">"府"</span>)[<span class="fu">match</span>(rdf2019<span class="sc">$</span>都道府県, <span class="fu">c</span>(<span class="st">"全国"</span>, <span class="st">"北海道"</span>, <span class="st">"東京"</span>, <span class="st">"京都"</span>, <span class="st">"大阪"</span>))]),</span>
-<span id="cb86-35"><a href="#cb86-35" aria-hidden="true" tabindex="-1"></a>              <span class="fu">paste0</span>(rdf2019<span class="sc">$</span>都道府県, <span class="st">"県"</span>))</span>
-<span id="cb86-36"><a href="#cb86-36" aria-hidden="true" tabindex="-1"></a>rdf2020<span class="sc">$</span>都道府県 <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(rdf2020<span class="sc">$</span>都道府県 <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"全国"</span>, <span class="st">"北海道"</span>, <span class="st">"東京"</span>, <span class="st">"京都"</span>, <span class="st">"大阪"</span>),</span>
-<span id="cb86-37"><a href="#cb86-37" aria-hidden="true" tabindex="-1"></a>              <span class="fu">paste0</span>(rdf2020<span class="sc">$</span>都道府県, <span class="fu">c</span>(<span class="st">""</span>, <span class="st">""</span>, <span class="st">"都"</span>, <span class="st">"府"</span>, <span class="st">"府"</span>)[<span class="fu">match</span>(rdf2020<span class="sc">$</span>都道府県, <span class="fu">c</span>(<span class="st">"全国"</span>, <span class="st">"北海道"</span>, <span class="st">"東京"</span>, <span class="st">"京都"</span>, <span class="st">"大阪"</span>))]),</span>
-<span id="cb86-38"><a href="#cb86-38" aria-hidden="true" tabindex="-1"></a>              <span class="fu">paste0</span>(rdf2020<span class="sc">$</span>都道府県, <span class="st">"県"</span>))</span>
-<span id="cb86-39"><a href="#cb86-39" aria-hidden="true" tabindex="-1"></a>rdf2021<span class="sc">$</span>都道府県 <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(rdf2021<span class="sc">$</span>都道府県 <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"全国"</span>, <span class="st">"北海道"</span>, <span class="st">"東京"</span>, <span class="st">"京都"</span>, <span class="st">"大阪"</span>),</span>
-<span id="cb86-40"><a href="#cb86-40" aria-hidden="true" tabindex="-1"></a>              <span class="fu">paste0</span>(rdf2021<span class="sc">$</span>都道府県, <span class="fu">c</span>(<span class="st">""</span>, <span class="st">""</span>, <span class="st">"都"</span>, <span class="st">"府"</span>, <span class="st">"府"</span>)[<span class="fu">match</span>(rdf2021<span class="sc">$</span>都道府県, <span class="fu">c</span>(<span class="st">"全国"</span>, <span class="st">"北海道"</span>, <span class="st">"東京"</span>, <span class="st">"京都"</span>, <span class="st">"大阪"</span>))]),</span>
-<span id="cb86-41"><a href="#cb86-41" aria-hidden="true" tabindex="-1"></a>              <span class="fu">paste0</span>(rdf2021<span class="sc">$</span>都道府県, <span class="st">"県"</span>))</span>
-<span id="cb86-42"><a href="#cb86-42" aria-hidden="true" tabindex="-1"></a>rdf2022<span class="sc">$</span>都道府県 <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(rdf2022<span class="sc">$</span>都道府県 <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"全国"</span>, <span class="st">"北海道"</span>, <span class="st">"東京"</span>, <span class="st">"京都"</span>, <span class="st">"大阪"</span>),</span>
-<span id="cb86-43"><a href="#cb86-43" aria-hidden="true" tabindex="-1"></a>              <span class="fu">paste0</span>(rdf2022<span class="sc">$</span>都道府県, <span class="fu">c</span>(<span class="st">""</span>, <span class="st">""</span>, <span class="st">"都"</span>, <span class="st">"府"</span>, <span class="st">"府"</span>)[<span class="fu">match</span>(rdf2022<span class="sc">$</span>都道府県, <span class="fu">c</span>(<span class="st">"全国"</span>, <span class="st">"北海道"</span>, <span class="st">"東京"</span>, <span class="st">"京都"</span>, <span class="st">"大阪"</span>))]),</span>
-<span id="cb86-44"><a href="#cb86-44" aria-hidden="true" tabindex="-1"></a>              <span class="fu">paste0</span>(rdf2022<span class="sc">$</span>都道府県, <span class="st">"県"</span>))</span>
-<span id="cb86-45"><a href="#cb86-45" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb86-46"><a href="#cb86-46" aria-hidden="true" tabindex="-1"></a>new_df <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(</span>
-<span id="cb86-47"><a href="#cb86-47" aria-hidden="true" tabindex="-1"></a>  rdf2,</span>
-<span id="cb86-48"><a href="#cb86-48" aria-hidden="true" tabindex="-1"></a>  rdf2019,</span>
-<span id="cb86-49"><a href="#cb86-49" aria-hidden="true" tabindex="-1"></a>  rdf2020,</span>
-<span id="cb86-50"><a href="#cb86-50" aria-hidden="true" tabindex="-1"></a>  rdf2021,</span>
-<span id="cb86-51"><a href="#cb86-51" aria-hidden="true" tabindex="-1"></a>  rdf2022</span>
-<span id="cb86-52"><a href="#cb86-52" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb86-53"><a href="#cb86-53" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb86-54"><a href="#cb86-54" aria-hidden="true" tabindex="-1"></a><span class="co"># 以下のデータはe-Statにないため，手入力</span></span>
-<span id="cb86-55"><a href="#cb86-55" aria-hidden="true" tabindex="-1"></a>df2007_2016 <span class="ot">&lt;-</span> <span class="fu">tribble</span>(</span>
-<span id="cb86-56"><a href="#cb86-56" aria-hidden="true" tabindex="-1"></a>  <span class="sc">~</span>年,    <span class="sc">~</span>合計,     <span class="sc">~</span>正組合員, <span class="sc">~</span>准組合員,</span>
-<span id="cb86-57"><a href="#cb86-57" aria-hidden="true" tabindex="-1"></a>  <span class="dv">2016</span>, <span class="dv">10444426</span>, <span class="dv">4367858</span>, <span class="dv">6076568</span>,</span>
-<span id="cb86-58"><a href="#cb86-58" aria-hidden="true" tabindex="-1"></a>  <span class="dv">2015</span>, <span class="dv">10370172</span>, <span class="dv">4433389</span>, <span class="dv">5936783</span>,</span>
-<span id="cb86-59"><a href="#cb86-59" aria-hidden="true" tabindex="-1"></a>  <span class="dv">2014</span>, <span class="dv">10267614</span>, <span class="dv">4495106</span>, <span class="dv">5772508</span>,</span>
-<span id="cb86-60"><a href="#cb86-60" aria-hidden="true" tabindex="-1"></a>  <span class="dv">2013</span>, <span class="dv">10145363</span>, <span class="dv">4561504</span>, <span class="dv">5583859</span>,</span>
-<span id="cb86-61"><a href="#cb86-61" aria-hidden="true" tabindex="-1"></a>  <span class="dv">2012</span>,  <span class="dv">9977967</span>, <span class="dv">4614306</span>, <span class="dv">5363661</span>,</span>
-<span id="cb86-62"><a href="#cb86-62" aria-hidden="true" tabindex="-1"></a>  <span class="dv">2011</span>,  <span class="dv">9834031</span>, <span class="dv">4668961</span>, <span class="dv">5165070</span>,</span>
-<span id="cb86-63"><a href="#cb86-63" aria-hidden="true" tabindex="-1"></a>  <span class="dv">2010</span>,  <span class="dv">9693855</span>, <span class="dv">4720274</span>, <span class="dv">4973581</span>,</span>
-<span id="cb86-64"><a href="#cb86-64" aria-hidden="true" tabindex="-1"></a>  <span class="dv">2009</span>,  <span class="dv">9579441</span>, <span class="dv">4775204</span>, <span class="dv">4804237</span>,</span>
-<span id="cb86-65"><a href="#cb86-65" aria-hidden="true" tabindex="-1"></a>  <span class="dv">2008</span>,  <span class="dv">9494334</span>, <span class="dv">4828192</span>, <span class="dv">4666142</span>,</span>
-<span id="cb86-66"><a href="#cb86-66" aria-hidden="true" tabindex="-1"></a>  <span class="dv">2007</span>,  <span class="dv">9432809</span>, <span class="dv">4888449</span>, <span class="dv">4544360</span></span>
-<span id="cb86-67"><a href="#cb86-67" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb86-68"><a href="#cb86-68" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb86-69"><a href="#cb86-69" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr)</span>
-<span id="cb86-70"><a href="#cb86-70" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb86-71"><a href="#cb86-71" aria-hidden="true" tabindex="-1"></a>df_long <span class="ot">&lt;-</span> df2007_2016 <span class="sc">|&gt;</span></span>
-<span id="cb86-72"><a href="#cb86-72" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(</span>
-<span id="cb86-73"><a href="#cb86-73" aria-hidden="true" tabindex="-1"></a>    <span class="at">cols =</span> <span class="sc">-</span>年,</span>
-<span id="cb86-74"><a href="#cb86-74" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_to =</span> <span class="st">"組合"</span></span>
-<span id="cb86-75"><a href="#cb86-75" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb86-76"><a href="#cb86-76" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(都道府県 <span class="ot">=</span> <span class="st">"全国"</span>)</span>
-<span id="cb86-77"><a href="#cb86-77" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb86-78"><a href="#cb86-78" aria-hidden="true" tabindex="-1"></a>new_df <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(</span>
-<span id="cb86-79"><a href="#cb86-79" aria-hidden="true" tabindex="-1"></a>  new_df,</span>
-<span id="cb86-80"><a href="#cb86-80" aria-hidden="true" tabindex="-1"></a>  df_long</span>
-<span id="cb86-81"><a href="#cb86-81" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb87"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb87-1"><a href="#cb87-1" aria-hidden="true" tabindex="-1"></a>rdf2 <span class="ot">&lt;-</span> df2 <span class="sc">|&gt;</span></span>
+<span id="cb87-2"><a href="#cb87-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">grepl</span>(<span class="st">"計"</span>, <span class="st">`</span><span class="at">個人・団体</span><span class="st">`</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb87-3"><a href="#cb87-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb87-4"><a href="#cb87-4" aria-hidden="true" tabindex="-1"></a>    組合 <span class="ot">=</span> <span class="fu">sub</span>(<span class="st">"正組合員数及び准組合員数"</span>, <span class="st">"合計"</span>, 組合),</span>
+<span id="cb87-5"><a href="#cb87-5" aria-hidden="true" tabindex="-1"></a>    組合 <span class="ot">=</span> <span class="fu">sub</span>(<span class="st">"数"</span>, <span class="st">""</span>, 組合)</span>
+<span id="cb87-6"><a href="#cb87-6" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb87-7"><a href="#cb87-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(都道府県, 年, 組合, value)</span>
+<span id="cb87-8"><a href="#cb87-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb87-9"><a href="#cb87-9" aria-hidden="true" tabindex="-1"></a>rdf2019 <span class="ot">&lt;-</span> df2019 <span class="sc">|&gt;</span></span>
+<span id="cb87-10"><a href="#cb87-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(組合 <span class="ot">=</span> <span class="st">`</span><span class="at">(r001-01-1-004)組合員数及び組合員戸数</span><span class="st">`</span>) <span class="sc">|&gt;</span></span>
+<span id="cb87-11"><a href="#cb87-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(組合 <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"正組合員_計"</span>, <span class="st">"准組合員_計"</span>, <span class="st">"合計_計"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb87-12"><a href="#cb87-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(組合 <span class="ot">=</span> <span class="fu">sub</span>(<span class="st">"_計"</span>, <span class="st">""</span>, 組合)) <span class="sc">|&gt;</span></span>
+<span id="cb87-13"><a href="#cb87-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(都道府県, 年, 組合, value)</span>
+<span id="cb87-14"><a href="#cb87-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb87-15"><a href="#cb87-15" aria-hidden="true" tabindex="-1"></a>rdf2020 <span class="ot">&lt;-</span> df2020 <span class="sc">|&gt;</span></span>
+<span id="cb87-16"><a href="#cb87-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(組合 <span class="ot">=</span> <span class="st">`</span><span class="at">(R001-02-1-004)組合員数及び組合員戸数</span><span class="st">`</span>) <span class="sc">|&gt;</span></span>
+<span id="cb87-17"><a href="#cb87-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(組合 <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"正組合員_小計"</span>, <span class="st">"准組合員_小計"</span>, <span class="st">"計"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb87-18"><a href="#cb87-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb87-19"><a href="#cb87-19" aria-hidden="true" tabindex="-1"></a>    組合 <span class="ot">=</span> <span class="fu">sub</span>(<span class="st">"_小計"</span>, <span class="st">""</span>, 組合),</span>
+<span id="cb87-20"><a href="#cb87-20" aria-hidden="true" tabindex="-1"></a>    組合 <span class="ot">=</span> <span class="fu">sub</span>(<span class="st">"計"</span>, <span class="st">"合計"</span>, 組合)</span>
+<span id="cb87-21"><a href="#cb87-21" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb87-22"><a href="#cb87-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(都道府県, 年, 組合, value)</span>
+<span id="cb87-23"><a href="#cb87-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb87-24"><a href="#cb87-24" aria-hidden="true" tabindex="-1"></a>rdf2021 <span class="ot">&lt;-</span> df2021 <span class="sc">|&gt;</span></span>
+<span id="cb87-25"><a href="#cb87-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(組合 <span class="ot">=</span> <span class="st">`</span><span class="at">(NOUKYOU1-21-1-004)組合員数及び組合員戸数</span><span class="st">`</span>) <span class="sc">|&gt;</span></span>
+<span id="cb87-26"><a href="#cb87-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(組合 <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"一戸複数正組合員制実施組合数_正組合員_小計"</span>, <span class="st">"一戸複数正組合員制実施組合数_准組合員_小計"</span>, <span class="st">"計"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb87-27"><a href="#cb87-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb87-28"><a href="#cb87-28" aria-hidden="true" tabindex="-1"></a>    組合 <span class="ot">=</span> <span class="fu">gsub</span>(<span class="st">"一戸複数正組合員制実施組合数_|_小計"</span>, <span class="st">""</span>, 組合),</span>
+<span id="cb87-29"><a href="#cb87-29" aria-hidden="true" tabindex="-1"></a>    組合 <span class="ot">=</span> <span class="fu">sub</span>(<span class="st">"計"</span>, <span class="st">"合計"</span>, 組合)</span>
+<span id="cb87-30"><a href="#cb87-30" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb87-31"><a href="#cb87-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(都道府県, 年, 組合, value)</span>
+<span id="cb87-32"><a href="#cb87-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb87-33"><a href="#cb87-33" aria-hidden="true" tabindex="-1"></a>rdf2022 <span class="ot">&lt;-</span> df2022 <span class="sc">|&gt;</span></span>
+<span id="cb87-34"><a href="#cb87-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(組合 <span class="ot">=</span> <span class="st">`</span><span class="at">(NOUKYOU1-22-1-004)組合員数及び組合員戸数</span><span class="st">`</span>) <span class="sc">|&gt;</span></span>
+<span id="cb87-35"><a href="#cb87-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(組合 <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"正組合員_計"</span>, <span class="st">"准組合員_計"</span>, <span class="st">"合計"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb87-36"><a href="#cb87-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(組合 <span class="ot">=</span> <span class="fu">sub</span>(<span class="st">"_計"</span>, <span class="st">""</span>, 組合)) <span class="sc">|&gt;</span></span>
+<span id="cb87-37"><a href="#cb87-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(都道府県, 年, 組合, value)</span>
+<span id="cb87-38"><a href="#cb87-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb87-39"><a href="#cb87-39" aria-hidden="true" tabindex="-1"></a>rdf2019<span class="sc">$</span>都道府県 <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(rdf2019<span class="sc">$</span>都道府県 <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"全国"</span>, <span class="st">"北海道"</span>, <span class="st">"東京"</span>, <span class="st">"京都"</span>, <span class="st">"大阪"</span>),</span>
+<span id="cb87-40"><a href="#cb87-40" aria-hidden="true" tabindex="-1"></a>              <span class="fu">paste0</span>(rdf2019<span class="sc">$</span>都道府県, <span class="fu">c</span>(<span class="st">""</span>, <span class="st">""</span>, <span class="st">"都"</span>, <span class="st">"府"</span>, <span class="st">"府"</span>)[<span class="fu">match</span>(rdf2019<span class="sc">$</span>都道府県, <span class="fu">c</span>(<span class="st">"全国"</span>, <span class="st">"北海道"</span>, <span class="st">"東京"</span>, <span class="st">"京都"</span>, <span class="st">"大阪"</span>))]),</span>
+<span id="cb87-41"><a href="#cb87-41" aria-hidden="true" tabindex="-1"></a>              <span class="fu">paste0</span>(rdf2019<span class="sc">$</span>都道府県, <span class="st">"県"</span>))</span>
+<span id="cb87-42"><a href="#cb87-42" aria-hidden="true" tabindex="-1"></a>rdf2020<span class="sc">$</span>都道府県 <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(rdf2020<span class="sc">$</span>都道府県 <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"全国"</span>, <span class="st">"北海道"</span>, <span class="st">"東京"</span>, <span class="st">"京都"</span>, <span class="st">"大阪"</span>),</span>
+<span id="cb87-43"><a href="#cb87-43" aria-hidden="true" tabindex="-1"></a>              <span class="fu">paste0</span>(rdf2020<span class="sc">$</span>都道府県, <span class="fu">c</span>(<span class="st">""</span>, <span class="st">""</span>, <span class="st">"都"</span>, <span class="st">"府"</span>, <span class="st">"府"</span>)[<span class="fu">match</span>(rdf2020<span class="sc">$</span>都道府県, <span class="fu">c</span>(<span class="st">"全国"</span>, <span class="st">"北海道"</span>, <span class="st">"東京"</span>, <span class="st">"京都"</span>, <span class="st">"大阪"</span>))]),</span>
+<span id="cb87-44"><a href="#cb87-44" aria-hidden="true" tabindex="-1"></a>              <span class="fu">paste0</span>(rdf2020<span class="sc">$</span>都道府県, <span class="st">"県"</span>))</span>
+<span id="cb87-45"><a href="#cb87-45" aria-hidden="true" tabindex="-1"></a>rdf2021<span class="sc">$</span>都道府県 <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(rdf2021<span class="sc">$</span>都道府県 <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"全国"</span>, <span class="st">"北海道"</span>, <span class="st">"東京"</span>, <span class="st">"京都"</span>, <span class="st">"大阪"</span>),</span>
+<span id="cb87-46"><a href="#cb87-46" aria-hidden="true" tabindex="-1"></a>              <span class="fu">paste0</span>(rdf2021<span class="sc">$</span>都道府県, <span class="fu">c</span>(<span class="st">""</span>, <span class="st">""</span>, <span class="st">"都"</span>, <span class="st">"府"</span>, <span class="st">"府"</span>)[<span class="fu">match</span>(rdf2021<span class="sc">$</span>都道府県, <span class="fu">c</span>(<span class="st">"全国"</span>, <span class="st">"北海道"</span>, <span class="st">"東京"</span>, <span class="st">"京都"</span>, <span class="st">"大阪"</span>))]),</span>
+<span id="cb87-47"><a href="#cb87-47" aria-hidden="true" tabindex="-1"></a>              <span class="fu">paste0</span>(rdf2021<span class="sc">$</span>都道府県, <span class="st">"県"</span>))</span>
+<span id="cb87-48"><a href="#cb87-48" aria-hidden="true" tabindex="-1"></a>rdf2022<span class="sc">$</span>都道府県 <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(rdf2022<span class="sc">$</span>都道府県 <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"全国"</span>, <span class="st">"北海道"</span>, <span class="st">"東京"</span>, <span class="st">"京都"</span>, <span class="st">"大阪"</span>),</span>
+<span id="cb87-49"><a href="#cb87-49" aria-hidden="true" tabindex="-1"></a>              <span class="fu">paste0</span>(rdf2022<span class="sc">$</span>都道府県, <span class="fu">c</span>(<span class="st">""</span>, <span class="st">""</span>, <span class="st">"都"</span>, <span class="st">"府"</span>, <span class="st">"府"</span>)[<span class="fu">match</span>(rdf2022<span class="sc">$</span>都道府県, <span class="fu">c</span>(<span class="st">"全国"</span>, <span class="st">"北海道"</span>, <span class="st">"東京"</span>, <span class="st">"京都"</span>, <span class="st">"大阪"</span>))]),</span>
+<span id="cb87-50"><a href="#cb87-50" aria-hidden="true" tabindex="-1"></a>              <span class="fu">paste0</span>(rdf2022<span class="sc">$</span>都道府県, <span class="st">"県"</span>))</span>
+<span id="cb87-51"><a href="#cb87-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb87-52"><a href="#cb87-52" aria-hidden="true" tabindex="-1"></a>new_df <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(</span>
+<span id="cb87-53"><a href="#cb87-53" aria-hidden="true" tabindex="-1"></a>  rdf2,</span>
+<span id="cb87-54"><a href="#cb87-54" aria-hidden="true" tabindex="-1"></a>  rdf2019,</span>
+<span id="cb87-55"><a href="#cb87-55" aria-hidden="true" tabindex="-1"></a>  rdf2020,</span>
+<span id="cb87-56"><a href="#cb87-56" aria-hidden="true" tabindex="-1"></a>  rdf2021,</span>
+<span id="cb87-57"><a href="#cb87-57" aria-hidden="true" tabindex="-1"></a>  rdf2022</span>
+<span id="cb87-58"><a href="#cb87-58" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb87-59"><a href="#cb87-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb87-60"><a href="#cb87-60" aria-hidden="true" tabindex="-1"></a><span class="co"># 以下のデータはe-Statにないため，手入力</span></span>
+<span id="cb87-61"><a href="#cb87-61" aria-hidden="true" tabindex="-1"></a>df2007_2016 <span class="ot">&lt;-</span> <span class="fu">tribble</span>(</span>
+<span id="cb87-62"><a href="#cb87-62" aria-hidden="true" tabindex="-1"></a>  <span class="sc">~</span>年,    <span class="sc">~</span>合計,     <span class="sc">~</span>正組合員, <span class="sc">~</span>准組合員,</span>
+<span id="cb87-63"><a href="#cb87-63" aria-hidden="true" tabindex="-1"></a>  <span class="dv">2016</span>, <span class="dv">10444426</span>, <span class="dv">4367858</span>, <span class="dv">6076568</span>,</span>
+<span id="cb87-64"><a href="#cb87-64" aria-hidden="true" tabindex="-1"></a>  <span class="dv">2015</span>, <span class="dv">10370172</span>, <span class="dv">4433389</span>, <span class="dv">5936783</span>,</span>
+<span id="cb87-65"><a href="#cb87-65" aria-hidden="true" tabindex="-1"></a>  <span class="dv">2014</span>, <span class="dv">10267614</span>, <span class="dv">4495106</span>, <span class="dv">5772508</span>,</span>
+<span id="cb87-66"><a href="#cb87-66" aria-hidden="true" tabindex="-1"></a>  <span class="dv">2013</span>, <span class="dv">10145363</span>, <span class="dv">4561504</span>, <span class="dv">5583859</span>,</span>
+<span id="cb87-67"><a href="#cb87-67" aria-hidden="true" tabindex="-1"></a>  <span class="dv">2012</span>,  <span class="dv">9977967</span>, <span class="dv">4614306</span>, <span class="dv">5363661</span>,</span>
+<span id="cb87-68"><a href="#cb87-68" aria-hidden="true" tabindex="-1"></a>  <span class="dv">2011</span>,  <span class="dv">9834031</span>, <span class="dv">4668961</span>, <span class="dv">5165070</span>,</span>
+<span id="cb87-69"><a href="#cb87-69" aria-hidden="true" tabindex="-1"></a>  <span class="dv">2010</span>,  <span class="dv">9693855</span>, <span class="dv">4720274</span>, <span class="dv">4973581</span>,</span>
+<span id="cb87-70"><a href="#cb87-70" aria-hidden="true" tabindex="-1"></a>  <span class="dv">2009</span>,  <span class="dv">9579441</span>, <span class="dv">4775204</span>, <span class="dv">4804237</span>,</span>
+<span id="cb87-71"><a href="#cb87-71" aria-hidden="true" tabindex="-1"></a>  <span class="dv">2008</span>,  <span class="dv">9494334</span>, <span class="dv">4828192</span>, <span class="dv">4666142</span>,</span>
+<span id="cb87-72"><a href="#cb87-72" aria-hidden="true" tabindex="-1"></a>  <span class="dv">2007</span>,  <span class="dv">9432809</span>, <span class="dv">4888449</span>, <span class="dv">4544360</span></span>
+<span id="cb87-73"><a href="#cb87-73" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb87-74"><a href="#cb87-74" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb87-75"><a href="#cb87-75" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr)</span>
+<span id="cb87-76"><a href="#cb87-76" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb87-77"><a href="#cb87-77" aria-hidden="true" tabindex="-1"></a>df_long <span class="ot">&lt;-</span> df2007_2016 <span class="sc">|&gt;</span></span>
+<span id="cb87-78"><a href="#cb87-78" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(</span>
+<span id="cb87-79"><a href="#cb87-79" aria-hidden="true" tabindex="-1"></a>    <span class="at">cols =</span> <span class="sc">-</span>年,</span>
+<span id="cb87-80"><a href="#cb87-80" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_to =</span> <span class="st">"組合"</span></span>
+<span id="cb87-81"><a href="#cb87-81" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb87-82"><a href="#cb87-82" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(都道府県 <span class="ot">=</span> <span class="st">"全国"</span>)</span>
+<span id="cb87-83"><a href="#cb87-83" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb87-84"><a href="#cb87-84" aria-hidden="true" tabindex="-1"></a>new_df <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(</span>
+<span id="cb87-85"><a href="#cb87-85" aria-hidden="true" tabindex="-1"></a>  new_df,</span>
+<span id="cb87-86"><a href="#cb87-86" aria-hidden="true" tabindex="-1"></a>  df_long</span>
+<span id="cb87-87"><a href="#cb87-87" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 </section>
 <section id="作図-1" class="level2" data-number="5">
 <h2 data-number="5" class="anchored" data-anchor-id="作図-1"><span class="header-section-number">5</span> 作図</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb87"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb87-1"><a href="#cb87-1" aria-hidden="true" tabindex="-1"></a>df_JAmembers <span class="ot">&lt;-</span> new_df <span class="sc">|&gt;</span></span>
-<span id="cb87-2"><a href="#cb87-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(都道府県 <span class="sc">==</span> <span class="st">"全国"</span>)</span>
-<span id="cb87-3"><a href="#cb87-3" aria-hidden="true" tabindex="-1"></a>df_JAmembers</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb88"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb88-1"><a href="#cb88-1" aria-hidden="true" tabindex="-1"></a>df_JAmembers <span class="ot">&lt;-</span> new_df <span class="sc">|&gt;</span></span>
+<span id="cb88-2"><a href="#cb88-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(都道府県 <span class="sc">==</span> <span class="st">"全国"</span>)</span>
+<span id="cb88-3"><a href="#cb88-3" aria-hidden="true" tabindex="-1"></a>df_JAmembers</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 84 × 4
    都道府県    年 組合    value
@@ -1217,18 +1230,18 @@ $.names
 10 全国      1997 合計  9122861
 # ℹ 74 more rows</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb89"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb89-1"><a href="#cb89-1" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data =</span> df_JAmembers <span class="sc">|&gt;</span> <span class="fu">filter</span>(組合 <span class="sc">==</span> <span class="st">"合計"</span>), <span class="fu">aes</span>(<span class="at">x =</span> 年, <span class="at">y =</span> value, <span class="at">group =</span> 組合, <span class="at">colour =</span> 組合)) <span class="sc">+</span></span>
-<span id="cb89-2"><a href="#cb89-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
-<span id="cb89-3"><a href="#cb89-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
-<span id="cb89-4"><a href="#cb89-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="cn">NA</span>), <span class="at">labels =</span> scales<span class="sc">::</span>comma, <span class="at">name =</span> <span class="st">"組合員数"</span>) <span class="sc">+</span></span>
-<span id="cb89-5"><a href="#cb89-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb89-6"><a href="#cb89-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"農業協同組合の組合員数の推移"</span>,</span>
-<span id="cb89-7"><a href="#cb89-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">caption =</span> <span class="st">"出所：農林水産省「総合農協統計表」"</span></span>
-<span id="cb89-8"><a href="#cb89-8" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb89-9"><a href="#cb89-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
-<span id="cb89-10"><a href="#cb89-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>) <span class="sc">+</span></span>
-<span id="cb89-11"><a href="#cb89-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_d3</span>()</span>
-<span id="cb89-12"><a href="#cb89-12" aria-hidden="true" tabindex="-1"></a>g <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">text =</span> <span class="fu">element_text</span>(<span class="at">family =</span> <span class="st">"HiraKakuProN-W3"</span>))</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb90"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb90-1"><a href="#cb90-1" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data =</span> df_JAmembers <span class="sc">|&gt;</span> <span class="fu">filter</span>(組合 <span class="sc">==</span> <span class="st">"合計"</span>), <span class="fu">aes</span>(<span class="at">x =</span> 年, <span class="at">y =</span> value, <span class="at">colour =</span> 組合)) <span class="sc">+</span></span>
+<span id="cb90-2"><a href="#cb90-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb90-3"><a href="#cb90-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb90-4"><a href="#cb90-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="cn">NA</span>), <span class="at">labels =</span> scales<span class="sc">::</span>comma, <span class="at">name =</span> <span class="st">"組合員数"</span>) <span class="sc">+</span></span>
+<span id="cb90-5"><a href="#cb90-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_d3</span>() <span class="sc">+</span></span>
+<span id="cb90-6"><a href="#cb90-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb90-7"><a href="#cb90-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"農業協同組合の組合員数の推移"</span>,</span>
+<span id="cb90-8"><a href="#cb90-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">caption =</span> <span class="st">"出所：農林水産省「総合農協統計表」"</span></span>
+<span id="cb90-9"><a href="#cb90-9" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb90-10"><a href="#cb90-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb90-11"><a href="#cb90-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span>
+<span id="cb90-12"><a href="#cb90-12" aria-hidden="true" tabindex="-1"></a>p <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">text =</span> <span class="fu">element_text</span>(<span class="at">family =</span> <span class="st">"HiraKakuProN-W3"</span>))</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -1238,19 +1251,19 @@ $.names
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb90"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb90-1"><a href="#cb90-1" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data =</span> df_JAmembers <span class="sc">|&gt;</span> <span class="fu">filter</span>(組合 <span class="sc">!=</span> <span class="st">"合計"</span>), <span class="fu">aes</span>(<span class="at">x =</span> 年, <span class="at">y =</span> value, <span class="at">group =</span> 組合, <span class="at">colour =</span> 組合)) <span class="sc">+</span></span>
-<span id="cb90-2"><a href="#cb90-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
-<span id="cb90-3"><a href="#cb90-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
-<span id="cb90-4"><a href="#cb90-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="cn">NA</span>), <span class="at">labels =</span> scales<span class="sc">::</span>comma, <span class="at">name =</span> <span class="st">"組合員数"</span>) <span class="sc">+</span></span>
-<span id="cb90-5"><a href="#cb90-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb90-6"><a href="#cb90-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"農業協同組合の組合員数の推移"</span>,</span>
-<span id="cb90-7"><a href="#cb90-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">caption =</span> <span class="st">"出所：農林水産省「総合農協統計表」"</span>,</span>
-<span id="cb90-8"><a href="#cb90-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="cn">NULL</span>,</span>
-<span id="cb90-9"><a href="#cb90-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">shape =</span> <span class="cn">NULL</span></span>
-<span id="cb90-10"><a href="#cb90-10" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb90-11"><a href="#cb90-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
-<span id="cb90-12"><a href="#cb90-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_d3</span>()</span>
-<span id="cb90-13"><a href="#cb90-13" aria-hidden="true" tabindex="-1"></a>g <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">text =</span> <span class="fu">element_text</span>(<span class="at">family =</span> <span class="st">"HiraKakuProN-W3"</span>))</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb91"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb91-1"><a href="#cb91-1" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data =</span> df_JAmembers <span class="sc">|&gt;</span> <span class="fu">filter</span>(組合 <span class="sc">!=</span> <span class="st">"合計"</span>), <span class="fu">aes</span>(<span class="at">x =</span> 年, <span class="at">y =</span> value, <span class="at">colour =</span> 組合)) <span class="sc">+</span></span>
+<span id="cb91-2"><a href="#cb91-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb91-3"><a href="#cb91-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb91-4"><a href="#cb91-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="cn">NA</span>), <span class="at">labels =</span> scales<span class="sc">::</span>comma, <span class="at">name =</span> <span class="st">"組合員数"</span>) <span class="sc">+</span></span>
+<span id="cb91-5"><a href="#cb91-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_d3</span>() <span class="sc">+</span></span>
+<span id="cb91-6"><a href="#cb91-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb91-7"><a href="#cb91-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"農業協同組合の組合員数の推移"</span>,</span>
+<span id="cb91-8"><a href="#cb91-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">caption =</span> <span class="st">"出所：農林水産省「総合農協統計表」"</span>,</span>
+<span id="cb91-9"><a href="#cb91-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="cn">NULL</span>,</span>
+<span id="cb91-10"><a href="#cb91-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">shape =</span> <span class="cn">NULL</span></span>
+<span id="cb91-11"><a href="#cb91-11" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb91-12"><a href="#cb91-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span>
+<span id="cb91-13"><a href="#cb91-13" aria-hidden="true" tabindex="-1"></a>p <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">text =</span> <span class="fu">element_text</span>(<span class="at">family =</span> <span class="st">"HiraKakuProN-W3"</span>))</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -1260,20 +1273,20 @@ $.names
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb91"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb91-1"><a href="#cb91-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gghighlight)</span>
-<span id="cb91-2"><a href="#cb91-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb91-3"><a href="#cb91-3" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data =</span> new_df <span class="sc">|&gt;</span> <span class="fu">filter</span>(都道府県 <span class="sc">!=</span> <span class="st">"全国"</span>, 組合 <span class="sc">==</span> <span class="st">"合計"</span>), <span class="fu">aes</span>(<span class="at">x =</span> 年, <span class="at">y =</span> value, <span class="at">group =</span> 都道府県, <span class="at">colour =</span> 都道府県)) <span class="sc">+</span></span>
-<span id="cb91-4"><a href="#cb91-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
-<span id="cb91-5"><a href="#cb91-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
-<span id="cb91-6"><a href="#cb91-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="cn">NA</span>), <span class="at">labels =</span> scales<span class="sc">::</span>comma, <span class="at">name =</span> <span class="st">"組合員数"</span>) <span class="sc">+</span></span>
-<span id="cb91-7"><a href="#cb91-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb91-8"><a href="#cb91-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"農業協同組合の組合員数の推移（都道府県別）"</span>,</span>
-<span id="cb91-9"><a href="#cb91-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">caption =</span> <span class="st">"出所：農林水産省「総合農協統計表」"</span></span>
-<span id="cb91-10"><a href="#cb91-10" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb91-11"><a href="#cb91-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
-<span id="cb91-12"><a href="#cb91-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>) <span class="sc">+</span></span>
-<span id="cb91-13"><a href="#cb91-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_d3</span>() <span class="sc">+</span></span>
-<span id="cb91-14"><a href="#cb91-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gghighlight</span>(都道府県 <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"愛知県"</span>, <span class="st">"愛媛県"</span>))</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb92"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb92-1"><a href="#cb92-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gghighlight)</span>
+<span id="cb92-2"><a href="#cb92-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-3"><a href="#cb92-3" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data =</span> new_df <span class="sc">|&gt;</span> <span class="fu">filter</span>(都道府県 <span class="sc">!=</span> <span class="st">"全国"</span>, 組合 <span class="sc">==</span> <span class="st">"合計"</span>), <span class="fu">aes</span>(<span class="at">x =</span> 年, <span class="at">y =</span> value, <span class="at">colour =</span> 都道府県)) <span class="sc">+</span></span>
+<span id="cb92-4"><a href="#cb92-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb92-5"><a href="#cb92-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb92-6"><a href="#cb92-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gghighlight</span>(都道府県 <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"愛知県"</span>, <span class="st">"愛媛県"</span>)) <span class="sc">+</span></span>
+<span id="cb92-7"><a href="#cb92-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="cn">NA</span>), <span class="at">labels =</span> scales<span class="sc">::</span>comma, <span class="at">name =</span> <span class="st">"組合員数"</span>) <span class="sc">+</span></span>
+<span id="cb92-8"><a href="#cb92-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_d3</span>() <span class="sc">+</span></span>
+<span id="cb92-9"><a href="#cb92-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb92-10"><a href="#cb92-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"農業協同組合の組合員数の推移（都道府県別）"</span>,</span>
+<span id="cb92-11"><a href="#cb92-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">caption =</span> <span class="st">"出所：農林水産省「総合農協統計表」"</span></span>
+<span id="cb92-12"><a href="#cb92-12" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb92-13"><a href="#cb92-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb92-14"><a href="#cb92-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning: Tried to calculate with group_by(), but the calculation failed.
 Falling back to ungrouped filter operation...
@@ -1283,7 +1296,7 @@ Falling back to ungrouped filter operation...</code></pre>
 <div class="cell-output cell-output-stderr">
 <pre><code>label_key: 都道府県</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb94"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb94-1"><a href="#cb94-1" aria-hidden="true" tabindex="-1"></a>g <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">text =</span> <span class="fu">element_text</span>(<span class="at">family =</span> <span class="st">"HiraKakuProN-W3"</span>))</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb95"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb95-1"><a href="#cb95-1" aria-hidden="true" tabindex="-1"></a>p <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">text =</span> <span class="fu">element_text</span>(<span class="at">family =</span> <span class="st">"HiraKakuProN-W3"</span>))</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -1293,17 +1306,17 @@ Falling back to ungrouped filter operation...</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb95"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb95-1"><a href="#cb95-1" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data =</span> new_df <span class="sc">|&gt;</span> <span class="fu">filter</span>(都道府県 <span class="sc">==</span> <span class="st">"愛媛県"</span>, 組合 <span class="sc">!=</span> <span class="st">"合計"</span>), <span class="fu">aes</span>(<span class="at">x =</span> 年, <span class="at">y =</span> value, <span class="at">group =</span> 組合, <span class="at">colour =</span> 組合)) <span class="sc">+</span></span>
-<span id="cb95-2"><a href="#cb95-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
-<span id="cb95-3"><a href="#cb95-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
-<span id="cb95-4"><a href="#cb95-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="cn">NA</span>), <span class="at">labels =</span> scales<span class="sc">::</span>comma, <span class="at">name =</span> <span class="st">"組合員数"</span>) <span class="sc">+</span></span>
-<span id="cb95-5"><a href="#cb95-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb95-6"><a href="#cb95-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"農業協同組合の組合員数の推移（愛媛県）"</span>,</span>
-<span id="cb95-7"><a href="#cb95-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">caption =</span> <span class="st">"出所：農林水産省「総合農協統計表」"</span></span>
-<span id="cb95-8"><a href="#cb95-8" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb95-9"><a href="#cb95-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
-<span id="cb95-10"><a href="#cb95-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_d3</span>()</span>
-<span id="cb95-11"><a href="#cb95-11" aria-hidden="true" tabindex="-1"></a>g <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">text =</span> <span class="fu">element_text</span>(<span class="at">family =</span> <span class="st">"HiraKakuProN-W3"</span>))</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb96"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb96-1"><a href="#cb96-1" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data =</span> new_df <span class="sc">|&gt;</span> <span class="fu">filter</span>(都道府県 <span class="sc">==</span> <span class="st">"愛媛県"</span>, 組合 <span class="sc">!=</span> <span class="st">"合計"</span>), <span class="fu">aes</span>(<span class="at">x =</span> 年, <span class="at">y =</span> value, <span class="at">colour =</span> 組合)) <span class="sc">+</span></span>
+<span id="cb96-2"><a href="#cb96-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb96-3"><a href="#cb96-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb96-4"><a href="#cb96-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="cn">NA</span>), <span class="at">labels =</span> scales<span class="sc">::</span>comma, <span class="at">name =</span> <span class="st">"組合員数"</span>) <span class="sc">+</span></span>
+<span id="cb96-5"><a href="#cb96-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_d3</span>() <span class="sc">+</span></span>
+<span id="cb96-6"><a href="#cb96-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb96-7"><a href="#cb96-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"農業協同組合の組合員数の推移（愛媛県）"</span>,</span>
+<span id="cb96-8"><a href="#cb96-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">caption =</span> <span class="st">"出所：農林水産省「総合農協統計表」"</span></span>
+<span id="cb96-9"><a href="#cb96-9" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb96-10"><a href="#cb96-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span>
+<span id="cb96-11"><a href="#cb96-11" aria-hidden="true" tabindex="-1"></a>p <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">text =</span> <span class="fu">element_text</span>(<span class="at">family =</span> <span class="st">"HiraKakuProN-W3"</span>))</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -1313,17 +1326,17 @@ Falling back to ungrouped filter operation...</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb96"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb96-1"><a href="#cb96-1" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data =</span> new_df <span class="sc">|&gt;</span> <span class="fu">filter</span>(都道府県 <span class="sc">==</span> <span class="st">"北海道"</span>, 組合 <span class="sc">!=</span> <span class="st">"合計"</span>), <span class="fu">aes</span>(<span class="at">x =</span> 年, <span class="at">y =</span> value, <span class="at">group =</span> 組合, <span class="at">colour =</span> 組合)) <span class="sc">+</span></span>
-<span id="cb96-2"><a href="#cb96-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
-<span id="cb96-3"><a href="#cb96-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
-<span id="cb96-4"><a href="#cb96-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="cn">NA</span>), <span class="at">labels =</span> scales<span class="sc">::</span>comma, <span class="at">name =</span> <span class="st">"組合員数"</span>) <span class="sc">+</span></span>
-<span id="cb96-5"><a href="#cb96-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb96-6"><a href="#cb96-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"農業協同組合の組合員数の推移（北海道）"</span>,</span>
-<span id="cb96-7"><a href="#cb96-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">caption =</span> <span class="st">"出所：農林水産省「総合農協統計表」"</span></span>
-<span id="cb96-8"><a href="#cb96-8" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb96-9"><a href="#cb96-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
-<span id="cb96-10"><a href="#cb96-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_d3</span>()</span>
-<span id="cb96-11"><a href="#cb96-11" aria-hidden="true" tabindex="-1"></a>g <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">text =</span> <span class="fu">element_text</span>(<span class="at">family =</span> <span class="st">"HiraKakuProN-W3"</span>))</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb97"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb97-1"><a href="#cb97-1" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data =</span> new_df <span class="sc">|&gt;</span> <span class="fu">filter</span>(都道府県 <span class="sc">==</span> <span class="st">"北海道"</span>, 組合 <span class="sc">!=</span> <span class="st">"合計"</span>), <span class="fu">aes</span>(<span class="at">x =</span> 年, <span class="at">y =</span> value, <span class="at">colour =</span> 組合)) <span class="sc">+</span></span>
+<span id="cb97-2"><a href="#cb97-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb97-3"><a href="#cb97-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb97-4"><a href="#cb97-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="cn">NA</span>), <span class="at">labels =</span> scales<span class="sc">::</span>comma, <span class="at">name =</span> <span class="st">"組合員数"</span>) <span class="sc">+</span></span>
+<span id="cb97-5"><a href="#cb97-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_d3</span>() <span class="sc">+</span></span>
+<span id="cb97-6"><a href="#cb97-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb97-7"><a href="#cb97-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"農業協同組合の組合員数の推移（北海道）"</span>,</span>
+<span id="cb97-8"><a href="#cb97-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">caption =</span> <span class="st">"出所：農林水産省「総合農協統計表」"</span></span>
+<span id="cb97-9"><a href="#cb97-9" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb97-10"><a href="#cb97-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span>
+<span id="cb97-11"><a href="#cb97-11" aria-hidden="true" tabindex="-1"></a>p <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">text =</span> <span class="fu">element_text</span>(<span class="at">family =</span> <span class="st">"HiraKakuProN-W3"</span>))</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -1333,17 +1346,17 @@ Falling back to ungrouped filter operation...</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb97"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb97-1"><a href="#cb97-1" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data =</span> new_df <span class="sc">|&gt;</span> <span class="fu">filter</span>(都道府県 <span class="sc">==</span> <span class="st">"愛知県"</span>, 組合 <span class="sc">!=</span> <span class="st">"合計"</span>), <span class="fu">aes</span>(<span class="at">x =</span> 年, <span class="at">y =</span> value, <span class="at">group =</span> 組合, <span class="at">colour =</span> 組合)) <span class="sc">+</span></span>
-<span id="cb97-2"><a href="#cb97-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
-<span id="cb97-3"><a href="#cb97-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
-<span id="cb97-4"><a href="#cb97-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="cn">NA</span>), <span class="at">labels =</span> scales<span class="sc">::</span>comma, <span class="at">name =</span> <span class="st">"組合員数"</span>) <span class="sc">+</span></span>
-<span id="cb97-5"><a href="#cb97-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb97-6"><a href="#cb97-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"農業協同組合の組合員数の推移（愛知県）"</span>,</span>
-<span id="cb97-7"><a href="#cb97-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">caption =</span> <span class="st">"出所：農林水産省「総合農協統計表」"</span></span>
-<span id="cb97-8"><a href="#cb97-8" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb97-9"><a href="#cb97-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
-<span id="cb97-10"><a href="#cb97-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_d3</span>()</span>
-<span id="cb97-11"><a href="#cb97-11" aria-hidden="true" tabindex="-1"></a>g <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">text =</span> <span class="fu">element_text</span>(<span class="at">family =</span> <span class="st">"HiraKakuProN-W3"</span>))</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb98"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb98-1"><a href="#cb98-1" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data =</span> new_df <span class="sc">|&gt;</span> <span class="fu">filter</span>(都道府県 <span class="sc">==</span> <span class="st">"愛知県"</span>, 組合 <span class="sc">!=</span> <span class="st">"合計"</span>), <span class="fu">aes</span>(<span class="at">x =</span> 年, <span class="at">y =</span> value, <span class="at">colour =</span> 組合)) <span class="sc">+</span></span>
+<span id="cb98-2"><a href="#cb98-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb98-3"><a href="#cb98-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb98-4"><a href="#cb98-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="cn">NA</span>), <span class="at">labels =</span> scales<span class="sc">::</span>comma, <span class="at">name =</span> <span class="st">"組合員数"</span>) <span class="sc">+</span></span>
+<span id="cb98-5"><a href="#cb98-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_d3</span>() <span class="sc">+</span></span>
+<span id="cb98-6"><a href="#cb98-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb98-7"><a href="#cb98-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"農業協同組合の組合員数の推移（愛知県）"</span>,</span>
+<span id="cb98-8"><a href="#cb98-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">caption =</span> <span class="st">"出所：農林水産省「総合農協統計表」"</span></span>
+<span id="cb98-9"><a href="#cb98-9" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb98-10"><a href="#cb98-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span>
+<span id="cb98-11"><a href="#cb98-11" aria-hidden="true" tabindex="-1"></a>p <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">text =</span> <span class="fu">element_text</span>(<span class="at">family =</span> <span class="st">"HiraKakuProN-W3"</span>))</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -1353,17 +1366,17 @@ Falling back to ungrouped filter operation...</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb98"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb98-1"><a href="#cb98-1" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data =</span> new_df <span class="sc">|&gt;</span> <span class="fu">filter</span>(都道府県 <span class="sc">==</span> <span class="st">"京都府"</span>, 組合 <span class="sc">!=</span> <span class="st">"合計"</span>), <span class="fu">aes</span>(<span class="at">x =</span> 年, <span class="at">y =</span> value, <span class="at">group =</span> 組合, <span class="at">colour =</span> 組合)) <span class="sc">+</span></span>
-<span id="cb98-2"><a href="#cb98-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
-<span id="cb98-3"><a href="#cb98-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
-<span id="cb98-4"><a href="#cb98-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="cn">NA</span>), <span class="at">labels =</span> scales<span class="sc">::</span>comma, <span class="at">name =</span> <span class="st">"組合員数"</span>) <span class="sc">+</span></span>
-<span id="cb98-5"><a href="#cb98-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb98-6"><a href="#cb98-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"農業協同組合の組合員数の推移（京都府）"</span>,</span>
-<span id="cb98-7"><a href="#cb98-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">caption =</span> <span class="st">"出所：農林水産省「総合農協統計表」"</span></span>
-<span id="cb98-8"><a href="#cb98-8" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb98-9"><a href="#cb98-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
-<span id="cb98-10"><a href="#cb98-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_d3</span>()</span>
-<span id="cb98-11"><a href="#cb98-11" aria-hidden="true" tabindex="-1"></a>g <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">text =</span> <span class="fu">element_text</span>(<span class="at">family =</span> <span class="st">"HiraKakuProN-W3"</span>))</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb99"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb99-1"><a href="#cb99-1" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data =</span> new_df <span class="sc">|&gt;</span> <span class="fu">filter</span>(都道府県 <span class="sc">==</span> <span class="st">"京都府"</span>, 組合 <span class="sc">!=</span> <span class="st">"合計"</span>), <span class="fu">aes</span>(<span class="at">x =</span> 年, <span class="at">y =</span> value, <span class="at">colour =</span> 組合)) <span class="sc">+</span></span>
+<span id="cb99-2"><a href="#cb99-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb99-3"><a href="#cb99-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb99-4"><a href="#cb99-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="cn">NA</span>), <span class="at">labels =</span> scales<span class="sc">::</span>comma, <span class="at">name =</span> <span class="st">"組合員数"</span>) <span class="sc">+</span></span>
+<span id="cb99-5"><a href="#cb99-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_d3</span>() <span class="sc">+</span></span>
+<span id="cb99-6"><a href="#cb99-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb99-7"><a href="#cb99-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"農業協同組合の組合員数の推移（京都府）"</span>,</span>
+<span id="cb99-8"><a href="#cb99-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">caption =</span> <span class="st">"出所：農林水産省「総合農協統計表」"</span></span>
+<span id="cb99-9"><a href="#cb99-9" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb99-10"><a href="#cb99-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span>
+<span id="cb99-11"><a href="#cb99-11" aria-hidden="true" tabindex="-1"></a>p <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">text =</span> <span class="fu">element_text</span>(<span class="at">family =</span> <span class="st">"HiraKakuProN-W3"</span>))</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -1373,17 +1386,17 @@ Falling back to ungrouped filter operation...</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb99"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb99-1"><a href="#cb99-1" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data =</span> new_df <span class="sc">|&gt;</span> <span class="fu">filter</span>(都道府県 <span class="sc">==</span> <span class="st">"徳島県"</span>, 組合 <span class="sc">!=</span> <span class="st">"合計"</span>), <span class="fu">aes</span>(<span class="at">x =</span> 年, <span class="at">y =</span> value, <span class="at">group =</span> 組合, <span class="at">colour =</span> 組合)) <span class="sc">+</span></span>
-<span id="cb99-2"><a href="#cb99-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
-<span id="cb99-3"><a href="#cb99-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
-<span id="cb99-4"><a href="#cb99-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="cn">NA</span>), <span class="at">labels =</span> scales<span class="sc">::</span>comma, <span class="at">name =</span> <span class="st">"組合員数"</span>) <span class="sc">+</span></span>
-<span id="cb99-5"><a href="#cb99-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb99-6"><a href="#cb99-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"農業協同組合の組合員数の推移（徳島県）"</span>,</span>
-<span id="cb99-7"><a href="#cb99-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">caption =</span> <span class="st">"出所：農林水産省「総合農協統計表」"</span></span>
-<span id="cb99-8"><a href="#cb99-8" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb99-9"><a href="#cb99-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
-<span id="cb99-10"><a href="#cb99-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_d3</span>()</span>
-<span id="cb99-11"><a href="#cb99-11" aria-hidden="true" tabindex="-1"></a>g <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">text =</span> <span class="fu">element_text</span>(<span class="at">family =</span> <span class="st">"HiraKakuProN-W3"</span>))</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb100"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb100-1"><a href="#cb100-1" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data =</span> new_df <span class="sc">|&gt;</span> <span class="fu">filter</span>(都道府県 <span class="sc">==</span> <span class="st">"徳島県"</span>, 組合 <span class="sc">!=</span> <span class="st">"合計"</span>), <span class="fu">aes</span>(<span class="at">x =</span> 年, <span class="at">y =</span> value, <span class="at">colour =</span> 組合)) <span class="sc">+</span></span>
+<span id="cb100-2"><a href="#cb100-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb100-3"><a href="#cb100-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb100-4"><a href="#cb100-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="cn">NA</span>), <span class="at">labels =</span> scales<span class="sc">::</span>comma, <span class="at">name =</span> <span class="st">"組合員数"</span>) <span class="sc">+</span></span>
+<span id="cb100-5"><a href="#cb100-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_d3</span>() <span class="sc">+</span></span>
+<span id="cb100-6"><a href="#cb100-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb100-7"><a href="#cb100-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"農業協同組合の組合員数の推移（徳島県）"</span>,</span>
+<span id="cb100-8"><a href="#cb100-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">caption =</span> <span class="st">"出所：農林水産省「総合農協統計表」"</span></span>
+<span id="cb100-9"><a href="#cb100-9" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb100-10"><a href="#cb100-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span>
+<span id="cb100-11"><a href="#cb100-11" aria-hidden="true" tabindex="-1"></a>p <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">text =</span> <span class="fu">element_text</span>(<span class="at">family =</span> <span class="st">"HiraKakuProN-W3"</span>))</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -1447,13 +1460,14 @@ Falling back to ungrouped filter operation...</code></pre>
       e.clearSelection();
     }
     const getTextToCopy = function(trigger) {
-        const codeEl = trigger.previousElementSibling.cloneNode(true);
-        for (const childEl of codeEl.children) {
-          if (isCodeAnnotation(childEl)) {
-            childEl.remove();
-          }
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
         }
-        return codeEl.innerText;
+      }
+      return codeEl.innerText;
     }
     const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
       text: getTextToCopy
