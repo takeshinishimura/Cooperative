@@ -1156,55 +1156,63 @@ $.names
 <span id="cb87-36"><a href="#cb87-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(組合 <span class="ot">=</span> <span class="fu">sub</span>(<span class="st">"_計"</span>, <span class="st">""</span>, 組合)) <span class="sc">|&gt;</span></span>
 <span id="cb87-37"><a href="#cb87-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(都道府県, 年, 組合, value)</span>
 <span id="cb87-38"><a href="#cb87-38" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb87-39"><a href="#cb87-39" aria-hidden="true" tabindex="-1"></a>rdf2019<span class="sc">$</span>都道府県 <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(rdf2019<span class="sc">$</span>都道府県 <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"全国"</span>, <span class="st">"北海道"</span>, <span class="st">"東京"</span>, <span class="st">"京都"</span>, <span class="st">"大阪"</span>),</span>
-<span id="cb87-40"><a href="#cb87-40" aria-hidden="true" tabindex="-1"></a>              <span class="fu">paste0</span>(rdf2019<span class="sc">$</span>都道府県, <span class="fu">c</span>(<span class="st">""</span>, <span class="st">""</span>, <span class="st">"都"</span>, <span class="st">"府"</span>, <span class="st">"府"</span>)[<span class="fu">match</span>(rdf2019<span class="sc">$</span>都道府県, <span class="fu">c</span>(<span class="st">"全国"</span>, <span class="st">"北海道"</span>, <span class="st">"東京"</span>, <span class="st">"京都"</span>, <span class="st">"大阪"</span>))]),</span>
-<span id="cb87-41"><a href="#cb87-41" aria-hidden="true" tabindex="-1"></a>              <span class="fu">paste0</span>(rdf2019<span class="sc">$</span>都道府県, <span class="st">"県"</span>))</span>
-<span id="cb87-42"><a href="#cb87-42" aria-hidden="true" tabindex="-1"></a>rdf2020<span class="sc">$</span>都道府県 <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(rdf2020<span class="sc">$</span>都道府県 <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"全国"</span>, <span class="st">"北海道"</span>, <span class="st">"東京"</span>, <span class="st">"京都"</span>, <span class="st">"大阪"</span>),</span>
-<span id="cb87-43"><a href="#cb87-43" aria-hidden="true" tabindex="-1"></a>              <span class="fu">paste0</span>(rdf2020<span class="sc">$</span>都道府県, <span class="fu">c</span>(<span class="st">""</span>, <span class="st">""</span>, <span class="st">"都"</span>, <span class="st">"府"</span>, <span class="st">"府"</span>)[<span class="fu">match</span>(rdf2020<span class="sc">$</span>都道府県, <span class="fu">c</span>(<span class="st">"全国"</span>, <span class="st">"北海道"</span>, <span class="st">"東京"</span>, <span class="st">"京都"</span>, <span class="st">"大阪"</span>))]),</span>
-<span id="cb87-44"><a href="#cb87-44" aria-hidden="true" tabindex="-1"></a>              <span class="fu">paste0</span>(rdf2020<span class="sc">$</span>都道府県, <span class="st">"県"</span>))</span>
-<span id="cb87-45"><a href="#cb87-45" aria-hidden="true" tabindex="-1"></a>rdf2021<span class="sc">$</span>都道府県 <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(rdf2021<span class="sc">$</span>都道府県 <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"全国"</span>, <span class="st">"北海道"</span>, <span class="st">"東京"</span>, <span class="st">"京都"</span>, <span class="st">"大阪"</span>),</span>
-<span id="cb87-46"><a href="#cb87-46" aria-hidden="true" tabindex="-1"></a>              <span class="fu">paste0</span>(rdf2021<span class="sc">$</span>都道府県, <span class="fu">c</span>(<span class="st">""</span>, <span class="st">""</span>, <span class="st">"都"</span>, <span class="st">"府"</span>, <span class="st">"府"</span>)[<span class="fu">match</span>(rdf2021<span class="sc">$</span>都道府県, <span class="fu">c</span>(<span class="st">"全国"</span>, <span class="st">"北海道"</span>, <span class="st">"東京"</span>, <span class="st">"京都"</span>, <span class="st">"大阪"</span>))]),</span>
-<span id="cb87-47"><a href="#cb87-47" aria-hidden="true" tabindex="-1"></a>              <span class="fu">paste0</span>(rdf2021<span class="sc">$</span>都道府県, <span class="st">"県"</span>))</span>
-<span id="cb87-48"><a href="#cb87-48" aria-hidden="true" tabindex="-1"></a>rdf2022<span class="sc">$</span>都道府県 <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(rdf2022<span class="sc">$</span>都道府県 <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"全国"</span>, <span class="st">"北海道"</span>, <span class="st">"東京"</span>, <span class="st">"京都"</span>, <span class="st">"大阪"</span>),</span>
-<span id="cb87-49"><a href="#cb87-49" aria-hidden="true" tabindex="-1"></a>              <span class="fu">paste0</span>(rdf2022<span class="sc">$</span>都道府県, <span class="fu">c</span>(<span class="st">""</span>, <span class="st">""</span>, <span class="st">"都"</span>, <span class="st">"府"</span>, <span class="st">"府"</span>)[<span class="fu">match</span>(rdf2022<span class="sc">$</span>都道府県, <span class="fu">c</span>(<span class="st">"全国"</span>, <span class="st">"北海道"</span>, <span class="st">"東京"</span>, <span class="st">"京都"</span>, <span class="st">"大阪"</span>))]),</span>
-<span id="cb87-50"><a href="#cb87-50" aria-hidden="true" tabindex="-1"></a>              <span class="fu">paste0</span>(rdf2022<span class="sc">$</span>都道府県, <span class="st">"県"</span>))</span>
-<span id="cb87-51"><a href="#cb87-51" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb87-52"><a href="#cb87-52" aria-hidden="true" tabindex="-1"></a>new_df <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(</span>
-<span id="cb87-53"><a href="#cb87-53" aria-hidden="true" tabindex="-1"></a>  rdf2,</span>
-<span id="cb87-54"><a href="#cb87-54" aria-hidden="true" tabindex="-1"></a>  rdf2019,</span>
-<span id="cb87-55"><a href="#cb87-55" aria-hidden="true" tabindex="-1"></a>  rdf2020,</span>
-<span id="cb87-56"><a href="#cb87-56" aria-hidden="true" tabindex="-1"></a>  rdf2021,</span>
-<span id="cb87-57"><a href="#cb87-57" aria-hidden="true" tabindex="-1"></a>  rdf2022</span>
+<span id="cb87-39"><a href="#cb87-39" aria-hidden="true" tabindex="-1"></a>rdf2019<span class="sc">$</span>都道府県 <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(</span>
+<span id="cb87-40"><a href="#cb87-40" aria-hidden="true" tabindex="-1"></a>  rdf2019<span class="sc">$</span>都道府県 <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"全国"</span>, <span class="st">"北海道"</span>, <span class="st">"東京"</span>, <span class="st">"京都"</span>, <span class="st">"大阪"</span>),</span>
+<span id="cb87-41"><a href="#cb87-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste0</span>(rdf2019<span class="sc">$</span>都道府県, <span class="fu">c</span>(<span class="st">""</span>, <span class="st">""</span>, <span class="st">"都"</span>, <span class="st">"府"</span>, <span class="st">"府"</span>)[<span class="fu">match</span>(rdf2019<span class="sc">$</span>都道府県, <span class="fu">c</span>(<span class="st">"全国"</span>, <span class="st">"北海道"</span>, <span class="st">"東京"</span>, <span class="st">"京都"</span>, <span class="st">"大阪"</span>))]),</span>
+<span id="cb87-42"><a href="#cb87-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste0</span>(rdf2019<span class="sc">$</span>都道府県, <span class="st">"県"</span>)</span>
+<span id="cb87-43"><a href="#cb87-43" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb87-44"><a href="#cb87-44" aria-hidden="true" tabindex="-1"></a>rdf2020<span class="sc">$</span>都道府県 <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(</span>
+<span id="cb87-45"><a href="#cb87-45" aria-hidden="true" tabindex="-1"></a>  rdf2020<span class="sc">$</span>都道府県 <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"全国"</span>, <span class="st">"北海道"</span>, <span class="st">"東京"</span>, <span class="st">"京都"</span>, <span class="st">"大阪"</span>),</span>
+<span id="cb87-46"><a href="#cb87-46" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste0</span>(rdf2020<span class="sc">$</span>都道府県, <span class="fu">c</span>(<span class="st">""</span>, <span class="st">""</span>, <span class="st">"都"</span>, <span class="st">"府"</span>, <span class="st">"府"</span>)[<span class="fu">match</span>(rdf2020<span class="sc">$</span>都道府県, <span class="fu">c</span>(<span class="st">"全国"</span>, <span class="st">"北海道"</span>, <span class="st">"東京"</span>, <span class="st">"京都"</span>, <span class="st">"大阪"</span>))]),</span>
+<span id="cb87-47"><a href="#cb87-47" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste0</span>(rdf2020<span class="sc">$</span>都道府県, <span class="st">"県"</span>)</span>
+<span id="cb87-48"><a href="#cb87-48" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb87-49"><a href="#cb87-49" aria-hidden="true" tabindex="-1"></a>rdf2021<span class="sc">$</span>都道府県 <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(</span>
+<span id="cb87-50"><a href="#cb87-50" aria-hidden="true" tabindex="-1"></a>  rdf2021<span class="sc">$</span>都道府県 <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"全国"</span>, <span class="st">"北海道"</span>, <span class="st">"東京"</span>, <span class="st">"京都"</span>, <span class="st">"大阪"</span>),</span>
+<span id="cb87-51"><a href="#cb87-51" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste0</span>(rdf2021<span class="sc">$</span>都道府県, <span class="fu">c</span>(<span class="st">""</span>, <span class="st">""</span>, <span class="st">"都"</span>, <span class="st">"府"</span>, <span class="st">"府"</span>)[<span class="fu">match</span>(rdf2021<span class="sc">$</span>都道府県, <span class="fu">c</span>(<span class="st">"全国"</span>, <span class="st">"北海道"</span>, <span class="st">"東京"</span>, <span class="st">"京都"</span>, <span class="st">"大阪"</span>))]),</span>
+<span id="cb87-52"><a href="#cb87-52" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste0</span>(rdf2021<span class="sc">$</span>都道府県, <span class="st">"県"</span>)</span>
+<span id="cb87-53"><a href="#cb87-53" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb87-54"><a href="#cb87-54" aria-hidden="true" tabindex="-1"></a>rdf2022<span class="sc">$</span>都道府県 <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(</span>
+<span id="cb87-55"><a href="#cb87-55" aria-hidden="true" tabindex="-1"></a>  rdf2022<span class="sc">$</span>都道府県 <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"全国"</span>, <span class="st">"北海道"</span>, <span class="st">"東京"</span>, <span class="st">"京都"</span>, <span class="st">"大阪"</span>),</span>
+<span id="cb87-56"><a href="#cb87-56" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste0</span>(rdf2022<span class="sc">$</span>都道府県, <span class="fu">c</span>(<span class="st">""</span>, <span class="st">""</span>, <span class="st">"都"</span>, <span class="st">"府"</span>, <span class="st">"府"</span>)[<span class="fu">match</span>(rdf2022<span class="sc">$</span>都道府県, <span class="fu">c</span>(<span class="st">"全国"</span>, <span class="st">"北海道"</span>, <span class="st">"東京"</span>, <span class="st">"京都"</span>, <span class="st">"大阪"</span>))]),</span>
+<span id="cb87-57"><a href="#cb87-57" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste0</span>(rdf2022<span class="sc">$</span>都道府県, <span class="st">"県"</span>)</span>
 <span id="cb87-58"><a href="#cb87-58" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb87-59"><a href="#cb87-59" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb87-60"><a href="#cb87-60" aria-hidden="true" tabindex="-1"></a><span class="co"># 以下のデータはe-Statにないため，手入力</span></span>
-<span id="cb87-61"><a href="#cb87-61" aria-hidden="true" tabindex="-1"></a>df2007_2016 <span class="ot">&lt;-</span> <span class="fu">tribble</span>(</span>
-<span id="cb87-62"><a href="#cb87-62" aria-hidden="true" tabindex="-1"></a>  <span class="sc">~</span>年,    <span class="sc">~</span>合計,     <span class="sc">~</span>正組合員, <span class="sc">~</span>准組合員,</span>
-<span id="cb87-63"><a href="#cb87-63" aria-hidden="true" tabindex="-1"></a>  <span class="dv">2016</span>, <span class="dv">10444426</span>, <span class="dv">4367858</span>, <span class="dv">6076568</span>,</span>
-<span id="cb87-64"><a href="#cb87-64" aria-hidden="true" tabindex="-1"></a>  <span class="dv">2015</span>, <span class="dv">10370172</span>, <span class="dv">4433389</span>, <span class="dv">5936783</span>,</span>
-<span id="cb87-65"><a href="#cb87-65" aria-hidden="true" tabindex="-1"></a>  <span class="dv">2014</span>, <span class="dv">10267614</span>, <span class="dv">4495106</span>, <span class="dv">5772508</span>,</span>
-<span id="cb87-66"><a href="#cb87-66" aria-hidden="true" tabindex="-1"></a>  <span class="dv">2013</span>, <span class="dv">10145363</span>, <span class="dv">4561504</span>, <span class="dv">5583859</span>,</span>
-<span id="cb87-67"><a href="#cb87-67" aria-hidden="true" tabindex="-1"></a>  <span class="dv">2012</span>,  <span class="dv">9977967</span>, <span class="dv">4614306</span>, <span class="dv">5363661</span>,</span>
-<span id="cb87-68"><a href="#cb87-68" aria-hidden="true" tabindex="-1"></a>  <span class="dv">2011</span>,  <span class="dv">9834031</span>, <span class="dv">4668961</span>, <span class="dv">5165070</span>,</span>
-<span id="cb87-69"><a href="#cb87-69" aria-hidden="true" tabindex="-1"></a>  <span class="dv">2010</span>,  <span class="dv">9693855</span>, <span class="dv">4720274</span>, <span class="dv">4973581</span>,</span>
-<span id="cb87-70"><a href="#cb87-70" aria-hidden="true" tabindex="-1"></a>  <span class="dv">2009</span>,  <span class="dv">9579441</span>, <span class="dv">4775204</span>, <span class="dv">4804237</span>,</span>
-<span id="cb87-71"><a href="#cb87-71" aria-hidden="true" tabindex="-1"></a>  <span class="dv">2008</span>,  <span class="dv">9494334</span>, <span class="dv">4828192</span>, <span class="dv">4666142</span>,</span>
-<span id="cb87-72"><a href="#cb87-72" aria-hidden="true" tabindex="-1"></a>  <span class="dv">2007</span>,  <span class="dv">9432809</span>, <span class="dv">4888449</span>, <span class="dv">4544360</span></span>
-<span id="cb87-73"><a href="#cb87-73" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb87-74"><a href="#cb87-74" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb87-75"><a href="#cb87-75" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr)</span>
-<span id="cb87-76"><a href="#cb87-76" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb87-77"><a href="#cb87-77" aria-hidden="true" tabindex="-1"></a>df_long <span class="ot">&lt;-</span> df2007_2016 <span class="sc">|&gt;</span></span>
-<span id="cb87-78"><a href="#cb87-78" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(</span>
-<span id="cb87-79"><a href="#cb87-79" aria-hidden="true" tabindex="-1"></a>    <span class="at">cols =</span> <span class="sc">-</span>年,</span>
-<span id="cb87-80"><a href="#cb87-80" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_to =</span> <span class="st">"組合"</span></span>
-<span id="cb87-81"><a href="#cb87-81" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb87-82"><a href="#cb87-82" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(都道府県 <span class="ot">=</span> <span class="st">"全国"</span>)</span>
-<span id="cb87-83"><a href="#cb87-83" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb87-84"><a href="#cb87-84" aria-hidden="true" tabindex="-1"></a>new_df <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(</span>
-<span id="cb87-85"><a href="#cb87-85" aria-hidden="true" tabindex="-1"></a>  new_df,</span>
-<span id="cb87-86"><a href="#cb87-86" aria-hidden="true" tabindex="-1"></a>  df_long</span>
-<span id="cb87-87"><a href="#cb87-87" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb87-60"><a href="#cb87-60" aria-hidden="true" tabindex="-1"></a>new_df <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(</span>
+<span id="cb87-61"><a href="#cb87-61" aria-hidden="true" tabindex="-1"></a>  rdf2,</span>
+<span id="cb87-62"><a href="#cb87-62" aria-hidden="true" tabindex="-1"></a>  rdf2019,</span>
+<span id="cb87-63"><a href="#cb87-63" aria-hidden="true" tabindex="-1"></a>  rdf2020,</span>
+<span id="cb87-64"><a href="#cb87-64" aria-hidden="true" tabindex="-1"></a>  rdf2021,</span>
+<span id="cb87-65"><a href="#cb87-65" aria-hidden="true" tabindex="-1"></a>  rdf2022</span>
+<span id="cb87-66"><a href="#cb87-66" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb87-67"><a href="#cb87-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb87-68"><a href="#cb87-68" aria-hidden="true" tabindex="-1"></a><span class="co"># 以下のデータはe-Statにないため，手入力</span></span>
+<span id="cb87-69"><a href="#cb87-69" aria-hidden="true" tabindex="-1"></a>df2007_2016 <span class="ot">&lt;-</span> <span class="fu">tribble</span>(</span>
+<span id="cb87-70"><a href="#cb87-70" aria-hidden="true" tabindex="-1"></a>  <span class="sc">~</span>年,    <span class="sc">~</span>合計,     <span class="sc">~</span>正組合員, <span class="sc">~</span>准組合員,</span>
+<span id="cb87-71"><a href="#cb87-71" aria-hidden="true" tabindex="-1"></a>  <span class="dv">2016</span>, <span class="dv">10444426</span>, <span class="dv">4367858</span>, <span class="dv">6076568</span>,</span>
+<span id="cb87-72"><a href="#cb87-72" aria-hidden="true" tabindex="-1"></a>  <span class="dv">2015</span>, <span class="dv">10370172</span>, <span class="dv">4433389</span>, <span class="dv">5936783</span>,</span>
+<span id="cb87-73"><a href="#cb87-73" aria-hidden="true" tabindex="-1"></a>  <span class="dv">2014</span>, <span class="dv">10267614</span>, <span class="dv">4495106</span>, <span class="dv">5772508</span>,</span>
+<span id="cb87-74"><a href="#cb87-74" aria-hidden="true" tabindex="-1"></a>  <span class="dv">2013</span>, <span class="dv">10145363</span>, <span class="dv">4561504</span>, <span class="dv">5583859</span>,</span>
+<span id="cb87-75"><a href="#cb87-75" aria-hidden="true" tabindex="-1"></a>  <span class="dv">2012</span>,  <span class="dv">9977967</span>, <span class="dv">4614306</span>, <span class="dv">5363661</span>,</span>
+<span id="cb87-76"><a href="#cb87-76" aria-hidden="true" tabindex="-1"></a>  <span class="dv">2011</span>,  <span class="dv">9834031</span>, <span class="dv">4668961</span>, <span class="dv">5165070</span>,</span>
+<span id="cb87-77"><a href="#cb87-77" aria-hidden="true" tabindex="-1"></a>  <span class="dv">2010</span>,  <span class="dv">9693855</span>, <span class="dv">4720274</span>, <span class="dv">4973581</span>,</span>
+<span id="cb87-78"><a href="#cb87-78" aria-hidden="true" tabindex="-1"></a>  <span class="dv">2009</span>,  <span class="dv">9579441</span>, <span class="dv">4775204</span>, <span class="dv">4804237</span>,</span>
+<span id="cb87-79"><a href="#cb87-79" aria-hidden="true" tabindex="-1"></a>  <span class="dv">2008</span>,  <span class="dv">9494334</span>, <span class="dv">4828192</span>, <span class="dv">4666142</span>,</span>
+<span id="cb87-80"><a href="#cb87-80" aria-hidden="true" tabindex="-1"></a>  <span class="dv">2007</span>,  <span class="dv">9432809</span>, <span class="dv">4888449</span>, <span class="dv">4544360</span></span>
+<span id="cb87-81"><a href="#cb87-81" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb87-82"><a href="#cb87-82" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb87-83"><a href="#cb87-83" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr)</span>
+<span id="cb87-84"><a href="#cb87-84" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb87-85"><a href="#cb87-85" aria-hidden="true" tabindex="-1"></a>df_long <span class="ot">&lt;-</span> df2007_2016 <span class="sc">|&gt;</span></span>
+<span id="cb87-86"><a href="#cb87-86" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(</span>
+<span id="cb87-87"><a href="#cb87-87" aria-hidden="true" tabindex="-1"></a>    <span class="at">cols =</span> <span class="sc">-</span>年,</span>
+<span id="cb87-88"><a href="#cb87-88" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_to =</span> <span class="st">"組合"</span></span>
+<span id="cb87-89"><a href="#cb87-89" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb87-90"><a href="#cb87-90" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(都道府県 <span class="ot">=</span> <span class="st">"全国"</span>)</span>
+<span id="cb87-91"><a href="#cb87-91" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb87-92"><a href="#cb87-92" aria-hidden="true" tabindex="-1"></a>new_df <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(</span>
+<span id="cb87-93"><a href="#cb87-93" aria-hidden="true" tabindex="-1"></a>  new_df,</span>
+<span id="cb87-94"><a href="#cb87-94" aria-hidden="true" tabindex="-1"></a>  df_long</span>
+<span id="cb87-95"><a href="#cb87-95" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 </section>

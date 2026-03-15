@@ -1,8 +1,6 @@
 ---
-project:
-  type: website
-  output-dir: docs
 title: "地図"
+
 format:
   html:
     toc: true
@@ -11,6 +9,7 @@ format:
     toc-depth: 3
     number-sections: true
     theme: lumen
+
 lang: ja
 ---
 
@@ -302,9 +301,11 @@ japan_map$pref <- japan_map$name_ja
 
 # 農協のデータに「都府県」の文字を追加する
 df_sougou$pref <- df_sougou$`(R006-02-2-002)都道府県`
-df_sougou$pref <- ifelse(df_sougou$pref %in% c("北海道", "東京", "京都", "大阪"),
-              paste0(df_sougou$pref, c("", "都", "府", "府")[match(df_sougou$pref, c("北海道", "東京", "京都", "大阪"))]),
-              paste0(df_sougou$pref, "県"))
+df_sougou$pref <- ifelse(
+  df_sougou$pref %in% c("北海道", "東京", "京都", "大阪"),
+  paste0(df_sougou$pref, c("", "都", "府", "府")[match(df_sougou$pref, c("北海道", "東京", "京都", "大阪"))]),
+  paste0(df_sougou$pref, "県")
+)
 
 japan_map2 <- dplyr::left_join(japan_map, df_sougou, by = "pref")
 
@@ -417,9 +418,11 @@ levels(df_senmon$`(r006-02-1-002)区分`) <- sub("（参考１）出資組合と
 
 # 農協のデータに「都府県」の文字を追加する
 df_senmon$pref <- df_senmon$`(R006-02-2-002)都道府県`
-df_senmon$pref <- ifelse(df_senmon$pref %in% c("北海道", "東京", "京都", "大阪"),
-              paste0(df_senmon$pref, c("", "都", "府", "府")[match(df_senmon$pref, c("北海道", "東京", "京都", "大阪"))]),
-              paste0(df_senmon$pref, "県"))
+df_senmon$pref <- ifelse(
+  df_senmon$pref %in% c("北海道", "東京", "京都", "大阪"),
+  paste0(df_senmon$pref, c("", "都", "府", "府")[match(df_senmon$pref, c("北海道", "東京", "京都", "大阪"))]),
+  paste0(df_senmon$pref, "県")
+)
 
 # 地図上のNAの色がグレーになるため，NAを0にする
 # df_senmon$value[is.na(df_senmon$value)] <- 0

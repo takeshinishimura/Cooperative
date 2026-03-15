@@ -1,8 +1,6 @@
 ---
-project:
-  type: website
-  output-dir: docs
 title: "ダイアグラム"
+
 format:
   html:
     toc: true
@@ -13,6 +11,7 @@ format:
     theme: lumen
     mermaid:
       theme: forest
+
 lang: ja
 ---
 
@@ -157,6 +156,7 @@ DiagrammeR::export_graph(graph, file_name = "../fig/Systematic_organization_of_j
 一方，Pythonで実行するには以下のようにする。
 
 ```{python}
+#| eval: false
 #| output: false
 from graphviz import Source
 

@@ -1,8 +1,6 @@
 ---
-project:
-  type: website
-  output-dir: docs
 title: "棒グラフ"
+
 format:
   html:
     toc: true
@@ -11,6 +9,7 @@ format:
     toc-depth: 3
     number-sections: true
     theme: lumen
+
 lang: ja
 ---
 

@@ -612,22 +612,24 @@ $.names
 <span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 農協のデータに「都府県」の文字を追加する</span></span>
 <span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a>df_sougou<span class="sc">$</span>pref <span class="ot">&lt;-</span> df_sougou<span class="sc">$</span><span class="st">`</span><span class="at">(R006-02-2-002)都道府県</span><span class="st">`</span></span>
-<span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a>df_sougou<span class="sc">$</span>pref <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(df_sougou<span class="sc">$</span>pref <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"北海道"</span>, <span class="st">"東京"</span>, <span class="st">"京都"</span>, <span class="st">"大阪"</span>),</span>
-<span id="cb38-10"><a href="#cb38-10" aria-hidden="true" tabindex="-1"></a>              <span class="fu">paste0</span>(df_sougou<span class="sc">$</span>pref, <span class="fu">c</span>(<span class="st">""</span>, <span class="st">"都"</span>, <span class="st">"府"</span>, <span class="st">"府"</span>)[<span class="fu">match</span>(df_sougou<span class="sc">$</span>pref, <span class="fu">c</span>(<span class="st">"北海道"</span>, <span class="st">"東京"</span>, <span class="st">"京都"</span>, <span class="st">"大阪"</span>))]),</span>
-<span id="cb38-11"><a href="#cb38-11" aria-hidden="true" tabindex="-1"></a>              <span class="fu">paste0</span>(df_sougou<span class="sc">$</span>pref, <span class="st">"県"</span>))</span>
-<span id="cb38-12"><a href="#cb38-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-13"><a href="#cb38-13" aria-hidden="true" tabindex="-1"></a>japan_map2 <span class="ot">&lt;-</span> dplyr<span class="sc">::</span><span class="fu">left_join</span>(japan_map, df_sougou, <span class="at">by =</span> <span class="st">"pref"</span>)</span>
+<span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a>df_sougou<span class="sc">$</span>pref <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(</span>
+<span id="cb38-10"><a href="#cb38-10" aria-hidden="true" tabindex="-1"></a>  df_sougou<span class="sc">$</span>pref <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"北海道"</span>, <span class="st">"東京"</span>, <span class="st">"京都"</span>, <span class="st">"大阪"</span>),</span>
+<span id="cb38-11"><a href="#cb38-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste0</span>(df_sougou<span class="sc">$</span>pref, <span class="fu">c</span>(<span class="st">""</span>, <span class="st">"都"</span>, <span class="st">"府"</span>, <span class="st">"府"</span>)[<span class="fu">match</span>(df_sougou<span class="sc">$</span>pref, <span class="fu">c</span>(<span class="st">"北海道"</span>, <span class="st">"東京"</span>, <span class="st">"京都"</span>, <span class="st">"大阪"</span>))]),</span>
+<span id="cb38-12"><a href="#cb38-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste0</span>(df_sougou<span class="sc">$</span>pref, <span class="st">"県"</span>)</span>
+<span id="cb38-13"><a href="#cb38-13" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb38-14"><a href="#cb38-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-15"><a href="#cb38-15" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data =</span> japan_map2) <span class="sc">+</span></span>
-<span id="cb38-16"><a href="#cb38-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="fu">aes</span>(<span class="at">fill =</span> value)) <span class="sc">+</span></span>
-<span id="cb38-17"><a href="#cb38-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_viridis_c</span>() <span class="sc">+</span></span>
-<span id="cb38-18"><a href="#cb38-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb38-19"><a href="#cb38-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"都道府県別総合農協の数"</span>,</span>
-<span id="cb38-20"><a href="#cb38-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"総合農協の数"</span>,</span>
-<span id="cb38-21"><a href="#cb38-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">caption =</span> <span class="st">"出典：農林水産省『農業協同組合等現在数統計 確報 令和4年度農業協同組合等現在数統計』</span><span class="sc">\n</span><span class="st">（https://www.e-stat.go.jp/stat-search/files?stat_infid=000040060822）"</span></span>
-<span id="cb38-22"><a href="#cb38-22" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb38-23"><a href="#cb38-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_void</span>()</span>
-<span id="cb38-24"><a href="#cb38-24" aria-hidden="true" tabindex="-1"></a>p <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">text =</span> <span class="fu">element_text</span>(<span class="at">family =</span> <span class="st">"HiraKakuProN-W3"</span>))</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb38-15"><a href="#cb38-15" aria-hidden="true" tabindex="-1"></a>japan_map2 <span class="ot">&lt;-</span> dplyr<span class="sc">::</span><span class="fu">left_join</span>(japan_map, df_sougou, <span class="at">by =</span> <span class="st">"pref"</span>)</span>
+<span id="cb38-16"><a href="#cb38-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-17"><a href="#cb38-17" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data =</span> japan_map2) <span class="sc">+</span></span>
+<span id="cb38-18"><a href="#cb38-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="fu">aes</span>(<span class="at">fill =</span> value)) <span class="sc">+</span></span>
+<span id="cb38-19"><a href="#cb38-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_viridis_c</span>() <span class="sc">+</span></span>
+<span id="cb38-20"><a href="#cb38-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb38-21"><a href="#cb38-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"都道府県別総合農協の数"</span>,</span>
+<span id="cb38-22"><a href="#cb38-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"総合農協の数"</span>,</span>
+<span id="cb38-23"><a href="#cb38-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">caption =</span> <span class="st">"出典：農林水産省『農業協同組合等現在数統計 確報 令和4年度農業協同組合等現在数統計』</span><span class="sc">\n</span><span class="st">（https://www.e-stat.go.jp/stat-search/files?stat_infid=000040060822）"</span></span>
+<span id="cb38-24"><a href="#cb38-24" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb38-25"><a href="#cb38-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_void</span>()</span>
+<span id="cb38-26"><a href="#cb38-26" aria-hidden="true" tabindex="-1"></a>p <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">text =</span> <span class="fu">element_text</span>(<span class="at">family =</span> <span class="st">"HiraKakuProN-W3"</span>))</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -729,27 +731,29 @@ $.names
 <span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 農協のデータに「都府県」の文字を追加する</span></span>
 <span id="cb43-7"><a href="#cb43-7" aria-hidden="true" tabindex="-1"></a>df_senmon<span class="sc">$</span>pref <span class="ot">&lt;-</span> df_senmon<span class="sc">$</span><span class="st">`</span><span class="at">(R006-02-2-002)都道府県</span><span class="st">`</span></span>
-<span id="cb43-8"><a href="#cb43-8" aria-hidden="true" tabindex="-1"></a>df_senmon<span class="sc">$</span>pref <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(df_senmon<span class="sc">$</span>pref <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"北海道"</span>, <span class="st">"東京"</span>, <span class="st">"京都"</span>, <span class="st">"大阪"</span>),</span>
-<span id="cb43-9"><a href="#cb43-9" aria-hidden="true" tabindex="-1"></a>              <span class="fu">paste0</span>(df_senmon<span class="sc">$</span>pref, <span class="fu">c</span>(<span class="st">""</span>, <span class="st">"都"</span>, <span class="st">"府"</span>, <span class="st">"府"</span>)[<span class="fu">match</span>(df_senmon<span class="sc">$</span>pref, <span class="fu">c</span>(<span class="st">"北海道"</span>, <span class="st">"東京"</span>, <span class="st">"京都"</span>, <span class="st">"大阪"</span>))]),</span>
-<span id="cb43-10"><a href="#cb43-10" aria-hidden="true" tabindex="-1"></a>              <span class="fu">paste0</span>(df_senmon<span class="sc">$</span>pref, <span class="st">"県"</span>))</span>
-<span id="cb43-11"><a href="#cb43-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-12"><a href="#cb43-12" aria-hidden="true" tabindex="-1"></a><span class="co"># 地図上のNAの色がグレーになるため，NAを0にする</span></span>
-<span id="cb43-13"><a href="#cb43-13" aria-hidden="true" tabindex="-1"></a><span class="co"># df_senmon$value[is.na(df_senmon$value)] &lt;- 0</span></span>
-<span id="cb43-14"><a href="#cb43-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-15"><a href="#cb43-15" aria-hidden="true" tabindex="-1"></a>nippon_map3 <span class="ot">&lt;-</span> dplyr<span class="sc">::</span><span class="fu">left_join</span>(nippon_map, df_senmon, <span class="at">by =</span> <span class="st">"pref"</span>)</span>
+<span id="cb43-8"><a href="#cb43-8" aria-hidden="true" tabindex="-1"></a>df_senmon<span class="sc">$</span>pref <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(</span>
+<span id="cb43-9"><a href="#cb43-9" aria-hidden="true" tabindex="-1"></a>  df_senmon<span class="sc">$</span>pref <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"北海道"</span>, <span class="st">"東京"</span>, <span class="st">"京都"</span>, <span class="st">"大阪"</span>),</span>
+<span id="cb43-10"><a href="#cb43-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste0</span>(df_senmon<span class="sc">$</span>pref, <span class="fu">c</span>(<span class="st">""</span>, <span class="st">"都"</span>, <span class="st">"府"</span>, <span class="st">"府"</span>)[<span class="fu">match</span>(df_senmon<span class="sc">$</span>pref, <span class="fu">c</span>(<span class="st">"北海道"</span>, <span class="st">"東京"</span>, <span class="st">"京都"</span>, <span class="st">"大阪"</span>))]),</span>
+<span id="cb43-11"><a href="#cb43-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste0</span>(df_senmon<span class="sc">$</span>pref, <span class="st">"県"</span>)</span>
+<span id="cb43-12"><a href="#cb43-12" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb43-13"><a href="#cb43-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-14"><a href="#cb43-14" aria-hidden="true" tabindex="-1"></a><span class="co"># 地図上のNAの色がグレーになるため，NAを0にする</span></span>
+<span id="cb43-15"><a href="#cb43-15" aria-hidden="true" tabindex="-1"></a><span class="co"># df_senmon$value[is.na(df_senmon$value)] &lt;- 0</span></span>
 <span id="cb43-16"><a href="#cb43-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-17"><a href="#cb43-17" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data =</span> nippon_map3) <span class="sc">+</span></span>
-<span id="cb43-18"><a href="#cb43-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="fu">aes</span>(<span class="at">fill =</span> value)) <span class="sc">+</span></span>
-<span id="cb43-19"><a href="#cb43-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_distiller</span>(<span class="at">name =</span> <span class="st">"専門農協の数"</span>, <span class="at">palette =</span> <span class="st">"YlOrRd"</span>, <span class="at">direction =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb43-20"><a href="#cb43-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="fu">vars</span>(<span class="st">`</span><span class="at">(r006-02-1-002)区分</span><span class="st">`</span>)) <span class="sc">+</span></span>
-<span id="cb43-21"><a href="#cb43-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>() <span class="sc">+</span></span>
-<span id="cb43-22"><a href="#cb43-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
-<span id="cb43-23"><a href="#cb43-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.line =</span> <span class="fu">element_blank</span>(),</span>
-<span id="cb43-24"><a href="#cb43-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.ticks =</span> <span class="fu">element_blank</span>(),</span>
-<span id="cb43-25"><a href="#cb43-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text =</span> <span class="fu">element_blank</span>(),</span>
-<span id="cb43-26"><a href="#cb43-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.caption =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">5</span>)</span>
-<span id="cb43-27"><a href="#cb43-27" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb43-28"><a href="#cb43-28" aria-hidden="true" tabindex="-1"></a>p <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">text =</span> <span class="fu">element_text</span>(<span class="at">family =</span> <span class="st">"HiraKakuProN-W3"</span>))</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb43-17"><a href="#cb43-17" aria-hidden="true" tabindex="-1"></a>nippon_map3 <span class="ot">&lt;-</span> dplyr<span class="sc">::</span><span class="fu">left_join</span>(nippon_map, df_senmon, <span class="at">by =</span> <span class="st">"pref"</span>)</span>
+<span id="cb43-18"><a href="#cb43-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-19"><a href="#cb43-19" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data =</span> nippon_map3) <span class="sc">+</span></span>
+<span id="cb43-20"><a href="#cb43-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="fu">aes</span>(<span class="at">fill =</span> value)) <span class="sc">+</span></span>
+<span id="cb43-21"><a href="#cb43-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_distiller</span>(<span class="at">name =</span> <span class="st">"専門農協の数"</span>, <span class="at">palette =</span> <span class="st">"YlOrRd"</span>, <span class="at">direction =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb43-22"><a href="#cb43-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="fu">vars</span>(<span class="st">`</span><span class="at">(r006-02-1-002)区分</span><span class="st">`</span>)) <span class="sc">+</span></span>
+<span id="cb43-23"><a href="#cb43-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>() <span class="sc">+</span></span>
+<span id="cb43-24"><a href="#cb43-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb43-25"><a href="#cb43-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.line =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb43-26"><a href="#cb43-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.ticks =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb43-27"><a href="#cb43-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb43-28"><a href="#cb43-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.caption =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">5</span>)</span>
+<span id="cb43-29"><a href="#cb43-29" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb43-30"><a href="#cb43-30" aria-hidden="true" tabindex="-1"></a>p <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">text =</span> <span class="fu">element_text</span>(<span class="at">family =</span> <span class="st">"HiraKakuProN-W3"</span>))</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
