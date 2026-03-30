@@ -15,6 +15,7 @@
 1. ~~[データの整形](https://takeshinishimura.github.io/Cooperative/08_data_formatting.html)~~
 1. [データの整形](https://takeshinishimura.github.io/Cooperative/08_data_formatting2.html)
 1. [地図](https://takeshinishimura.github.io/Cooperative/09_map.html) -> [Pythonを使う場合](./map.ipynb)
+1. [愛媛県のJA](https://takeshinishimura.github.io/Cooperative/11_ehime_JA.html)
 
 質問等はメールで連絡するか，直接聞いてください。
 記述内容の間違いの指摘も歓迎します。
