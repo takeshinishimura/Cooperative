@@ -184,6 +184,14 @@ b[[1]] |>
   sf::st_drop_geometry() |>
   select(starts_with("JA"))
 ```
+```{r}
+#| echo: false
+JA <- b[[1]] |>
+  sf::st_drop_geometry() |>
+  select(key:rcom_name, starts_with("JA"))
+
+write.table(JA, file = file.path("../data", "JA_2025_2020_38.csv"), sep = ",", row.names = FALSE)
+```
 
 このままではJAごとに列が横に並んでおり，地図を描くには少し扱いにくい形です。
 そこで次に，データをロング形式に変換します。
@@ -255,9 +263,11 @@ b_city <- get_boundary("愛媛", path = "~", boundary_type = 3, quiet = TRUE)
 ### フォントの変更
 
 文字化けが起こらない環境では，フォントの指定は不要です。
-一方，文字化けが起こる場合は，OSに応じてフォントを指定すると改善されることがあります。
+一方，文字化けが起こる場合は，`+ theme(text = element_text(family = "フォント名3"))` でフォントを指定すると改善されることがあります。
 
-たとえば，次のように描画できます。
+### 改善されたコード
+
+以上を踏まえると，次のようなコードを書くことができます。
 
 - Windows の場合
 ```{r}
@@ -277,7 +287,7 @@ ggplot() +
   geom_sf(data = b_city[[1]], fill = NA) +
   paletteer::scale_fill_paletteer_d("MoMAColors::Warhol") +
   theme_void() +
-  theme(text = element_text(family = "HiraKakuProN-W3"))
+  theme(text = element_text(family = "HiraginoSans-W3"))
 ```
 
 このコードでは，`geom_sf(data = ja_long, ...)` でJAの管内を塗り分け，`geom_sf(data = b_city[[1]], fill = NA)` で市区町村境界を線として重ねています。
@@ -291,7 +301,7 @@ ggplot() +
   geom_sf(data = b_city[[1]], fill = NA) +
   paletteer::scale_fill_paletteer_d("MoMAColors::Warhol") +
   theme_void() +
-  theme(text = element_text(family = "HiraKakuProN-W3"))
+  theme(text = element_text(family = "HiraginoSans-W3"))
 ```
 
 ## 図の保存
@@ -316,7 +326,7 @@ p <- ggplot() +
 ggsave(filename = "ehime_JA.png", plot = p)
 ```
 
-もし作成された PNG ファイルが文字化けしている場合は，`p <-` のコードの最後に `+ theme(text = element_text(family = "HiraKakuProN-W3"))` を追加してみてください。
+もし作成された PNG ファイルが文字化けしている場合は，`p <-` のコードの最後に `+ theme(text = element_text(family = "HiraginoSans-W3"))` を追加してみてください。
 
 必要に応じて，画像の大きさや解像度を指定することもできます。
 
@@ -326,5 +336,6 @@ ggsave(filename = "ehime_JA_8x6.png", plot = p, width = 8, height = 6, dpi = 300
 ```
 ```{r}
 #| echo: false
-ggsave(filename = "ehime_JA_8x6.pdf", plot = p, path = "../fig", width = 8, height = 6, dpi = 300)
+#| warning: false
+ggsave(filename = "ehime_JA_8x6.pdf", plot = p + theme(text = element_text(family = "Japan1GothicBBB")), path = "../fig", width = 8, height = 6, dpi = 300)
 ```
