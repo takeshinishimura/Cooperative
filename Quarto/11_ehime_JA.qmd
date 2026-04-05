@@ -263,7 +263,7 @@ b_city <- get_boundary("愛媛", path = "~", boundary_type = 3, quiet = TRUE)
 ### フォントの変更
 
 文字化けが起こらない環境では，フォントの指定は不要です。
-一方，文字化けが起こる場合は，`+ theme(text = element_text(family = "フォント名3"))` でフォントを指定すると改善されることがあります。
+一方，文字化けが起こる場合は，`+ theme(text = element_text(family = "フォント名"))` といったようにフォントを指定すると改善されることがあります。
 
 ### 改善されたコード
 
@@ -337,5 +337,5 @@ ggsave(filename = "ehime_JA_8x6.png", plot = p, width = 8, height = 6, dpi = 300
 ```{r}
 #| echo: false
 #| warning: false
-ggsave(filename = "ehime_JA_8x6.pdf", plot = p + theme(text = element_text(family = "Japan1GothicBBB")), path = "../fig", width = 8, height = 6, dpi = 300)
+ggsave(filename = "ehime_JA_8x6.pdf", plot = p, path = "../fig", width = 8, height = 6, dpi = 300, family = "Japan1GothicBBB")
 ```
