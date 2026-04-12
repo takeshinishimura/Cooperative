@@ -23,7 +23,7 @@ lang: ja
 ## 農業協同組合等現在数統計 / 確報 令和６年度農業協同組合等現在数統計
 1 総括の部 農業協同組合、同連合会及び農事組合法人数の推移（第１表）
 
-[https://www.e-stat.go.jp/stat-search/files?stat_infid=000040282295](https://www.e-stat.go.jp/stat-search/files?stat_infid=000040282295){target="_blank"}
+<https://www.e-stat.go.jp/stat-search/files?stat_infid=000040282295>{target="_blank"}
 :::
 
 上述のサイトから，`r006-02-001.xlsx` という名前のExcel形式のファイルをダウンロードできます。
@@ -91,17 +91,19 @@ convert_to_ad <- function(nen) {
   return(ad_years)
 }
 
-df$年次 <- gsub("\\..*?$", "", df$年次)
-df$年次 <- gsub("^S", "昭和", df$年次)
-df$年次 <- gsub("^H", "平成", df$年次)
-df$年次 <- gsub("^R", "令和", df$年次)
+df$年次 <- sub("\\..*?$", "", df$年次)
+df$年次 <- sub("^S", "昭和", df$年次)
+df$年次 <- sub("^H", "平成", df$年次)
+df$年次 <- sub("^R", "令和", df$年次)
 df$年次 <- convert_to_ad(df$年次)
 ```
 
 Excelファイルから読み込んだデータが分析可能な状態になっているかどうかを確認します。
 
 ```{r}
-df |> data.frame(check.names = FALSE) |> head()
+df |> data.frame(check.names = FALSE) |>
+  head()
+
 str(df)
 ```
 
@@ -113,7 +115,10 @@ str(df)
 次に，折れ線グラフを作成します。
 
 ```{r}
-plot(df[, c("年次", "単位農協（総合農協）")], type = "o", main = "総合農協数の推移", xlab = "年3月末", pch = 16, las = 1)
+# 日本語フォント（ヒラギノ角ゴ）を指定（macOS で，これをしないと文字化けする場合に必要）
+par(family = "Hiragino Sans")
+
+plot(df[, c("年次", "単位農協（総合農協）")], type = "o", main = "総合農協数の推移", xlab = "各年3月末", pch = 16, las = 1)
 ```
 
 macOSの場合，文字化けする（トーフになる）かもしれません。
@@ -122,12 +127,10 @@ macOSの場合，文字化けする（トーフになる）かもしれません
 続いて，専門農協のうちの出資組合と非出資組合も同じ図に表示してみましょう。
 
 ```{r}
-dfcoop <- data.frame(df, check.names = FALSE)
-rownames(dfcoop) <- dfcoop[[1]]
-dfcoop <- dfcoop[, -1]
-matplot(dfcoop[, c("単位農協（総合農協）", "単位農協（専門農協（出資組合））", "単位農協（専門農協（非出資組合））")], type = "o", main = "単位農協数の推移", xlab = "年3月末", ylab = "農業協同組合数", col = 2:4, lwd = 1, lty = 1, pch = 16, las = 1,  axes = FALSE)
-axis(1, at = seq(3, 73, 10), labels = seq(1950, 2020, 10))
-axis(2, las = 1)
+# 日本語フォント（ヒラギノ角ゴ）を指定（macOS で，これをしないと文字化けする場合に必要）
+par(family = "Hiragino Sans")
+
+matplot(x = df$年次, y = df[, c("単位農協（総合農協）", "単位農協（専門農協（出資組合））", "単位農協（専門農協（非出資組合））")], type = "o", main = "単位農協数の推移", xlab = "各年3月末", ylab = "農業協同組合数", col = 2:4, lwd = 1, lty = 1, pch = 16, las = 1)
 legend("topright", legend = c("総合農協", "専門農協（出資組合）", "専門農協（非出資組合）"), col = 2:4, lwd = 1, lty = 1, pch = 16)
 ```
 
@@ -225,8 +228,10 @@ p <- ggplot(data = df2, aes(x = 年次, y = value, colour = 区分)) +
   ggtitle("単位農協数の推移") +
   labs(y = "農業協同組合数",
        caption = "出所：農林水産省『令和5年度農業協同組合等現在数統計』\n（https://www.e-stat.go.jp/dbview?sid=0002122464）") +
-  theme_bw()
-p + theme(text = element_text(family = "HiraKakuProN-W3"))
+  theme_bw() +
+  theme(text = element_text(family = "Hiragino Sans"))
+
+p
 ```
 
 最後のところでエラーが出る場合は，`p` だけにして，プラス以降を入力しないでください。
@@ -240,7 +245,7 @@ outdir <- "./fig"
 if (!file.exists(outdir)) {
   dir.create(outdir)
 }
-ggsave(filename = file.path(outdir, "number_of_ja.pdf"), plot = p, width = 8, height = 4)
+ggsave(filename = "number_of_ja.pdf", plot = p, device = cairo_pdf, path = outdir, width = 8, height = 4)
 ```
 ```{r}
 #| include: false
@@ -248,7 +253,7 @@ outdir <- "../fig"
 if (!file.exists(outdir)) {
   dir.create(outdir)
 }
-ggsave(filename = file.path(outdir, "number_of_ja.pdf"), plot = p, width = 8, height = 4)
+ggsave(filename = "number_of_ja.pdf", plot = p, device = cairo_pdf, path = outdir, width = 8, height = 4)
 ```
 
 
@@ -264,6 +269,7 @@ ggsave(filename = file.path(outdir, "number_of_ja.pdf"), plot = p, width = 8, he
 library(httr)
 library(listviewer)
 library(rlist)
+library(DT)
 
 searchword <- "農業協同組合"
 
@@ -288,10 +294,6 @@ df <- response$GET_STATS_LIST$DATALIST_INF$TABLE_INF |>
 ) |>
   rlist::list.stack()
 
-head(df)
-nrow(df)
-
-library(DT)
 DT::datatable(
   df, caption = searchword, rownames = TRUE,
   extensions = 'Buttons',
@@ -305,7 +307,7 @@ DT::datatable(
 )
 ```
 
-ここで示した方法は，[Rからe-Stat APIを使う - Qiita](https://qiita.com/nozma/items/f88f5cc60ab63461deae){target="_blank"} が大変参考になりました。
+ここで示した方法は，[Rからe-Stat APIを使う - Qiita](https://qiita.com/nozma/items/f88f5cc60ab63461deae){target="_blank"} が参考になりました。
 これ以外にも，e-Statからデータを取得する方法はあります。
-例えば，[estatapi](https://yutannihilation.github.io/estatapi/){target="_blank"} というパッケージを使ってもほぼ同じことが簡単にできるようになります。
+例えば，[estatapi](https://yutannihilation.github.io/estatapi/){target="_blank"} パッケージを使うと，ほぼ同じことがもっと簡単にできるようになります。
 興味ある人は，自分で調べてください。

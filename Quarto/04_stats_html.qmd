@@ -20,7 +20,7 @@ lang: ja
 ::: {.callout-note collapse="false" icon="true"}
 ## 厚生労働省「第1表　組合数及び組合員数の状況（消費生活協同組合（連合会）実態調査（平成11年度調査）結果）」
 
-[https://www.mhlw.go.jp/toukei/saikin/hw/shakai/seikyo/hyo1-1.html](https://www.mhlw.go.jp/toukei/saikin/hw/shakai/seikyo/hyo1-1.html){target="_blank"}
+<https://www.mhlw.go.jp/toukei/saikin/hw/shakai/seikyo/hyo1-1.html>{target="_blank"}
 :::
 
 この表には，1966（昭和41）年度から1999（平成11）年度のデータが示されています。
@@ -51,18 +51,12 @@ names(df) <- paste0(paste(df[1, ], df[2, ], sep = "（"), "）")
 names(df)[1] <- df[1, 1]
 df <- df[-c(1:4), ]
 
-dfcoop <- data.frame(df, check.names = FALSE)
+df$年度[df$年度 == "元"] <- "1"
+df$年度 <- as.numeric(df$年度)
+df$年度 <- ifelse(df$年度 > 31, df$年度 + 1925, df$年度 + 1988)
 
-# 年度の西暦に変換してから，削除する
-dfcoop[dfcoop[, "年度"] == "元", "年度"] <- "1"
-dfcoop[, "年度"] <- as.double(dfcoop[, "年度"])
-nen <- ifelse(dfcoop[, "年度"] > 31, dfcoop[, "年度"] + 1925, dfcoop[, "年度"] + 1988)
-dfcoop[, "年度"] <- nen
-rownames(dfcoop) <- dfcoop[, "年度"]
-dfcoop <- dfcoop[, -1]
-for (i in 1:ncol(dfcoop)) {
-  dfcoop[, i] <- as.double(gsub(",", "", dfcoop[, i]))
-}
+num_cols <- setdiff(names(df), "年度")
+df[num_cols] <- lapply(df[num_cols], function(x) as.numeric(gsub(",", "", x)))
 ```
 
 前処理の終わったデータは，以下の表のようになります。
@@ -72,7 +66,7 @@ library(DT)
 
 caption <- "消費生活協同組合（連合会）実態調査（平成11年度調査） - 組合数及び組合員数の状況"
 x <- DT::datatable(
-  dfcoop, caption = caption, rownames = TRUE,
+  df, caption = caption, rownames = TRUE,
   extensions = 'Buttons',
   options = list(
     pageLength = 10,
@@ -83,8 +77,8 @@ x <- DT::datatable(
     )
   )
 ) |>
-  DT::formatCurrency(c(1:ncol(dfcoop)), currency = "", interval = 3, mark = ",", digits = 0)
-# DT::saveWidget(x, file = file.path(outdir, "dfcoop.html"), selfcontained = FALSE, libdir = "libs")
+  DT::formatCurrency(c(1:ncol(df)), currency = "", interval = 3, mark = ",", digits = 0)
+# DT::saveWidget(x, file = file.path(outdir, "df.html"), selfcontained = FALSE, libdir = "libs")
 x
 ```
 
@@ -94,11 +88,14 @@ x
 横軸に年度を取り，縦軸に組合数（総数）を取った図を描くと以下のようになる。
 
 ```{r results = "markup", echo = TRUE}
-tmp <- as.matrix(dfcoop[, "組合数（総数）", drop = FALSE])
+tmp <- df[["組合数（総数）"]]
 
-layout(matrix(1:2, ncol=2))
-plot(rownames(tmp), tmp, type = "l", xlab = "年度", ylab = "組合数", las = 1)
-plot(rownames(tmp), tmp, type = "l", xlab = "年度", ylab = "組合数", ylim = c(0, max(tmp)), las = 1)
+# 日本語フォント（ヒラギノ角ゴ）を指定（macOS で，これをしないと文字化けする場合に必要）
+par(family = "Hiragino Sans")
+
+layout(matrix(1:2, ncol = 2))
+plot(x = df$年度, y = tmp, type = "l", xlab = "年度", ylab = "組合数", las = 1)
+plot(x = df$年度, y = tmp, type = "l", xlab = "年度", ylab = "組合数", ylim = c(0, max(tmp, na.rm = TRUE)), las = 1)
 ```
 
 左図からは，年度によって大きく変化している印象を受ける。
@@ -111,9 +108,13 @@ plot(rownames(tmp), tmp, type = "l", xlab = "年度", ylab = "組合数", ylim =
 同じデータで棒グラフを作成すると，以下のようになる。
 
 ```{r results = "markup", echo = TRUE}
+# 日本語フォント（ヒラギノ角ゴ）を指定（macOS で，これをしないと文字化けする場合に必要）
+par(family = "Hiragino Sans")
+
+layout(matrix(1:2, ncol = 2))
+barplot(height = tmp, names.arg = df$年度, ylim = c(1200, max(tmp)), xlab = "年度", ylab = "組合数", col = gray.colors(1), las = 1)
+barplot(height = tmp, names.arg = df$年度, xlab = "年度", ylab = "組合数", col = gray.colors(1), las = 1)
 layout(matrix(1:2, ncol=2))
-barplot(t(tmp), ylim = c(1200, max(tmp)), xlab = "年度", ylab = "組合数", col = gray.colors(1), las = 1)
-barplot(t(tmp), xlab = "年度", ylab = "組合数", col = gray.colors(1), las = 1)
 ```
 
 棒グラフの場合，棒の高さが意味を持つため，縦軸に0を含めなければならず，左図のように描いてはならない。
@@ -126,9 +127,11 @@ Excelで作図する場合，このようなおかしさに気づきにくいた
 次に，地域組合と職域組合の比較を試みる。
 
 ```{r results = "markup", echo = TRUE}
-tmp <- t(as.matrix(dfcoop[, c("組合数（地域）", "組合数（職域）")]))
+# 日本語フォント（ヒラギノ角ゴ）を指定（macOS で，これをしないと文字化けする場合に必要）
+par(family = "Hiragino Sans")
 
-barplot(tmp, xlab = "年度", ylab = "組合数", las = 1, legend.text = TRUE)
+tmp <- t(as.matrix(df[, c("組合数（地域）", "組合数（職域）")]))
+barplot(tmp, names.arg = df$年度, xlab = "年度", ylab = "組合数", las = 1, legend.text = c("組合数（地域）", "組合数（職域）"))
 ```
 
 積み上げ棒グラフの場合，地域組合と職域組合の合計の推移と，それぞれの推移が把握可能である。
@@ -140,11 +143,13 @@ barplot(tmp, xlab = "年度", ylab = "組合数", las = 1, legend.text = TRUE)
 次の図は，職域組合を下に，地域組合を上にして作図した。
 
 ```{r results = "markup", echo = TRUE}
+# 日本語フォント（ヒラギノ角ゴ）を指定（macOS で，これをしないと文字化けする場合に必要）
+par(family = "Hiragino Sans")
+
 par(mar = c(4, 4, 1, 8))
-barplot(tmp[2:1,], xlab = "年度", ylab = "組合数", col = rev(gray.colors(2)), yaxt = "n", las = 1)
-axis(2, at = seq(0, 1200, 200), label = format(seq(0, 1200, 200), big.mark = ",", scientific = FALSE), las = 1)
-par(xpd = TRUE)
-legend(par()$usr[2], par()$usr[4], legend = rownames(tmp), col = 1, pch = 22, pt.bg = gray.colors(2), bty = "n")
+barplot(tmp[2:1, ], names.arg = df$年度, xlab = "年度", ylab = "組合数", col = rev(gray.colors(2)), yaxt = "n", las = 1)
+axis(2, at = seq(0, 1200, 200), labels = format(seq(0, 1200, 200), big.mark = ",", scientific = FALSE), las = 1)
+legend("topright", inset = c(-0.28, 0), legend = rev(c("組合数（地域）", "組合数（職域）")), pch = 22, pt.bg = rev(gray.colors(2)), col = 1, bty = "n", xpd = TRUE)
 ```
 
 前の図と違って，職能組合の変化が把握しやすい。
@@ -157,10 +162,12 @@ legend(par()$usr[2], par()$usr[4], legend = rownames(tmp), col = 1, pch = 22, pt
 次の棒グラフのように，地域組合と職域組合の棒を横に並べると，それぞれの推移が把握しやすくなる。
 
 ```{r results = "markup", echo = TRUE}
-par(mar = c(4, 4, 1, 8))
-barplot(tmp, beside = TRUE, xlab = "年度", ylab = "組合数", col = gray.colors(2), las = 1)
-par(xpd = TRUE)
-legend(par()$usr[2], par()$usr[4], legend = rownames(tmp), col = 1, pch = 22, pt.bg = gray.colors(2), bty = "n")
+# 日本語フォント（ヒラギノ角ゴ）を指定（macOS で，これをしないと文字化けする場合に必要）
+par(family = "Hiragino Sans")
+
+op <- par(mar = c(4, 4, 1, 8))
+barplot(tmp, beside = TRUE, names.arg = df$年度, xlab = "年度", ylab = "組合数", col = gray.colors(2), las = 1)
+legend("topright", inset = c(-0.28, 0), legend = c("組合数（地域）", "組合数（職域）"), pch = 22, pt.bg = gray.colors(2), col = 1, bty = "n", xpd = TRUE)
 ```
 
 しかしながら，必ずしも見やすいとはいえない。
@@ -170,10 +177,12 @@ legend(par()$usr[2], par()$usr[4], legend = rownames(tmp), col = 1, pch = 22, pt
 一方，折れ線グラフは複数の線があっても問題なく比較できる。
 
 ```{r results = "markup", echo = TRUE}
-ymax <- max(dfcoop[, c("組合数（地域）", "組合数（職域）")])
-plot(as.numeric(rownames(dfcoop)), dfcoop[, "組合数（地域）"], type = "l", col = 2, xlab = "年度", ylab = "組合数", ylim = c(0, ymax), las = 1, bty = "n")
-par(new = TRUE)
-plot(as.numeric(rownames(dfcoop)), dfcoop[, "組合数（職域）"], type = "l", col = 4, xlab = "", ylab = "", ylim = c(0, ymax), axes = FALSE)
+ymax <- max(df[, c("組合数（地域）", "組合数（職域）")], na.rm = TRUE)
+
+# 日本語フォント（ヒラギノ角ゴ）を指定（macOS で，これをしないと文字化けする場合に必要）
+par(family = "Hiragino Sans")
+
+matplot(x = df$年度, y = df[, c("組合数（地域）", "組合数（職域）")], type = "l", lty = 1, col = c(2, 4), xlab = "年度", ylab = "組合数", ylim = c(0, ymax), las = 1, bty = "n")
 legend("bottomright", legend = c("組合数（地域）", "組合数（職域）"), lty = 1, col = c(2, 4))
 ```
 

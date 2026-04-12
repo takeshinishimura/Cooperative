@@ -248,7 +248,7 @@ b_city <- get_boundary("愛媛", path = "~", boundary_type = 3, quiet = TRUE)
 このコードを実行すると，`MA0003_2020_2020_38.zip` というファイルがダウンロードされ，R に読み込まれます。
 2回目以降は，すでに保存されているファイルが利用されます。
 
-### 色と透過の調整
+### 色の調整
 
 次に，地図を見やすくするために，色と透過率を調整します。
 
@@ -263,7 +263,9 @@ b_city <- get_boundary("愛媛", path = "~", boundary_type = 3, quiet = TRUE)
 ### フォントの変更
 
 文字化けが起こらない環境では，フォントの指定は不要です。
-一方，文字化けが起こる場合は，`+ theme(text = element_text(family = "フォント名"))` といったようにフォントを指定すると改善されることがあります。
+
+一方，文字化けが起こる場合は，`+ theme(text = element_text(family = "フォントファミリー"))` といったように，フォントファミリーを指定すると改善されることがあります。
+フォトファミリーは `systemfonts::system_fonts()$family` で確認できます（やや上級者向け）。
 
 ### 改善されたコード
 
@@ -287,7 +289,7 @@ ggplot() +
   geom_sf(data = b_city[[1]], fill = NA) +
   paletteer::scale_fill_paletteer_d("MoMAColors::Warhol") +
   theme_void() +
-  theme(text = element_text(family = "HiraginoSans-W3"))
+  theme(text = element_text(family = "Hiragino Sans"))
 ```
 
 このコードでは，`geom_sf(data = ja_long, ...)` でJAの管内を塗り分け，`geom_sf(data = b_city[[1]], fill = NA)` で市区町村境界を線として重ねています。
@@ -301,7 +303,7 @@ ggplot() +
   geom_sf(data = b_city[[1]], fill = NA) +
   paletteer::scale_fill_paletteer_d("MoMAColors::Warhol") +
   theme_void() +
-  theme(text = element_text(family = "HiraginoSans-W3"))
+  theme(text = element_text(family = "Hiragino Sans"))
 ```
 
 ## 図の保存
@@ -326,7 +328,7 @@ p <- ggplot() +
 ggsave(filename = "ehime_JA.png", plot = p)
 ```
 
-もし作成された PNG ファイルが文字化けしている場合は，`p <-` のコードの最後に `+ theme(text = element_text(family = "HiraginoSans-W3"))` を追加してみてください。
+もし作成された PNG ファイルが文字化けしている場合は，`p <-` のコードの最後に `+ theme(text = element_text(family = "Hiragino Sans"))` を追加してみてください。
 
 必要に応じて，画像の大きさや解像度を指定することもできます。
 
@@ -337,5 +339,5 @@ ggsave(filename = "ehime_JA_8x6.png", plot = p, width = 8, height = 6, dpi = 300
 ```{r}
 #| echo: false
 #| warning: false
-ggsave(filename = "ehime_JA_8x6.pdf", plot = p, path = "../fig", width = 8, height = 6, dpi = 300, family = "Japan1GothicBBB")
+ggsave(filename = "ehime_JA_8x6.pdf", plot = p, device = cairo_pdf, path = "../fig", width = 8, height = 6, dpi = 300)
 ```
