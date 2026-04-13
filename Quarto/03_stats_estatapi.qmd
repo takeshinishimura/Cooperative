@@ -220,14 +220,17 @@ library(ggsci)
 
 df2 <- df[grepl("^単位農協", df$区分), ]
 
-p <- ggplot(data = df2, aes(x = 年次, y = value, colour = 区分)) +
+p <- ggplot(
+    data = df2,
+    aes(x = 年次, y = value, colour = 区分)
+  ) +
   geom_line() +
   geom_point() +
   scale_y_continuous(labels = scales::comma_format()) +
   scale_color_d3() +
   ggtitle("単位農協数の推移") +
   labs(y = "農業協同組合数",
-       caption = "出所：農林水産省『令和5年度農業協同組合等現在数統計』\n（https://www.e-stat.go.jp/dbview?sid=0002122464）") +
+       caption = "出典：農林水産省『令和5年度農業協同組合等現在数統計』\n（https://www.e-stat.go.jp/dbview?sid=0002122464）") +
   theme_bw() +
   theme(text = element_text(family = "Hiragino Sans"))
 

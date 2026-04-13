@@ -41,6 +41,7 @@ e-Statを探すと，都道府県ごとの農協の数に関する統計デー�
 コードにある `statsDataId = "0002066880"` の数字はアクセスしたい統計データのIDです。
 Excelファイルだと3つ開かなければなりませんでしたが，APIを使うとデータ取得は一度だけですむことがわかります。
 ```{r}
+#| message: false
 library(estatapi)
 library(dplyr)
 
@@ -627,7 +628,10 @@ df_senmon2$都道府県 <- factor(df_senmon2$都道府県, levels = unique(df_se
 library(gghighlight)
 library(ggsci)
 
-p <- ggplot(data = df_senmon2 |> filter(区分 == levels(区分)[1]), aes(x = year, y = value, colour = 都道府県)) +
+p <- ggplot(
+    data = df_senmon2 |> filter(区分 == levels(区分)[1]),
+    aes(x = year, y = value, colour = 都道府県)
+  ) +
   geom_line() +
   geom_point() +
   gghighlight(
@@ -654,7 +658,10 @@ ggsave(file = "number_of_ja_by_pref_senmon_ippannoukyou.pdf", plot = p, device =
 
 ```{r}
 #| warning: false
-p <- ggplot(data = df_senmon2 |> filter(区分 == levels(区分)[2]), aes(x = year, y = value, colour = 都道府県)) +
+p <- ggplot(
+    data = df_senmon2 |> filter(区分 == levels(区分)[2]),
+    aes(x = year, y = value, colour = 都道府県)
+  ) +
   geom_line() +
   geom_point() +
   gghighlight(
@@ -681,7 +688,10 @@ ggsave(file = "number_of_ja_by_pref_senmon_chikusan.pdf", plot = p, device = cai
 
 ```{r}
 #| warning: false
-p <- ggplot(data = df_senmon2 |> filter(区分 == levels(区分)[3]), aes(x = year, y = value, colour = 都道府県)) +
+p <- ggplot(
+    data = df_senmon2 |> filter(区分 == levels(区分)[3]),
+    aes(x = year, y = value, colour = 都道府県)
+  ) +
   geom_line() +
   geom_point() +
   gghighlight(
@@ -708,7 +718,10 @@ ggsave(file = "number_of_ja_by_pref_senmon_rakunou.pdf", plot = p, device = cair
 
 ```{r}
 #| warning: false
-p <- ggplot(data = df_senmon2 |> filter(区分 == levels(区分)[4]), aes(x = year, y = value, colour = 都道府県)) +
+p <- ggplot(
+    data = df_senmon2 |> filter(区分 == levels(区分)[4]),
+    aes(x = year, y = value, colour = 都道府県)
+  ) +
   geom_line() +
   geom_point() +
   gghighlight(
@@ -735,7 +748,10 @@ ggsave(file = "number_of_ja_by_pref_senmon_youkei.pdf", plot = p, device = cairo
 
 ```{r}
 #| warning: false
-p <- ggplot(data = df_senmon2 |> filter(区分 == levels(区分)[5]), aes(x = year, y = value, colour = 都道府県)) +
+p <- ggplot(
+    data = df_senmon2 |> filter(区分 == levels(区分)[5]),
+    aes(x = year, y = value, colour = 都道府県)
+  ) +
   geom_line() +
   geom_point() +
   gghighlight(
@@ -762,7 +778,10 @@ ggsave(file = "number_of_ja_by_pref_senmon_makinokanri.pdf", plot = p, device = 
 
 ```{r}
 #| warning: false
-p <- ggplot(data = df_senmon2 |> filter(区分 == levels(区分)[6]), aes(x = year, y = value, colour = 都道府県)) +
+p <- ggplot(
+    data = df_senmon2 |> filter(区分 == levels(区分)[6]),
+    aes(x = year, y = value, colour = 都道府県)
+  ) +
   geom_line() +
   geom_point() +
   gghighlight(
@@ -789,7 +808,10 @@ ggsave(file = "number_of_ja_by_pref_senmon_engeitokusan.pdf", plot = p, device =
 
 ```{r}
 #| warning: false
-p <- ggplot(data = df_senmon2 |> filter(区分 == levels(区分)[7]), aes(x = year, y = value, colour = 都道府県)) +
+p <- ggplot(
+    data = df_senmon2 |> filter(区分 == levels(区分)[7]),
+    aes(x = year, y = value, colour = 都道府県)
+  ) +
   geom_line() +
   geom_point() +
   gghighlight(
@@ -818,7 +840,10 @@ ggsave(file = "number_of_ja_by_pref_senmon_nousonkougyou.pdf", plot = p, device 
 #| warning: false
 library(scales)
 
-p <- ggplot(data = df_senmon2 |> filter(区分 == levels(区分)[8]), aes(x = year, y = value, colour = 都道府県)) +
+p <- ggplot(
+    data = df_senmon2 |> filter(区分 == levels(区分)[8]),
+    aes(x = year, y = value, colour = 都道府県)
+  ) +
   geom_line() +
   geom_point() +
   gghighlight(
@@ -846,7 +871,10 @@ ggsave(file = "number_of_ja_by_pref_senmon_noujihousou.pdf", plot = p, device = 
 
 ```{r}
 #| warning: false
-p <- ggplot(data = df_senmon2 |> filter(区分 == levels(区分)[9]), aes(x = year, y = value, colour = 都道府県)) +
+p <- ggplot(
+    data = df_senmon2 |> filter(区分 == levels(区分)[9]),
+    aes(x = year, y = value, colour = 都道府県)
+  ) +
   geom_line() +
   geom_point() +
   gghighlight(

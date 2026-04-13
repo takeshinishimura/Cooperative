@@ -185,7 +185,7 @@ p <- ggplot(data = df1) +
   scale_fill_nejm() +
   labs(
     title = "農業協同組合の部門別税引前当期利益",
-    caption = "出所：農林水産省『令和4事業年度総合農協統計表』\n（https://www.e-stat.go.jp/index.php/stat-search/database?statdisp_id=0002063277）"
+    caption = "出典：農林水産省『令和4事業年度総合農協統計表』\n（https://www.e-stat.go.jp/index.php/stat-search/database?statdisp_id=0002063277）"
   ) +
   theme_bw() +
   theme(
@@ -226,7 +226,7 @@ p <- ggplot(data = df2) +
   guides(fill = guide_legend(reverse = TRUE, title = "部門別損益")) +
   labs(
     title = "農業協同組合の部門別損益",
-    caption = "出所：農林水産省『令和3事業年度総合農協統計表』\n（https://www.e-stat.go.jp/index.php/stat-search/database?statdisp_id=0002063277）"
+    caption = "出典：農林水産省『令和3事業年度総合農協統計表』\n（https://www.e-stat.go.jp/index.php/stat-search/database?statdisp_id=0002063277）"
   ) +
   theme_bw() +
   theme(
@@ -287,7 +287,10 @@ df_all <- df[df$`都道府県` == "全国", ]
 
 df_all2 <- df_all[grep(".事業総利益$", df_all$`損益計算書（総括）`), ]
 
-p <- ggplot(data = df_all2, aes(x = `時間軸（年次）`, y = value, colour = `損益計算書（総括）`)) +
+p <- ggplot(
+    data = df_all2,
+    aes(x = `時間軸（年次）`, y = value, colour = `損益計算書（総括）`)
+  ) +
   geom_line() +
   geom_point() +
   scale_y_continuous(labels = scales::comma_format(), name = "（千円）") +
@@ -295,7 +298,7 @@ p <- ggplot(data = df_all2, aes(x = `時間軸（年次）`, y = value, colour =
   guides(colour = guide_legend(reverse = TRUE)) +
   labs(
     title = "農業協同組合の事業総利益の推移",
-    caption = "出所：農林水産省『農業協同組合及び同連合会一斉調査 確報 総合農協統計表』長期累年\n（https://www.e-stat.go.jp/index.php/stat-search/database?statdisp_id=0003408614）"
+    caption = "出典：農林水産省『農業協同組合及び同連合会一斉調査 確報 総合農協統計表』長期累年\n（https://www.e-stat.go.jp/index.php/stat-search/database?statdisp_id=0003408614）"
   ) +
   theme_bw() +
   theme(
@@ -310,7 +313,10 @@ ggsave(file = "benefits_by_division_for_each_year_all.pdf", plot = p, device = c
 
 df_all2 <- df_all[grep("事業収益$", df_all$`損益計算書（総括）`), ]
 
-p <- ggplot(data = df_all2, aes(x = `時間軸（年次）`, y = value, colour = `損益計算書（総括）`)) +
+p <- ggplot(
+    data = df_all2,
+    aes(x = `時間軸（年次）`, y = value, colour = `損益計算書（総括）`)
+  ) +
   geom_line() +
   geom_point() +
   scale_y_continuous(labels = scales::comma_format(), name = "（千円）") +
@@ -318,7 +324,7 @@ p <- ggplot(data = df_all2, aes(x = `時間軸（年次）`, y = value, colour =
   guides(colour = guide_legend(reverse = TRUE)) +
   labs(
     title = "農業協同組合の事業収益の推移",
-    caption = "出所：農林水産省『農業協同組合及び同連合会一斉調査 確報 総合農協統計表』長期累年\n（https://www.e-stat.go.jp/index.php/stat-search/database?statdisp_id=0003408614）"
+    caption = "出典：農林水産省『農業協同組合及び同連合会一斉調査 確報 総合農協統計表』長期累年\n（https://www.e-stat.go.jp/index.php/stat-search/database?statdisp_id=0003408614）"
   ) +
   theme_bw() +
   theme(
@@ -333,7 +339,10 @@ ggsave(file = "revenues_by_division_for_each_year_all.pdf", plot = p, device = c
 
 df_all2 <- df_all[grep("事業費用$", df_all$`損益計算書（総括）`), ]
 
-p <- ggplot(data = df_all2, aes(x = `時間軸（年次）`, y = value, colour = `損益計算書（総括）`)) +
+p <- ggplot(
+    data = df_all2,
+    aes(x = `時間軸（年次）`, y = value, colour = `損益計算書（総括）`)
+  ) +
   geom_line() +
   geom_point() +
   scale_y_continuous(labels = scales::comma_format(), name = "（千円）") +
@@ -341,7 +350,7 @@ p <- ggplot(data = df_all2, aes(x = `時間軸（年次）`, y = value, colour =
   guides(colour = guide_legend(reverse = TRUE)) +
   labs(
     title = "農業協同組合の事業費用の推移",
-    caption = "出所：農林水産省『農業協同組合及び同連合会一斉調査 確報 総合農協統計表』長期累年\n（https://www.e-stat.go.jp/index.php/stat-search/database?statdisp_id=0003408614）"
+    caption = "出典：農林水産省『農業協同組合及び同連合会一斉調査 確報 総合農協統計表』長期累年\n（https://www.e-stat.go.jp/index.php/stat-search/database?statdisp_id=0003408614）"
   ) +
   theme_bw() +
   theme(
@@ -368,7 +377,10 @@ df_pref <- df |>
     grepl("信用事業総利益", `損益計算書（総括）`)
   )
 
-p <- ggplot(data = df_pref, aes(x = `時間軸（年次）`, y = value, colour = `都道府県`)) +
+p <- ggplot(
+    data = df_pref,
+    aes(x = `時間軸（年次）`, y = value, colour = `都道府県`)
+  ) +
   geom_line() +
   geom_point() +
   gghighlight(
@@ -379,7 +391,7 @@ p <- ggplot(data = df_pref, aes(x = `時間軸（年次）`, y = value, colour =
   scale_color_d3() +
   labs(
     title = "農業協同組合の信用事業総利益の推移（都道府県別）",
-    caption = "出所：農林水産省『農業協同組合及び同連合会一斉調査 確報 総合農協統計表』長期累年\n（https://www.e-stat.go.jp/index.php/stat-search/database?statdisp_id=0003408614）"
+    caption = "出典：農林水産省『農業協同組合及び同連合会一斉調査 確報 総合農協統計表』長期累年\n（https://www.e-stat.go.jp/index.php/stat-search/database?statdisp_id=0003408614）"
   ) +
   theme_bw() +
   theme(
@@ -401,7 +413,10 @@ df_pref <- df |>
     grepl("共済事業総利益", `損益計算書（総括）`)
   )
 
-p <- ggplot(data = df_pref, aes(x = `時間軸（年次）`, y = value, colour = `都道府県`)) +
+p <- ggplot(
+    data = df_pref,
+    aes(x = `時間軸（年次）`, y = value, colour = `都道府県`)
+  ) +
   geom_line() +
   geom_point() +
   gghighlight(
@@ -412,7 +427,7 @@ p <- ggplot(data = df_pref, aes(x = `時間軸（年次）`, y = value, colour =
   scale_color_d3() +
   labs(
     title = "農業協同組合の共済事業総利益の推移（都道府県別）",
-    caption = "出所：農林水産省『農業協同組合及び同連合会一斉調査 確報 総合農協統計表』長期累年\n（https://www.e-stat.go.jp/index.php/stat-search/database?statdisp_id=0003408614）"
+    caption = "出典：農林水産省『農業協同組合及び同連合会一斉調査 確報 総合農協統計表』長期累年\n（https://www.e-stat.go.jp/index.php/stat-search/database?statdisp_id=0003408614）"
   ) +
   theme_bw() +
   theme(
@@ -434,7 +449,10 @@ df_pref <- df |>
     grepl("購買事業総利益", `損益計算書（総括）`)
   )
 
-p <- ggplot(data = df_pref, aes(x = `時間軸（年次）`, y = value, colour = `都道府県`)) +
+p <- ggplot(
+    data = df_pref,
+    aes(x = `時間軸（年次）`, y = value, colour = `都道府県`)
+  ) +
   geom_line() +
   geom_point() +
   gghighlight(
@@ -445,7 +463,7 @@ p <- ggplot(data = df_pref, aes(x = `時間軸（年次）`, y = value, colour =
   scale_color_d3() +
   labs(
     title = "農業協同組合の購買事業総利益の推移（都道府県別）",
-    caption = "出所：農林水産省『農業協同組合及び同連合会一斉調査 確報 総合農協統計表』長期累年\n（https://www.e-stat.go.jp/index.php/stat-search/database?statdisp_id=0003408614）"
+    caption = "出典：農林水産省『農業協同組合及び同連合会一斉調査 確報 総合農協統計表』長期累年\n（https://www.e-stat.go.jp/index.php/stat-search/database?statdisp_id=0003408614）"
   ) +
   theme_bw() +
   theme(
@@ -467,7 +485,10 @@ df_pref <- df |>
     grepl("販売事業総利益", `損益計算書（総括）`)
   )
 
-p <- ggplot(data = df_pref, aes(x = `時間軸（年次）`, y = value, colour = `都道府県`)) +
+p <- ggplot(
+    data = df_pref,
+    aes(x = `時間軸（年次）`, y = value, colour = `都道府県`)
+  ) +
   geom_line() +
   geom_point() +
   gghighlight(
@@ -478,7 +499,7 @@ p <- ggplot(data = df_pref, aes(x = `時間軸（年次）`, y = value, colour =
   scale_color_d3() +
   labs(
     title = "農業協同組合の販売事業総利益の推移（都道府県別）",
-    caption = "出所：農林水産省『農業協同組合及び同連合会一斉調査 確報 総合農協統計表』長期累年\n（https://www.e-stat.go.jp/index.php/stat-search/database?statdisp_id=0003408614）"
+    caption = "出典：農林水産省『農業協同組合及び同連合会一斉調査 確報 総合農協統計表』長期累年\n（https://www.e-stat.go.jp/index.php/stat-search/database?statdisp_id=0003408614）"
   ) +
   theme_bw() +
   theme(
