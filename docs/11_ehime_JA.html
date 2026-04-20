@@ -194,90 +194,91 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>そこで，JAごとに列を1つずつ作成し，その地域がそのJAの管内であれば <code>1</code>，そうでなければ <code>0</code> を入力する形でデータを整理します。</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>b[[<span class="dv">1</span>]] <span class="ot">&lt;-</span> b[[<span class="dv">1</span>]] <span class="sc">|&gt;</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    JAうま <span class="ot">=</span> <span class="fu">case_when</span>(</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>      city_name <span class="sc">==</span> <span class="st">"四国中央市"</span> <span class="sc">~</span> <span class="dv">1</span>,</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>      city_name <span class="sc">==</span> <span class="st">"新居浜市"</span> <span class="sc">&amp;</span> kcity_name <span class="sc">==</span> <span class="st">"別子山村"</span> <span class="sc">~</span> <span class="dv">1</span>,</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="dv">0</span></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    JAえひめ中央 <span class="ot">=</span> <span class="fu">case_when</span>(</span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>      city_name <span class="sc">==</span> <span class="st">"松山市"</span> <span class="sc">~</span> <span class="dv">1</span>,</span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>      city_name <span class="sc">==</span> <span class="st">"伊予市"</span> <span class="sc">~</span> <span class="dv">1</span>,</span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>      city_name <span class="sc">==</span> <span class="st">"東温市"</span> <span class="sc">~</span> <span class="dv">1</span>,</span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>      city_name <span class="sc">==</span> <span class="st">"内子町"</span> <span class="sc">&amp;</span> <span class="fu">grepl</span>(<span class="st">"参川村|小田町村|田渡村"</span>, kcity_name) <span class="sc">~</span> <span class="dv">1</span>,</span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>      city_name <span class="sc">==</span> <span class="st">"松前町"</span> <span class="sc">~</span> <span class="dv">1</span>,</span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>      city_name <span class="sc">==</span> <span class="st">"砥部町"</span> <span class="sc">~</span> <span class="dv">1</span>,</span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="dv">0</span></span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>    JAえひめ南 <span class="ot">=</span> <span class="fu">case_when</span>(</span>
-<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>      city_name <span class="sc">==</span> <span class="st">"宇和島市"</span> <span class="sc">~</span> <span class="dv">1</span>,</span>
-<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>      city_name <span class="sc">==</span> <span class="st">"鬼北町"</span> <span class="sc">~</span> <span class="dv">1</span>,</span>
-<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>      city_name <span class="sc">==</span> <span class="st">"松野町"</span> <span class="sc">~</span> <span class="dv">1</span>,</span>
-<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>      city_name <span class="sc">==</span> <span class="st">"愛南町"</span> <span class="sc">~</span> <span class="dv">1</span>,</span>
-<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="dv">0</span></span>
-<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>    JAえひめ未来 <span class="ot">=</span> <span class="fu">case_when</span>(</span>
-<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>      city_name <span class="sc">==</span> <span class="st">"新居浜市"</span> <span class="sc">&amp;</span> <span class="sc">!</span><span class="fu">grepl</span>(<span class="st">"別子山村"</span>, kcity_name) <span class="sc">~</span> <span class="dv">1</span>,</span>
-<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>      city_name <span class="sc">==</span> <span class="st">"西条市"</span> <span class="sc">&amp;</span> <span class="sc">!</span><span class="fu">grepl</span>(<span class="st">"壬生川村|壬生川町|周布村|吉井村|国安村|吉岡村|三芳村|庄内村|楠河村|小松町|石鎚村|石根村|丹原町|徳田村|田野村|中川村|桜樹村"</span>, kcity_name) <span class="sc">~</span> <span class="dv">1</span>,</span>
-<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="dv">0</span></span>
-<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a>    JAおちいまばり <span class="ot">=</span> <span class="fu">case_when</span>(</span>
-<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>      city_name <span class="sc">==</span> <span class="st">"今治市"</span> <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(rcom_name)) <span class="sc">|&gt;</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    JAうま <span class="ot">=</span> <span class="fu">case_when</span>(</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>      city_name <span class="sc">==</span> <span class="st">"四国中央市"</span> <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>      city_name <span class="sc">==</span> <span class="st">"新居浜市"</span> <span class="sc">&amp;</span> kcity_name <span class="sc">==</span> <span class="st">"別子山村"</span> <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="dv">0</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    JAえひめ中央 <span class="ot">=</span> <span class="fu">case_when</span>(</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>      city_name <span class="sc">==</span> <span class="st">"松山市"</span> <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>      city_name <span class="sc">==</span> <span class="st">"伊予市"</span> <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>      city_name <span class="sc">==</span> <span class="st">"東温市"</span> <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>      city_name <span class="sc">==</span> <span class="st">"内子町"</span> <span class="sc">&amp;</span> <span class="fu">grepl</span>(<span class="st">"参川村|小田町村|田渡村"</span>, kcity_name) <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>      city_name <span class="sc">==</span> <span class="st">"松前町"</span> <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>      city_name <span class="sc">==</span> <span class="st">"砥部町"</span> <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="dv">0</span></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>    JAえひめ南 <span class="ot">=</span> <span class="fu">case_when</span>(</span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>      city_name <span class="sc">==</span> <span class="st">"宇和島市"</span> <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>      city_name <span class="sc">==</span> <span class="st">"鬼北町"</span> <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>      city_name <span class="sc">==</span> <span class="st">"松野町"</span> <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>      city_name <span class="sc">==</span> <span class="st">"愛南町"</span> <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="dv">0</span></span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>    JAえひめ未来 <span class="ot">=</span> <span class="fu">case_when</span>(</span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>      city_name <span class="sc">==</span> <span class="st">"新居浜市"</span> <span class="sc">&amp;</span> <span class="sc">!</span><span class="fu">grepl</span>(<span class="st">"別子山村"</span>, kcity_name) <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>      city_name <span class="sc">==</span> <span class="st">"西条市"</span> <span class="sc">&amp;</span> <span class="sc">!</span><span class="fu">grepl</span>(<span class="st">"壬生川村|壬生川町|周布村|吉井村|国安村|吉岡村|三芳村|庄内村|楠河村|小松町|石鎚村|石根村|丹原町|徳田村|田野村|中川村|桜樹村"</span>, kcity_name) <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="dv">0</span></span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>    JAおちいまばり <span class="ot">=</span> <span class="fu">case_when</span>(</span>
 <span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a>      city_name <span class="sc">==</span> <span class="st">"今治市"</span> <span class="sc">&amp;</span> kcity_name <span class="sc">==</span> <span class="st">"今治市"</span> <span class="sc">&amp;</span> <span class="fu">grepl</span>(<span class="st">"鳥生|郷|八丁"</span>, rcom_name) <span class="sc">~</span> <span class="dv">0</span>,</span>
-<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a>      city_name <span class="sc">==</span> <span class="st">"上島町"</span> <span class="sc">~</span> <span class="dv">1</span>,</span>
-<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="dv">0</span></span>
-<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb4-45"><a href="#cb4-45" aria-hidden="true" tabindex="-1"></a>    JAにしうわ <span class="ot">=</span> <span class="fu">case_when</span>(</span>
-<span id="cb4-46"><a href="#cb4-46" aria-hidden="true" tabindex="-1"></a>      city_name <span class="sc">==</span> <span class="st">"八幡浜市"</span> <span class="sc">~</span> <span class="dv">1</span>,</span>
-<span id="cb4-47"><a href="#cb4-47" aria-hidden="true" tabindex="-1"></a>      city_name <span class="sc">==</span> <span class="st">"西予市"</span> <span class="sc">&amp;</span> <span class="fu">grepl</span>(<span class="st">"三瓶|二木生|三島|双岩"</span>, kcity_name) <span class="sc">~</span> <span class="dv">1</span>,</span>
-<span id="cb4-48"><a href="#cb4-48" aria-hidden="true" tabindex="-1"></a>      city_name <span class="sc">==</span> <span class="st">"伊方町"</span> <span class="sc">~</span> <span class="dv">1</span>,</span>
-<span id="cb4-49"><a href="#cb4-49" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="dv">0</span></span>
-<span id="cb4-50"><a href="#cb4-50" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb4-51"><a href="#cb4-51" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb4-52"><a href="#cb4-52" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb4-53"><a href="#cb4-53" aria-hidden="true" tabindex="-1"></a>    JAひがしうわ <span class="ot">=</span> <span class="fu">case_when</span>(</span>
-<span id="cb4-54"><a href="#cb4-54" aria-hidden="true" tabindex="-1"></a>      city_name <span class="sc">==</span> <span class="st">"西予市"</span> <span class="sc">&amp;</span> <span class="sc">!</span><span class="fu">grepl</span>(<span class="st">"三瓶|二木生|三島|双岩"</span>, kcity_name) <span class="sc">~</span> <span class="dv">1</span>,</span>
-<span id="cb4-55"><a href="#cb4-55" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="dv">0</span></span>
-<span id="cb4-56"><a href="#cb4-56" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb4-57"><a href="#cb4-57" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb4-58"><a href="#cb4-58" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb4-59"><a href="#cb4-59" aria-hidden="true" tabindex="-1"></a>    JA今治立花 <span class="ot">=</span> <span class="fu">case_when</span>(</span>
-<span id="cb4-60"><a href="#cb4-60" aria-hidden="true" tabindex="-1"></a>      city_name <span class="sc">==</span> <span class="st">"今治市"</span> <span class="sc">&amp;</span> kcity_name <span class="sc">==</span> <span class="st">"今治市"</span> <span class="sc">&amp;</span> <span class="fu">grepl</span>(<span class="st">"鳥生|郷|八丁"</span>, rcom_name) <span class="sc">~</span> <span class="dv">1</span>,</span>
-<span id="cb4-61"><a href="#cb4-61" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="dv">0</span></span>
-<span id="cb4-62"><a href="#cb4-62" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb4-63"><a href="#cb4-63" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb4-64"><a href="#cb4-64" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb4-65"><a href="#cb4-65" aria-hidden="true" tabindex="-1"></a>    JA周桑 <span class="ot">=</span> <span class="fu">case_when</span>(</span>
-<span id="cb4-66"><a href="#cb4-66" aria-hidden="true" tabindex="-1"></a>      city_name <span class="sc">==</span> <span class="st">"西条市"</span> <span class="sc">&amp;</span> <span class="fu">grepl</span>(<span class="st">"壬生川村|壬生川町|周布村|吉井村|国安村|吉岡村|三芳村|庄内村|楠河村|小松町|石鎚村|石根村|丹原町|徳田村|田野村|中川村|桜樹村"</span>, kcity_name) <span class="sc">~</span> <span class="dv">1</span>,</span>
-<span id="cb4-67"><a href="#cb4-67" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="dv">0</span></span>
-<span id="cb4-68"><a href="#cb4-68" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb4-69"><a href="#cb4-69" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb4-70"><a href="#cb4-70" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb4-71"><a href="#cb4-71" aria-hidden="true" tabindex="-1"></a>    JA愛媛たいき <span class="ot">=</span> <span class="fu">case_when</span>(</span>
-<span id="cb4-72"><a href="#cb4-72" aria-hidden="true" tabindex="-1"></a>      city_name <span class="sc">==</span> <span class="st">"大洲市"</span> <span class="sc">~</span> <span class="dv">1</span>,</span>
-<span id="cb4-73"><a href="#cb4-73" aria-hidden="true" tabindex="-1"></a>      city_name <span class="sc">==</span> <span class="st">"内子町"</span> <span class="sc">&amp;</span> <span class="sc">!</span><span class="fu">grepl</span>(<span class="st">"参川村|小田町村|田渡村"</span>, kcity_name) <span class="sc">~</span> <span class="dv">1</span>,</span>
-<span id="cb4-74"><a href="#cb4-74" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="dv">0</span></span>
-<span id="cb4-75"><a href="#cb4-75" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb4-76"><a href="#cb4-76" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb4-77"><a href="#cb4-77" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb4-78"><a href="#cb4-78" aria-hidden="true" tabindex="-1"></a>    JA松山市 <span class="ot">=</span> <span class="fu">case_when</span>(</span>
-<span id="cb4-79"><a href="#cb4-79" aria-hidden="true" tabindex="-1"></a>      city_name <span class="sc">==</span> <span class="st">"松山市"</span> <span class="sc">~</span> <span class="dv">1</span>,</span>
-<span id="cb4-80"><a href="#cb4-80" aria-hidden="true" tabindex="-1"></a>      city_name <span class="sc">==</span> <span class="st">"東温市"</span> <span class="sc">~</span> <span class="dv">1</span>,</span>
-<span id="cb4-81"><a href="#cb4-81" aria-hidden="true" tabindex="-1"></a>      city_name <span class="sc">==</span> <span class="st">"松前町"</span> <span class="sc">~</span> <span class="dv">1</span>,</span>
-<span id="cb4-82"><a href="#cb4-82" aria-hidden="true" tabindex="-1"></a>      city_name <span class="sc">==</span> <span class="st">"久万高原町"</span> <span class="sc">~</span> <span class="dv">1</span>,</span>
-<span id="cb4-83"><a href="#cb4-83" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="dv">0</span></span>
-<span id="cb4-84"><a href="#cb4-84" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb4-85"><a href="#cb4-85" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a>      city_name <span class="sc">==</span> <span class="st">"今治市"</span> <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a>      city_name <span class="sc">==</span> <span class="st">"上島町"</span> <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="dv">0</span></span>
+<span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb4-45"><a href="#cb4-45" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb4-46"><a href="#cb4-46" aria-hidden="true" tabindex="-1"></a>    JAにしうわ <span class="ot">=</span> <span class="fu">case_when</span>(</span>
+<span id="cb4-47"><a href="#cb4-47" aria-hidden="true" tabindex="-1"></a>      city_name <span class="sc">==</span> <span class="st">"八幡浜市"</span> <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb4-48"><a href="#cb4-48" aria-hidden="true" tabindex="-1"></a>      city_name <span class="sc">==</span> <span class="st">"西予市"</span> <span class="sc">&amp;</span> <span class="fu">grepl</span>(<span class="st">"三瓶|二木生|三島|双岩"</span>, kcity_name) <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb4-49"><a href="#cb4-49" aria-hidden="true" tabindex="-1"></a>      city_name <span class="sc">==</span> <span class="st">"伊方町"</span> <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb4-50"><a href="#cb4-50" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="dv">0</span></span>
+<span id="cb4-51"><a href="#cb4-51" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb4-52"><a href="#cb4-52" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb4-53"><a href="#cb4-53" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb4-54"><a href="#cb4-54" aria-hidden="true" tabindex="-1"></a>    JAひがしうわ <span class="ot">=</span> <span class="fu">case_when</span>(</span>
+<span id="cb4-55"><a href="#cb4-55" aria-hidden="true" tabindex="-1"></a>      city_name <span class="sc">==</span> <span class="st">"西予市"</span> <span class="sc">&amp;</span> <span class="sc">!</span><span class="fu">grepl</span>(<span class="st">"三瓶|二木生|三島|双岩"</span>, kcity_name) <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb4-56"><a href="#cb4-56" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="dv">0</span></span>
+<span id="cb4-57"><a href="#cb4-57" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb4-58"><a href="#cb4-58" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb4-59"><a href="#cb4-59" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb4-60"><a href="#cb4-60" aria-hidden="true" tabindex="-1"></a>    JA今治立花 <span class="ot">=</span> <span class="fu">case_when</span>(</span>
+<span id="cb4-61"><a href="#cb4-61" aria-hidden="true" tabindex="-1"></a>      city_name <span class="sc">==</span> <span class="st">"今治市"</span> <span class="sc">&amp;</span> kcity_name <span class="sc">==</span> <span class="st">"今治市"</span> <span class="sc">&amp;</span> <span class="fu">grepl</span>(<span class="st">"鳥生|郷|八丁"</span>, rcom_name) <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb4-62"><a href="#cb4-62" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="dv">0</span></span>
+<span id="cb4-63"><a href="#cb4-63" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb4-64"><a href="#cb4-64" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb4-65"><a href="#cb4-65" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb4-66"><a href="#cb4-66" aria-hidden="true" tabindex="-1"></a>    JA周桑 <span class="ot">=</span> <span class="fu">case_when</span>(</span>
+<span id="cb4-67"><a href="#cb4-67" aria-hidden="true" tabindex="-1"></a>      city_name <span class="sc">==</span> <span class="st">"西条市"</span> <span class="sc">&amp;</span> <span class="fu">grepl</span>(<span class="st">"壬生川村|壬生川町|周布村|吉井村|国安村|吉岡村|三芳村|庄内村|楠河村|小松町|石鎚村|石根村|丹原町|徳田村|田野村|中川村|桜樹村"</span>, kcity_name) <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb4-68"><a href="#cb4-68" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="dv">0</span></span>
+<span id="cb4-69"><a href="#cb4-69" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb4-70"><a href="#cb4-70" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb4-71"><a href="#cb4-71" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb4-72"><a href="#cb4-72" aria-hidden="true" tabindex="-1"></a>    JA愛媛たいき <span class="ot">=</span> <span class="fu">case_when</span>(</span>
+<span id="cb4-73"><a href="#cb4-73" aria-hidden="true" tabindex="-1"></a>      city_name <span class="sc">==</span> <span class="st">"大洲市"</span> <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb4-74"><a href="#cb4-74" aria-hidden="true" tabindex="-1"></a>      city_name <span class="sc">==</span> <span class="st">"内子町"</span> <span class="sc">&amp;</span> <span class="sc">!</span><span class="fu">grepl</span>(<span class="st">"参川村|小田町村|田渡村"</span>, kcity_name) <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb4-75"><a href="#cb4-75" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="dv">0</span></span>
+<span id="cb4-76"><a href="#cb4-76" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb4-77"><a href="#cb4-77" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb4-78"><a href="#cb4-78" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb4-79"><a href="#cb4-79" aria-hidden="true" tabindex="-1"></a>    JA松山市 <span class="ot">=</span> <span class="fu">case_when</span>(</span>
+<span id="cb4-80"><a href="#cb4-80" aria-hidden="true" tabindex="-1"></a>      city_name <span class="sc">==</span> <span class="st">"松山市"</span> <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb4-81"><a href="#cb4-81" aria-hidden="true" tabindex="-1"></a>      city_name <span class="sc">==</span> <span class="st">"東温市"</span> <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb4-82"><a href="#cb4-82" aria-hidden="true" tabindex="-1"></a>      city_name <span class="sc">==</span> <span class="st">"松前町"</span> <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb4-83"><a href="#cb4-83" aria-hidden="true" tabindex="-1"></a>      city_name <span class="sc">==</span> <span class="st">"久万高原町"</span> <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb4-84"><a href="#cb4-84" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="dv">0</span></span>
+<span id="cb4-85"><a href="#cb4-85" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb4-86"><a href="#cb4-86" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>このコードでは，それぞれの地域について，11のJAのどこに属するかを <code>0</code> と <code>1</code> で表しています。 これは次のコードで確認できます。</p>
 <div class="cell">
@@ -285,7 +286,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  sf<span class="sc">::</span><span class="fu">st_drop_geometry</span>() <span class="sc">|&gt;</span></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="fu">starts_with</span>(<span class="st">"JA"</span>))</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 3,302 × 11
+<pre><code># A tibble: 3,284 × 11
    JAうま JAえひめ中央 JAえひめ南 JAえひめ未来 JAおちいまばり JAにしうわ
     &lt;dbl&gt;        &lt;dbl&gt;      &lt;dbl&gt;        &lt;dbl&gt;          &lt;dbl&gt;      &lt;dbl&gt;
  1      0            1          0            0              0          0
@@ -298,7 +299,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  8      0            1          0            0              0          0
  9      0            1          0            0              0          0
 10      0            1          0            0              0          0
-# ℹ 3,292 more rows
+# ℹ 3,274 more rows
 # ℹ 5 more variables: JAひがしうわ &lt;dbl&gt;, JA今治立花 &lt;dbl&gt;, JA周桑 &lt;dbl&gt;,
 #   JA愛媛たいき &lt;dbl&gt;, JA松山市 &lt;dbl&gt;</code></pre>
 </div>
