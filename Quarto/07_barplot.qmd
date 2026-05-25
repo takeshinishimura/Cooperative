@@ -18,38 +18,35 @@ lang: ja
 まず，最新の総合農協統計表の損益計算書の統計データがどこにあるかを確認します。
 
 ::: {.callout-note collapse="false" icon="true"}
-## 農業協同組合及び同連合会一斉調査 確報 総合農協統計表　令和3事業年度総合農協統計表　第１部　都道府県別統計表　損益計算書 総括表
+## 農業協同組合及び同連合会一斉調査 / 確報 総合農協統計表 令和５事業年度総合農協統計表　第１部　都道府県別統計表　損益計算書　総括表
 
-<https://www.e-stat.go.jp/index.php/stat-search/database?statdisp_id=0002063217>{target="_blank"}
+<https://www.e-stat.go.jp/index.php/stat-search/database?statdisp_id=0004038719>{target="_blank"}
 :::
 
 e-Statには部門別損益のデータセットも用意されており，次のページから確認できます。
 
 ::: {.callout-note collapse="false" icon="true"}
-## 農業協同組合及び同連合会一斉調査 確報 総合農協統計表　令和3事業年度総合農協統計表　第１部　都道府県別統計表　部門別損益 部門別損益計算書（総括版）
+## 農業協同組合及び同連合会一斉調査 / 確報 総合農協統計表 令和５事業年度総合農協統計表　第１部　都道府県別統計表　部門別損益　部門別損益計算書（総括版）
 
-<https://www.e-stat.go.jp/index.php/stat-search/database?statdisp_id=0002063277>{target="_blank"}
+<https://www.e-stat.go.jp/index.php/stat-search/database?statdisp_id=0004038779>{target="_blank"}
 :::
 
 部門別損益の表は，損益計算書を組み替えたものだと考えられます。
-しかしながら，各統計表の数値は一致しません。
-例えば，事業総利益は前者では1,681,282,800，後者では1,679,196,457となっている（単位はいずれも千円）。
-本来，これらの数値は一致するはずであることから，どちらかが再集計しているのかもしれません。
 
 上記2つのデータセットを提供するページのいずれにもExcelファイルはありません。
 どこかにExcelファイルを提供するページはあるでしょうか。
 探すと，次の2つのページが見つかりました。
 
 ::: {.callout-note collapse="false" icon="true"}
-## 農業協同組合及び同連合会一斉調査 確報 総合農協統計表　令和4事業年度総合農協統計表　第１部　都道府県別統計表　損益計算書 総括表
+## 農業協同組合及び同連合会一斉調査 / 確報 総合農協統計表 令和６事業年度総合農協統計表　第１部　都道府県別統計表　損益計算書　総括表
 
-<https://www.e-stat.go.jp/stat-search/files?stat_infid=000040173723>{target="_blank"}
+<https://www.e-stat.go.jp/stat-search/files?stat_infid=000040431532>{target="_blank"}
 :::
 
 ::: {.callout-note collapse="false" icon="true"}
-## 農業協同組合及び同連合会一斉調査 確報 総合農協統計表　令和4事業年度総合農協統計表　第１部　都道府県別統計表　部門別損益 部門別損益計算書（総括版）
+## 農業協同組合及び同連合会一斉調査 / 確報 総合農協統計表 令和６事業年度総合農協統計表　第１部　都道府県別統計表　部門別損益 部門別損益計算書（総括版）
 
-<https://www.e-stat.go.jp/stat-search/files?stat_infid=000040173804>{target="_blank"}
+<https://www.e-stat.go.jp/stat-search/files?stat_infid=000040431613>{target="_blank"}
 :::
 
 これらのページで提供されるExcelファイルはデータベースとして提供される情報よりも新しいようである。
@@ -61,29 +58,26 @@ e-StatからAPIでデータを入手する場合，同じデータを含むExcel
 ## e-Statからデータ取得
 
 早速，次のコードを実行しよう。
-次のコードにある `statsDataId = "0002063277"` の数字はアクセスしたい統計データのIDです。
+次のコードにある `statsDataId = "0004038779"` の数字はアクセスしたい統計データのIDです。
 
 ```{r}
-library(httr)
+#| warning: false
+library(estatapi)
 
 outdir <- "../fig"
 dir.create(outdir, showWarnings = FALSE)
 
 appId <- keyring::key_get("e-stat")
-statsDataId <- "0002063277"
+statsDataId <- "0004038779"
 
-response <- httr::GET(
-  url = "https://api.e-stat.go.jp/rest/2.1/app/getSimpleStatsData",
-  query = list(
-    appId = appId,
-    statsDataId = statsDataId,
-    sectionHeaderFlg = 2
-  )
+(meta_info <- estat_getMetaInfo(appId = appId, statsDataId = statsDataId))
+
+df <- estat_getStatsData(
+  appId = appId,
+  statsDataId = statsDataId
 )
-response <- httr::content(response)
-df <- read.csv(text = sub("^.*\\\"VALUE\\\"\n", "", response), header = TRUE, check.names = FALSE)
 
-head(df, 10)
+df
 
 caption <- "農業協同組合の部門別損益"
 DT::datatable(
@@ -106,78 +100,26 @@ DT::datatable(
 まず，税引前当期利益を比較してみよう。
 
 ```{r}
-df1 <- df[df[, 2] == "税引前当期利益" & df$`(NOUKYOU1-21-1-081)部門別損益計算書（総括版）` != "計" & df$value != "-", ]
-
+library(dplyr)
 library(ggplot2)
 library(ggsci)
 
-p <- ggplot(data = df1) +
-  geom_bar(
-    aes(
-      x = `(NOUKYOU1-21-1-081)部門別損益計算書（総括版）`,
-      y = value,
-      fill = `(NOUKYOU1-21-1-081)部門別損益計算書（総括版）`
-    ),
-      stat = "identity"
-  ) +
-  scale_x_discrete(limits = rev) +
-  scale_fill_nejm() +
-  theme_bw() +
-  theme(
-    legend.position = "none",
-    axis.title = element_blank(),
-    text = element_text(family = "Hiragino Sans")
+df1 <- df |>
+  filter(
+    `(NOUKYOU1-23-2-016)部門別損益計算書（総括版）_区分` == "税引前当期利益",
+    `(NOUKYOU1-23-1-081)部門別損益計算書（総括版）` != "計",
+    `(NOUKYOU1-23-1-081)部門別損益計算書（総括版）` != "共通管理費等",
+  ) |>
+  mutate(
+    `(NOUKYOU1-23-1-081)部門別損益計算書（総括版）` = factor(`(NOUKYOU1-23-1-081)部門別損益計算書（総括版）`, levels = unique(`(NOUKYOU1-23-1-081)部門別損益計算書（総括版）`))
   )
 
-p
-```
-
-::: {.callout-caution collapse="false" icon="true"}
-
-R（RStudio）で実行（Quartoを`Render`）した場合とVisual Studio CodeでQuartoを`Render`した場合とで，横軸の目盛りの順番が異なります。
-後で実行する，`levels(factor(df$`(NOUKYOU1-21-1-081)部門別損益計算書（総括版）`))`の結果にも違いが生じます。
-おそらく後者の処理の中でバグが生じている可能性が考えられます。
-ここに表示されるものは後者で`Render`した結果です。
-:::
-
-縦軸の数値の幅がおかしいですね。
-ここで，データフレームの構造を確認してみましょう。
-
-```{r}
-str(df)
-```
-
-`value`列が文字型となっているのは，`"-"`が入っているためであることが想像できます。
-このため，`"-"`を削除してから，数値型に変換しましょう。
-なお，後述のように `estatapi` パッケージを使うとこのような問題は発生しません。
-
-```{r}
-df$value <- as.double(sub("^-$", "", df$value))
-
-levels(factor(df$`(NOUKYOU1-21-1-081)部門別損益計算書（総括版）`))
-
-df$`(NOUKYOU1-21-1-081)部門別損益計算書（総括版）` <- factor(df$`(NOUKYOU1-21-1-081)部門別損益計算書（総括版）`, levels = unique(df$`(NOUKYOU1-21-1-081)部門別損益計算書（総括版）`))
-```
-
-::: {.callout-caution collapse="false" icon="true"}
-
-上述のように実行環境によって結果が変わることから，ここでは`factor`の`levels`を明示している。
-ここで`levels`を省略した場合，R（RStudio）とVisual Studio Codeの結果のいずれも正しくない。
-:::
-
-改めて，税引前当期利益を比較してみましょう。
-
-```{r}
-library(stringr)
-df1 <- df[str_detect(df$`(NOUKYOU1-21-2-011)部門別損益計算書（総括版）_区分`, "^税引前当期利益$") &
-          !str_detect(df$`(NOUKYOU1-21-1-081)部門別損益計算書（総括版）`, "^(計|共通管理費等)$"), ]
-
 p <- ggplot(data = df1) +
   geom_bar(
     aes(
-      x = `(NOUKYOU1-21-1-081)部門別損益計算書（総括版）`,
+      x = `(NOUKYOU1-23-1-081)部門別損益計算書（総括版）`,
       y = value,
-      fill = `(NOUKYOU1-21-1-081)部門別損益計算書（総括版）`
+      fill = `(NOUKYOU1-23-1-081)部門別損益計算書（総括版）`
     ),
     stat = "identity"
   ) +
@@ -185,7 +127,7 @@ p <- ggplot(data = df1) +
   scale_fill_nejm() +
   labs(
     title = "農業協同組合の部門別税引前当期利益",
-    caption = "出典：農林水産省『令和4事業年度総合農協統計表』\n（https://www.e-stat.go.jp/index.php/stat-search/database?statdisp_id=0002063277）"
+    caption = "出典：農林水産省『令和5事業年度総合農協統計表』\n（https://www.e-stat.go.jp/index.php/stat-search/database?statdisp_id=0004038779）"
   ) +
   theme_bw() +
   theme(
@@ -208,15 +150,22 @@ ggsave(file = "benefits_by_division.pdf", plot = p, device = cairo_pdf, path = o
 これらについて詳細を確認するために，次に，事業総利益と事業管理費のグラフを描いてみましょう。
 
 ```{r}
-df2 <- df[str_detect(df$`(NOUKYOU1-21-2-011)部門別損益計算書（総括版）_区分`, "^(事業総利益|事業管理費)$") &
-          !str_detect(df$`(NOUKYOU1-21-1-081)部門別損益計算書（総括版）`, "^(計|共通管理費等)$"), ]
+df2 <- df |>
+  filter(
+    `(NOUKYOU1-23-2-016)部門別損益計算書（総括版）_区分` %in% c("事業総利益", "事業管理費"),
+    `(NOUKYOU1-23-1-081)部門別損益計算書（総括版）` != "計",
+    `(NOUKYOU1-23-1-081)部門別損益計算書（総括版）` != "共通管理費等",
+  ) |>
+  mutate(
+    `(NOUKYOU1-23-1-081)部門別損益計算書（総括版）` = factor(`(NOUKYOU1-23-1-081)部門別損益計算書（総括版）`, levels = unique(`(NOUKYOU1-23-1-081)部門別損益計算書（総括版）`))
+  )
 
 p <- ggplot(data = df2) +
   geom_bar(
     aes(
-      x = `(NOUKYOU1-21-1-081)部門別損益計算書（総括版）`,
+      x = `(NOUKYOU1-23-1-081)部門別損益計算書（総括版）`,
       y = value,
-      fill = `(NOUKYOU1-21-2-011)部門別損益計算書（総括版）_区分`
+      fill = `(NOUKYOU1-23-2-016)部門別損益計算書（総括版）_区分`
     ),
     stat = "identity",
     position = "dodge"
@@ -226,7 +175,7 @@ p <- ggplot(data = df2) +
   guides(fill = guide_legend(reverse = TRUE, title = "部門別損益")) +
   labs(
     title = "農業協同組合の部門別損益",
-    caption = "出典：農林水産省『令和3事業年度総合農協統計表』\n（https://www.e-stat.go.jp/index.php/stat-search/database?statdisp_id=0002063277）"
+    caption = "出典：農林水産省『令和5事業年度総合農協統計表』\n（https://www.e-stat.go.jp/index.php/stat-search/database?statdisp_id=0004038779）"
   ) +
   theme_bw() +
   theme(
@@ -239,6 +188,8 @@ p
 ```
 
 ```{r}
+#| include: false
+#| warning: false
 ggsave(file = "profit_and_loss_by_division.pdf", plot = p, device = cairo_pdf, path = outdir, width = 8, height = 4)
 ```
 
@@ -259,43 +210,41 @@ ggsave(file = "profit_and_loss_by_division.pdf", plot = p, device = cairo_pdf, p
 :::
 
 ```{r}
-library(estatapi)
-
 statsDataId <- "0003408614"
 (meta_info <- estat_getMetaInfo(appId = appId, statsDataId = statsDataId))
 
-# 統計データ取得
 df <- estat_getStatsData(
   appId = appId,
   statsDataId = statsDataId
 )
+
 df
 
 df$`時間軸（年次）` <- as.double(sub("年", "", df$`時間軸（年次）`))
-df$value <- as.double(sub("…", "", df$value))
 df$`損益計算書（総括）` <- factor(df$`損益計算書（総括）`, levels = unique(df$`損益計算書（総括）`))
 levels(df$`損益計算書（総括）`) <- sub("^事業総利益_", "", levels(df$`損益計算書（総括）`))
-
 unique(df$`損益計算書（総括）`)
-df$`損益計算書（総括）` <- gsub("事業総利益_", "", df$`損益計算書（総括）`)
 ```
 
 ### 全国の折れ線グラフ
 
 ```{r}
-df_all <- df[df$`都道府県` == "全国", ]
+df_all <- df |>
+  filter(都道府県 == "全国") |>
+  mutate(
+    年次 = as.numeric(sub("年", "", `時間軸（年次）`))
+  )
 
 df_all2 <- df_all[grep(".事業総利益$", df_all$`損益計算書（総括）`), ]
 
 p <- ggplot(
     data = df_all2,
-    aes(x = `時間軸（年次）`, y = value, colour = `損益計算書（総括）`)
+    aes(x = 年次, y = value, colour = `損益計算書（総括）`)
   ) +
   geom_line() +
   geom_point() +
   scale_y_continuous(labels = scales::comma_format(), name = "（千円）") +
   scale_color_d3() +
-  guides(colour = guide_legend(reverse = TRUE)) +
   labs(
     title = "農業協同組合の事業総利益の推移",
     caption = "出典：農林水産省『農業協同組合及び同連合会一斉調査 確報 総合農協統計表』長期累年\n（https://www.e-stat.go.jp/index.php/stat-search/database?statdisp_id=0003408614）"
@@ -315,13 +264,12 @@ df_all2 <- df_all[grep("事業収益$", df_all$`損益計算書（総括）`), ]
 
 p <- ggplot(
     data = df_all2,
-    aes(x = `時間軸（年次）`, y = value, colour = `損益計算書（総括）`)
+    aes(x = 年次, y = value, colour = `損益計算書（総括）`)
   ) +
   geom_line() +
   geom_point() +
   scale_y_continuous(labels = scales::comma_format(), name = "（千円）") +
   scale_color_d3() +
-  guides(colour = guide_legend(reverse = TRUE)) +
   labs(
     title = "農業協同組合の事業収益の推移",
     caption = "出典：農林水産省『農業協同組合及び同連合会一斉調査 確報 総合農協統計表』長期累年\n（https://www.e-stat.go.jp/index.php/stat-search/database?statdisp_id=0003408614）"
@@ -341,13 +289,12 @@ df_all2 <- df_all[grep("事業費用$", df_all$`損益計算書（総括）`), ]
 
 p <- ggplot(
     data = df_all2,
-    aes(x = `時間軸（年次）`, y = value, colour = `損益計算書（総括）`)
+    aes(x = 年次, y = value, colour = `損益計算書（総括）`)
   ) +
   geom_line() +
   geom_point() +
   scale_y_continuous(labels = scales::comma_format(), name = "（千円）") +
   scale_color_d3() +
-  guides(colour = guide_legend(reverse = TRUE)) +
   labs(
     title = "農業協同組合の事業費用の推移",
     caption = "出典：農林水産省『農業協同組合及び同連合会一斉調査 確報 総合農協統計表』長期累年\n（https://www.e-stat.go.jp/index.php/stat-search/database?statdisp_id=0003408614）"
@@ -368,18 +315,20 @@ ggsave(file = "costs_by_division_for_each_year_all.pdf", plot = p, device = cair
 
 ```{r}
 #| message: false
-library(dplyr)
 library(gghighlight)
 
 df_pref <- df |>
   filter(
     都道府県 != "全国",
     grepl("信用事業総利益", `損益計算書（総括）`)
+  ) |>
+  mutate(
+    年次 = as.numeric(sub("年", "", `時間軸（年次）`))
   )
 
 p <- ggplot(
     data = df_pref,
-    aes(x = `時間軸（年次）`, y = value, colour = `都道府県`)
+    aes(x = 年次, y = value, colour = 都道府県)
   ) +
   geom_line() +
   geom_point() +
@@ -411,11 +360,14 @@ df_pref <- df |>
   filter(
     都道府県 != "全国",
     grepl("共済事業総利益", `損益計算書（総括）`)
+  ) |>
+  mutate(
+    年次 = as.numeric(sub("年", "", `時間軸（年次）`))
   )
 
 p <- ggplot(
     data = df_pref,
-    aes(x = `時間軸（年次）`, y = value, colour = `都道府県`)
+    aes(x = 年次, y = value, colour = 都道府県)
   ) +
   geom_line() +
   geom_point() +
@@ -447,11 +399,14 @@ df_pref <- df |>
   filter(
     都道府県 != "全国",
     grepl("購買事業総利益", `損益計算書（総括）`)
+  ) |>
+  mutate(
+    年次 = as.numeric(sub("年", "", `時間軸（年次）`))
   )
 
 p <- ggplot(
     data = df_pref,
-    aes(x = `時間軸（年次）`, y = value, colour = `都道府県`)
+    aes(x = 年次, y = value, colour = 都道府県)
   ) +
   geom_line() +
   geom_point() +
@@ -483,11 +438,14 @@ df_pref <- df |>
   filter(
     都道府県 != "全国",
     grepl("販売事業総利益", `損益計算書（総括）`)
+  ) |>
+  mutate(
+    年次 = as.numeric(sub("年", "", `時間軸（年次）`))
   )
 
 p <- ggplot(
     data = df_pref,
-    aes(x = `時間軸（年次）`, y = value, colour = `都道府県`)
+    aes(x = 年次, y = value, colour = 都道府県)
   ) +
   geom_line() +
   geom_point() +
