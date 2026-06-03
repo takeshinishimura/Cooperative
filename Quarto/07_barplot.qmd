@@ -100,6 +100,7 @@ DT::datatable(
 まず，税引前当期利益を比較してみよう。
 
 ```{r}
+#| warning: false
 library(dplyr)
 library(ggplot2)
 library(ggsci)
@@ -123,7 +124,13 @@ p <- ggplot(data = df1) +
     ),
     stat = "identity"
   ) +
-  scale_y_continuous(labels = scales::comma_format(), name = "（千円）") +
+  scale_y_continuous(
+    labels = scales::label_number(
+      scale = 1 / 1e6,
+      big.mark = ","
+    ),
+    name = "（10億円）"
+  ) +
   scale_fill_nejm() +
   labs(
     title = "農業協同組合の部門別税引前当期利益",
@@ -170,7 +177,13 @@ p <- ggplot(data = df2) +
     stat = "identity",
     position = "dodge"
   ) +
-  scale_y_continuous(labels = scales::comma_format(), name = "（千円）") +
+  scale_y_continuous(
+    labels = scales::label_number(
+      scale = 1 / 1e6,
+      big.mark = ","
+    ),
+    name = "（10億円）"
+  ) +
   scale_fill_jama() +
   guides(fill = guide_legend(reverse = TRUE, title = "部門別損益")) +
   labs(
@@ -196,7 +209,7 @@ ggsave(file = "profit_and_loss_by_division.pdf", plot = p, device = cairo_pdf, p
 営農指導事業は事業総利益そのものがマイナスの値を示していることが分かります。
 
 
-## 折れ線グラフ
+## e-Statからデータ取得
 
 次に，農業協同組合の部門別損益の推移の把握を試みます。
 任意の値の推移を見る場合は，棒グラフより折れ線グラフの方が適しています。
@@ -219,31 +232,409 @@ df <- estat_getStatsData(
 )
 
 df
-
-df$`時間軸（年次）` <- as.double(sub("年", "", df$`時間軸（年次）`))
-df$`損益計算書（総括）` <- factor(df$`損益計算書（総括）`, levels = unique(df$`損益計算書（総括）`))
-levels(df$`損益計算書（総括）`) <- sub("^事業総利益_", "", levels(df$`損益計算書（総括）`))
-unique(df$`損益計算書（総括）`)
 ```
+
+長期累計のデータは1993年から2006年までしか存在しない。
+そこで，2006年以降のデータは個別に収集することにする。
+
+### 2017年
+
+::: {.callout-note collapse="false" icon="true"}
+## 農業協同組合及び同連合会一斉調査 / 確報 総合農協統計表 平成29事業年度総合農協統計表
+
+<https://www.e-stat.go.jp/index.php/stat-search/database?statdisp_id=0001800197>{target="_blank"}
+:::
+
+```{r}
+statsDataId <- "0001800197"
+(meta_info <- estat_getMetaInfo(appId = appId, statsDataId = statsDataId))
+
+df_2017 <- estat_getStatsData(
+  appId = appId,
+  statsDataId = statsDataId
+)
+
+df_2017 <- df_2017 |>
+  rename(
+    都道府県 = `(R001-29-2-004)組合員_組合員数及び組合員戸数`,
+    `損益計算書（総括）` = `(R001-29-1-037)損益計算書_事業総利益`
+  ) |>
+  mutate(
+    年次 = 2017
+  ) |>
+  mutate(
+    年次 = if_else(都道府県 == "平24(2012)", 2012, 年次),
+    都道府県 = if_else(都道府県 == "平24(2012)", "全国", 都道府県)
+  ) |>
+  mutate(
+    年次 = if_else(都道府県 == "平25(2013)", 2013, 年次),
+    都道府県 = if_else(都道府県 == "平25(2013)", "全国", 都道府県)
+  ) |>
+  mutate(
+    年次 = if_else(都道府県 == "平26(2014)", 2014, 年次),
+    都道府県 = if_else(都道府県 == "平26(2014)", "全国", 都道府県)
+  ) |>
+  mutate(
+    年次 = if_else(都道府県 == "平27(2015)", 2015, 年次),
+    都道府県 = if_else(都道府県 == "平27(2015)", "全国", 都道府県)
+  ) |>
+  mutate(
+    年次 = if_else(都道府県 == "平28(2016)", 2016, 年次),
+    都道府県 = if_else(都道府県 == "平28(2016)", "全国", 都道府県)
+  ) |>
+  mutate(
+    都道府県 = if_else(都道府県 == "平29(2017)", "全国", 都道府県)
+  ) |>
+  filter(
+    !grepl("_小計$", 都道府県)
+  ) |>
+  mutate(
+    都道府県 = sub("^.+_\\d+", "", 都道府県),
+    都道府県 = sub("47沖縄", "沖縄", 都道府県)
+  ) |>
+  select(都道府県, `損益計算書（総括）`, 年次, value)
+```
+
+### 2018年
+
+::: {.callout-note collapse="false" icon="true"}
+## 農業協同組合及び同連合会一斉調査 / 確報 総合農協統計表 平成30事業年度総合農協統計表
+
+<https://www.e-stat.go.jp/index.php/stat-search/database?statdisp_id=0001871884>{target="_blank"}
+:::
+
+```{r}
+statsDataId <- "0001871884"
+(meta_info <- estat_getMetaInfo(appId = appId, statsDataId = statsDataId))
+
+df_2018 <- estat_getStatsData(
+  appId = appId,
+  statsDataId = statsDataId
+)
+
+df_2018 <- df_2018 |>
+  filter(
+    `(R001-30-1-022)BalanceSheet_Total` == "総額"
+  ) |>
+  rename(
+    `損益計算書（総括）` = `(R001-30-2-009)総括表`
+  ) |>
+  mutate(
+    都道府県 = "全国",
+    年次 = 2018
+  ) |>
+  mutate(
+    `損益計算書（総括）` = sub("１．事業総利益", "事業総利益", `損益計算書（総括）`),
+    `損益計算書（総括）` = sub("※信用事業総利益", "信用事業総利益", `損益計算書（総括）`),
+    `損益計算書（総括）` = sub("※共済事業総利益", "共済事業総利益", `損益計算書（総括）`),
+    `損益計算書（総括）` = sub("※購買事業総利益", "購買事業総利益", `損益計算書（総括）`),
+    `損益計算書（総括）` = sub("※販売事業総利益", "販売事業総利益", `損益計算書（総括）`),
+    `損益計算書（総括）` = sub("※保管事業総利益", "保管事業総利益", `損益計算書（総括）`),
+    `損益計算書（総括）` = sub("※加工事業総利益", "加工事業総利益", `損益計算書（総括）`),
+    `損益計算書（総括）` = sub("※利用事業総利益", "利用事業総利益", `損益計算書（総括）`),
+    `損益計算書（総括）` = sub("※宅地等供給事業総利益", "宅地等供給事業総利益", `損益計算書（総括）`),
+    `損益計算書（総括）` = sub("※その他事業総利益", "その他事業総利益", `損益計算書（総括）`),
+    `損益計算書（総括）` = sub("※加工事業総利益", "加工事業総利益", `損益計算書（総括）`),
+    `損益計算書（総括）` = sub("\\(１\\)信用事業収益", "信用事業収益", `損益計算書（総括）`),
+    `損益計算書（総括）` = sub("\\(２\\)信用事業費用", "信用事業費用", `損益計算書（総括）`),
+    `損益計算書（総括）` = sub("\\(３\\)共済事業収益", "共済事業収益", `損益計算書（総括）`),
+    `損益計算書（総括）` = sub("\\(４\\)共済事業費用", "共済事業費用", `損益計算書（総括）`),
+    `損益計算書（総括）` = sub("\\(５\\)購買事業収益", "購買事業収益", `損益計算書（総括）`),
+    `損益計算書（総括）` = sub("\\(６\\)購買事業費用", "購買事業費用", `損益計算書（総括）`),
+    `損益計算書（総括）` = sub("\\(７\\)販売事業収益", "販売事業収益", `損益計算書（総括）`),
+    `損益計算書（総括）` = sub("\\(８\\)販売事業費用", "販売事業費用", `損益計算書（総括）`),
+    `損益計算書（総括）` = sub("\\(９\\)保管事業収益", "保管事業収益", `損益計算書（総括）`),
+    `損益計算書（総括）` = sub("\\(10\\)保管事業費用", "保管事業費用", `損益計算書（総括）`),
+    `損益計算書（総括）` = sub("\\(11\\)加工事業収益", "加工事業収益", `損益計算書（総括）`),
+    `損益計算書（総括）` = sub("\\(12\\)加工事業費用", "加工事業費用", `損益計算書（総括）`),
+    `損益計算書（総括）` = sub("\\(13\\)利用事業収益", "利用事業収益", `損益計算書（総括）`),
+    `損益計算書（総括）` = sub("\\(14\\)利用事業費用", "利用事業費用", `損益計算書（総括）`),
+    `損益計算書（総括）` = sub("\\(15\\)宅地等供給事業収益", "宅地等供給事業収益", `損益計算書（総括）`),
+    `損益計算書（総括）` = sub("\\(16\\)宅地等供給事業費用", "宅地等供給事業費用", `損益計算書（総括）`),
+    `損益計算書（総括）` = sub("\\(17\\)その他事業収益", "その他事業収益", `損益計算書（総括）`),
+    `損益計算書（総括）` = sub("\\(18\\)その他事業費用", "その他事業費用", `損益計算書（総括）`)
+  ) |>
+  select(都道府県, `損益計算書（総括）`, 年次, value)
+```
+
+### 2019年
+
+::: {.callout-note collapse="false" icon="true"}
+## 農業協同組合及び同連合会一斉調査 / 確報 総合農協統計表 令和元事業年度総合農協統計表
+
+<https://www.e-stat.go.jp/index.php/stat-search/database?statdisp_id=0002015615>{target="_blank"}
+:::
+
+```{r}
+statsDataId <- "0002015615"
+(meta_info <- estat_getMetaInfo(appId = appId, statsDataId = statsDataId))
+
+df_2019 <- estat_getStatsData(
+  appId = appId,
+  statsDataId = statsDataId
+)
+
+df_2019 <- df_2019 |>
+  filter(
+    `(r001-01-1-034)総括表` == "総額"
+  ) |>
+  rename(
+    `損益計算書（総括）` = `(r001-01-2-012)損益計算書`
+  ) |>
+  mutate(
+    都道府県 = "全国",
+    年次 = 2019
+  ) |>
+  mutate(
+    `損益計算書（総括）` = sub("１．事業総利益", "事業総利益", `損益計算書（総括）`),
+    `損益計算書（総括）` = sub("\\(１\\)信用事業収益", "信用事業収益", `損益計算書（総括）`),
+    `損益計算書（総括）` = sub("\\(２\\)信用事業費用", "信用事業費用", `損益計算書（総括）`),
+    `損益計算書（総括）` = sub("\\(３\\)共済事業収益", "共済事業収益", `損益計算書（総括）`),
+    `損益計算書（総括）` = sub("\\(４\\)共済事業費用", "共済事業費用", `損益計算書（総括）`),
+    `損益計算書（総括）` = sub("\\(５\\)購買事業収益", "購買事業収益", `損益計算書（総括）`),
+    `損益計算書（総括）` = sub("\\(６\\)購買事業費用", "購買事業費用", `損益計算書（総括）`),
+    `損益計算書（総括）` = sub("\\(７\\)販売事業収益", "販売事業収益", `損益計算書（総括）`),
+    `損益計算書（総括）` = sub("\\(８\\)販売事業費用", "販売事業費用", `損益計算書（総括）`),
+    `損益計算書（総括）` = sub("\\(９\\)保管事業収益", "保管事業収益", `損益計算書（総括）`),
+    `損益計算書（総括）` = sub("\\(10\\)保管事業費用", "保管事業費用", `損益計算書（総括）`),
+    `損益計算書（総括）` = sub("\\(11\\)加工事業収益", "加工事業収益", `損益計算書（総括）`),
+    `損益計算書（総括）` = sub("\\(12\\)加工事業費用", "加工事業費用", `損益計算書（総括）`),
+    `損益計算書（総括）` = sub("\\(13\\)利用事業収益", "利用事業収益", `損益計算書（総括）`),
+    `損益計算書（総括）` = sub("\\(14\\)利用事業費用", "利用事業費用", `損益計算書（総括）`),
+    `損益計算書（総括）` = sub("\\(15\\)宅地等供給事業収益", "宅地等供給事業収益", `損益計算書（総括）`),
+    `損益計算書（総括）` = sub("\\(16\\)宅地等供給事業費用", "宅地等供給事業費用", `損益計算書（総括）`),
+    `損益計算書（総括）` = sub("\\(17\\)その他事業収益", "その他事業収益", `損益計算書（総括）`),
+    `損益計算書（総括）` = sub("\\(18\\)その他事業費用", "その他事業費用", `損益計算書（総括）`)
+  ) |>
+  select(都道府県, `損益計算書（総括）`, 年次, value)
+```
+
+### 2020年
+
+::: {.callout-note collapse="false" icon="true"}
+## 農業協同組合及び同連合会一斉調査 / 確報 総合農協統計表 令和２事業年度総合農協統計表
+
+<https://www.e-stat.go.jp/index.php/stat-search/database?statdisp_id=0001998613>{target="_blank"}
+:::
+
+```{r}
+statsDataId <- "0001998613"
+(meta_info <- estat_getMetaInfo(appId = appId, statsDataId = statsDataId))
+
+df_2020 <- estat_getStatsData(
+  appId = appId,
+  statsDataId = statsDataId
+)
+
+df_2020 <- df_2020 |>
+  filter(
+    `(R001-02-1-015)総額・１組合当たり` == "総額"
+  ) |>
+  rename(
+    `損益計算書（総括）` = `(R001-02-2-007)総括表`
+  ) |>
+  mutate(
+    都道府県 = "全国",
+    年次 = 2020
+  ) |>
+  mutate(
+    `損益計算書（総括）` = sub("１．事業総利益$", "事業総利益", `損益計算書（総括）`),
+    `損益計算書（総括）` = sub("１．事業総利益_事業収益$", "事業収益", `損益計算書（総括）`),
+    `損益計算書（総括）` = sub("１．事業総利益_事業費用$", "事業費用", `損益計算書（総括）`),
+    `損益計算書（総括）` = sub("１．事業総利益_\\(１\\)信用事業収益", "信用事業収益", `損益計算書（総括）`),
+    `損益計算書（総括）` = sub("１．事業総利益_\\(２\\)信用事業費用$", "信用事業費用", `損益計算書（総括）`),
+    `損益計算書（総括）` = sub("１．事業総利益_\\(２\\)信用事業費用_信用事業総利益", "信用事業総利益", `損益計算書（総括）`),
+    `損益計算書（総括）` = sub("１．事業総利益_\\(２\\)信用事業費用_信用事業総利益", "信用事業総利益", `損益計算書（総括）`),
+    `損益計算書（総括）` = sub("１．事業総利益_\\(３\\)共済事業収益", "共済事業収益", `損益計算書（総括）`),
+    `損益計算書（総括）` = sub("１．事業総利益_\\(４\\)共済事業費用$", "共済事業費用", `損益計算書（総括）`),
+    `損益計算書（総括）` = sub("１．事業総利益_共済事業総利益", "共済事業総利益", `損益計算書（総括）`),
+    `損益計算書（総括）` = sub("１．事業総利益_\\(５\\)購買事業収益", "購買事業収益", `損益計算書（総括）`),
+    `損益計算書（総括）` = sub("１．事業総利益_\\(６\\)購買事業費用$", "購買事業費用", `損益計算書（総括）`),
+    `損益計算書（総括）` = sub("１．事業総利益_\\(６\\)購買事業費用_購買事業総利益", "購買事業総利益", `損益計算書（総括）`),
+    `損益計算書（総括）` = sub("１．事業総利益_\\(７\\)販売事業収益", "販売事業収益", `損益計算書（総括）`),
+    `損益計算書（総括）` = sub("１．事業総利益_\\(８\\)販売事業費用$", "販売事業費用", `損益計算書（総括）`),
+    `損益計算書（総括）` = sub("１．事業総利益_\\(８\\)販売事業費用_販売事業総利益", "販売事業総利益", `損益計算書（総括）`),
+    `損益計算書（総括）` = sub("１．事業総利益_\\(９\\)保管事業収益", "保管事業収益", `損益計算書（総括）`),
+    `損益計算書（総括）` = sub("１．事業総利益_\\(10\\)保管事業費用$", "保管事業費用", `損益計算書（総括）`),
+    `損益計算書（総括）` = sub("１．事業総利益_\\(10\\)保管事業費用_保管事業総利益", "保管事業総利益", `損益計算書（総括）`),
+    `損益計算書（総括）` = sub("１．事業総利益_\\(11\\)加工事業収益", "加工事業収益", `損益計算書（総括）`),
+    `損益計算書（総括）` = sub("１．事業総利益_\\(12\\)加工事業費用$", "加工事業費用", `損益計算書（総括）`),
+    `損益計算書（総括）` = sub("１．事業総利益_\\(12\\)加工事業費用_加工事業総利益", "加工事業総利益", `損益計算書（総括）`),
+    `損益計算書（総括）` = sub("１．事業総利益_\\(13\\)利用事業収益", "利用事業収益", `損益計算書（総括）`),
+    `損益計算書（総括）` = sub("１．事業総利益_\\(14\\)利用事業費用$", "利用事業費用", `損益計算書（総括）`),
+    `損益計算書（総括）` = sub("１．事業総利益_\\(14\\)利用事業費用_利用事業総利益", "利用事業総利益", `損益計算書（総括）`),
+    `損益計算書（総括）` = sub("１．事業総利益_\\(15\\)宅地等供給事業収益", "宅地等供給事業収益", `損益計算書（総括）`),
+    `損益計算書（総括）` = sub("１．事業総利益_\\(16\\)宅地等供給事業費用$", "宅地等供給事業費用", `損益計算書（総括）`),
+    `損益計算書（総括）` = sub("１．事業総利益_\\(16\\)宅地等供給事業費用_宅地等供給事業総利益", "宅地等供給事業総利益", `損益計算書（総括）`),
+    `損益計算書（総括）` = sub("１．事業総利益_\\(17\\)その他事業収益", "その他事業収益", `損益計算書（総括）`),
+    `損益計算書（総括）` = sub("１．事業総利益_\\(18\\)その他事業費用$", "その他事業費用", `損益計算書（総括）`),
+    `損益計算書（総括）` = sub("１．事業総利益_\\(18\\)その他事業費用_その他事業総利益", "その他事業総利益", `損益計算書（総括）`)
+  ) |>
+  select(都道府県, `損益計算書（総括）`, 年次, value)
+```
+
+### 2021年
+
+::: {.callout-note collapse="false" icon="true"}
+## 農業協同組合及び同連合会一斉調査 / 確報 総合農協統計表 令和３事業年度総合農協統計表
+
+<https://www.e-stat.go.jp/index.php/stat-search/database?statdisp_id=0002063218>{target="_blank"}
+:::
+
+```{r}
+statsDataId <- "0002063218"
+(meta_info <- estat_getMetaInfo(appId = appId, statsDataId = statsDataId))
+
+df_2021 <- estat_getStatsData(
+  appId = appId,
+  statsDataId = statsDataId
+)
+
+df_2021 <- df_2021 |>
+  rename(
+    都道府県 = `(NOUKYOU1-21-2-004)地域・1組合当たり`,
+    `損益計算書（総括）` = `(NOUKYOU1-21-1-036)事業総利益`
+  ) |>
+  mutate(
+    年次 = 2021
+  ) |>
+  select(都道府県, `損益計算書（総括）`, 年次, value)
+```
+
+### 2022年
+
+::: {.callout-note collapse="false" icon="true"}
+## 農業協同組合及び同連合会一斉調査 / 確報 総合農協統計表 令和４事業年度総合農協統計表
+
+<https://www.e-stat.go.jp/index.php/stat-search/database?statdisp_id=0002110876>{target="_blank"}
+:::
+
+```{r}
+statsDataId <- "0002110876"
+(meta_info <- estat_getMetaInfo(appId = appId, statsDataId = statsDataId))
+
+df_2022 <- estat_getStatsData(
+  appId = appId,
+  statsDataId = statsDataId
+)
+
+df_2022 <- df_2022 |>
+  rename(
+    都道府県 = `(NOUKYOU1-22-2-004)地域・1組合当たり`,
+    `損益計算書（総括）` = `(NOUKYOU1-22-1-036)事業総利益`
+  ) |>
+  mutate(
+    年次 = 2022
+  ) |>
+  select(都道府県, `損益計算書（総括）`, 年次, value)
+```
+
+### 2023年
+
+::: {.callout-note collapse="false" icon="true"}
+## 農業協同組合及び同連合会一斉調査 / 確報 総合農協統計表 令和５事業年度総合農協統計表
+
+<https://www.e-stat.go.jp/index.php/stat-search/database?statdisp_id=0004038720>{target="_blank"}
+:::
+
+```{r}
+statsDataId <- "0004038720"
+(meta_info <- estat_getMetaInfo(appId = appId, statsDataId = statsDataId))
+
+df_2023 <- estat_getStatsData(
+  appId = appId,
+  statsDataId = statsDataId
+)
+
+df_2023 <- df_2023 |>
+  rename(
+    都道府県 = `(NOUKYOU1-23-2-004)地域・1組合当たり`,
+    `損益計算書（総括）` = `(NOUKYOU1-23-1-036)事業総利益`
+  ) |>
+  mutate(
+    年次 = 2023
+  ) |>
+  select(都道府県, `損益計算書（総括）`, 年次, value)
+```
+
+### データ統合
+
+```{r}
+#| warning: false
+df <- df |>
+  mutate(
+    年次 = as.numeric(sub("年", "", `時間軸（年次）`)),
+    `損益計算書（総括）` = sub("^事業総利益_", "", `損益計算書（総括）`)
+  ) |>
+  select(都道府県, `損益計算書（総括）`, `年次`, value)
+
+df_all <- rbind(
+  df_2017,
+  df_2018, df_2019, df_2020,
+  df_2021, df_2022, df_2023
+  )
+
+df_all <- df_all |>
+  mutate(
+    `損益計算書（総括）` = sub("信用事業収益_信用事業収益計", "信用事業収益", `損益計算書（総括）`),
+    `損益計算書（総括）` = sub("信用事業収益_信用事業費用計", "信用事業費用", `損益計算書（総括）`),
+    `損益計算書（総括）` = sub("共済事業収益_共済事業収益計", "共済事業収益", `損益計算書（総括）`),
+    `損益計算書（総括）` = sub("共済事業費用_共済事業費用計", "共済事業費用", `損益計算書（総括）`),
+    `損益計算書（総括）` = sub("販売事業収益_販売事業収益計", "販売事業収益", `損益計算書（総括）`),
+    `損益計算書（総括）` = sub("販売事業費用_販売事業費用計", "販売事業費用", `損益計算書（総括）`),
+    `損益計算書（総括）` = sub("^販売事業費用計$", "販売事業費用", `損益計算書（総括）`),
+    `損益計算書（総括）` = sub("購買事業収益_購買事業収益計", "購買事業収益", `損益計算書（総括）`),
+    `損益計算書（総括）` = sub("購買事業費用_購買事業費用計", "購買事業費用", `損益計算書（総括）`),
+    `損益計算書（総括）` = sub("^購買事業費用計$", "購買事業費用", `損益計算書（総括）`)
+  ) |>
+  filter(
+    都道府県 != "１組合当たり",
+    都道府県 != "1組合当たり",
+    !startsWith(都道府県, "地域_")
+  ) |>
+  mutate(
+    都道府県 = sub("^都道府県_", "", 都道府県),
+    都道府県 = case_when(
+      都道府県 == "全国" ~ "全国",
+      都道府県 == "北海道" ~ "北海道",
+      都道府県 == "東京" ~ "東京都",
+      都道府県 == "京都" ~ "京都府",
+      都道府県 == "大阪" ~ "大阪府",
+      TRUE ~ paste0(都道府県, "県")
+    )
+  )
+
+df_all <- rbind(df, df_all)
+```
+
+## 折れ線グラフ
 
 ### 全国の折れ線グラフ
 
 ```{r}
-df_all <- df |>
-  filter(都道府県 == "全国") |>
+#| warning: false
+df2 <- df_all |>
+  filter(
+    都道府県 == "全国",
+    grepl(".事業総利益$", `損益計算書（総括）`)
+  ) |>
   mutate(
-    年次 = as.numeric(sub("年", "", `時間軸（年次）`))
+    `損益計算書（総括）` = factor(`損益計算書（総括）`, levels = unique(`損益計算書（総括）`))
   )
 
-df_all2 <- df_all[grep(".事業総利益$", df_all$`損益計算書（総括）`), ]
-
 p <- ggplot(
-    data = df_all2,
+    data = df2,
     aes(x = 年次, y = value, colour = `損益計算書（総括）`)
   ) +
   geom_line() +
   geom_point() +
-  scale_y_continuous(labels = scales::comma_format(), name = "（千円）") +
+  scale_y_continuous(
+    labels = scales::label_number(
+      scale = 1 / 1e6,
+      big.mark = ","
+    ),
+    name = "（10億円）"
+  ) +
   scale_color_d3() +
   labs(
     title = "農業協同組合の事業総利益の推移",
@@ -260,15 +651,28 @@ p <- ggplot(
 p
 ggsave(file = "benefits_by_division_for_each_year_all.pdf", plot = p, device = cairo_pdf, path = outdir, width = 8, height = 4)
 
-df_all2 <- df_all[grep("事業収益$", df_all$`損益計算書（総括）`), ]
+df2 <- df_all |>
+  filter(
+    都道府県 == "全国",
+    grepl(".事業収益$", `損益計算書（総括）`)
+  ) |>
+  mutate(
+    `損益計算書（総括）` = factor(`損益計算書（総括）`, levels = unique(`損益計算書（総括）`))
+  )
 
 p <- ggplot(
-    data = df_all2,
+    data = df2,
     aes(x = 年次, y = value, colour = `損益計算書（総括）`)
   ) +
   geom_line() +
   geom_point() +
-  scale_y_continuous(labels = scales::comma_format(), name = "（千円）") +
+  scale_y_continuous(
+    labels = scales::label_number(
+      scale = 1 / 1e6,
+      big.mark = ","
+    ),
+    name = "（10億円）"
+  ) +
   scale_color_d3() +
   labs(
     title = "農業協同組合の事業収益の推移",
@@ -279,21 +683,34 @@ p <- ggplot(
     legend.title = element_blank(),
     axis.title.x = element_blank(),
     axis.title.y = element_text(size = 10, hjust = 1),
-    text = element_text(family = "HiraginoSans-W3")
+    text = element_text(family = "Hiragino Sans")
   )
 
 p
 ggsave(file = "revenues_by_division_for_each_year_all.pdf", plot = p, device = cairo_pdf, path = outdir, width = 8, height = 4)
 
-df_all2 <- df_all[grep("事業費用$", df_all$`損益計算書（総括）`), ]
+df2 <- df_all |>
+  filter(
+    都道府県 == "全国",
+    grepl(".事業費用$", `損益計算書（総括）`)
+  ) |>
+  mutate(
+    `損益計算書（総括）` = factor(`損益計算書（総括）`, levels = unique(`損益計算書（総括）`))
+  )
 
 p <- ggplot(
-    data = df_all2,
+    data = df2,
     aes(x = 年次, y = value, colour = `損益計算書（総括）`)
   ) +
   geom_line() +
   geom_point() +
-  scale_y_continuous(labels = scales::comma_format(), name = "（千円）") +
+  scale_y_continuous(
+    labels = scales::label_number(
+      scale = 1 / 1e6,
+      big.mark = ","
+    ),
+    name = "（10億円）"
+  ) +
   scale_color_d3() +
   labs(
     title = "農業協同組合の事業費用の推移",
@@ -315,19 +732,20 @@ ggsave(file = "costs_by_division_for_each_year_all.pdf", plot = p, device = cair
 
 ```{r}
 #| message: false
+#| warning: false
 library(gghighlight)
 
-df_pref <- df |>
+df2 <- df_all |>
   filter(
     都道府県 != "全国",
     grepl("信用事業総利益", `損益計算書（総括）`)
   ) |>
   mutate(
-    年次 = as.numeric(sub("年", "", `時間軸（年次）`))
+    `損益計算書（総括）` = factor(`損益計算書（総括）`, levels = unique(`損益計算書（総括）`))
   )
 
 p <- ggplot(
-    data = df_pref,
+    data = df2,
     aes(x = 年次, y = value, colour = 都道府県)
   ) +
   geom_line() +
@@ -336,7 +754,13 @@ p <- ggplot(
     grepl("愛媛県|北海道|愛知県|奈良県|沖縄県|長崎県", 都道府県),
     label_params = list(family = "Hiragino Sans")
   ) +
-  scale_y_continuous(labels = scales::comma_format(), name = "（千円）") +
+  scale_y_continuous(
+    labels = scales::label_number(
+      scale = 1 / 1e6,
+      big.mark = ","
+    ),
+    name = "（10億円）"
+  ) +
   scale_color_d3() +
   labs(
     title = "農業協同組合の信用事業総利益の推移（都道府県別）",
@@ -356,17 +780,17 @@ ggsave(file = "benefits_by_division_for_each_year_pref_shinyou.pdf", plot = p, d
 
 ```{r}
 #| message: false
-df_pref <- df |>
+df2 <- df_all |>
   filter(
     都道府県 != "全国",
     grepl("共済事業総利益", `損益計算書（総括）`)
   ) |>
   mutate(
-    年次 = as.numeric(sub("年", "", `時間軸（年次）`))
+    `損益計算書（総括）` = factor(`損益計算書（総括）`, levels = unique(`損益計算書（総括）`))
   )
 
 p <- ggplot(
-    data = df_pref,
+    data = df2,
     aes(x = 年次, y = value, colour = 都道府県)
   ) +
   geom_line() +
@@ -375,7 +799,13 @@ p <- ggplot(
     grepl("愛媛県|北海道|愛知県", 都道府県),
     label_params = list(family = "Hiragino Sans")
   ) +
-  scale_y_continuous(labels = scales::comma_format(), name = "（千円）") +
+  scale_y_continuous(
+    labels = scales::label_number(
+      scale = 1 / 1e6,
+      big.mark = ","
+    ),
+    name = "（10億円）"
+  ) +
   scale_color_d3() +
   labs(
     title = "農業協同組合の共済事業総利益の推移（都道府県別）",
@@ -395,17 +825,17 @@ ggsave(file = "benefits_by_division_for_each_year_pref_kyousai.pdf", plot = p, d
 
 ```{r}
 #| message: false
-df_pref <- df |>
+df2 <- df_all |>
   filter(
     都道府県 != "全国",
     grepl("購買事業総利益", `損益計算書（総括）`)
   ) |>
   mutate(
-    年次 = as.numeric(sub("年", "", `時間軸（年次）`))
+    `損益計算書（総括）` = factor(`損益計算書（総括）`, levels = unique(`損益計算書（総括）`))
   )
 
 p <- ggplot(
-    data = df_pref,
+    data = df2,
     aes(x = 年次, y = value, colour = 都道府県)
   ) +
   geom_line() +
@@ -414,7 +844,13 @@ p <- ggplot(
     grepl("愛媛県|北海道|愛知県", 都道府県),
     label_params = list(family = "Hiragino Sans")
   ) +
-  scale_y_continuous(labels = scales::comma_format(), name = "（千円）") +
+  scale_y_continuous(
+    labels = scales::label_number(
+      scale = 1 / 1e6,
+      big.mark = ","
+    ),
+    name = "（10億円）"
+  ) +
   scale_color_d3() +
   labs(
     title = "農業協同組合の購買事業総利益の推移（都道府県別）",
@@ -434,17 +870,17 @@ ggsave(file = "benefits_by_division_for_each_year_pref_koubai.pdf", plot = p, de
 
 ```{r}
 #| message: false
-df_pref <- df |>
+df2 <- df_all |>
   filter(
     都道府県 != "全国",
     grepl("販売事業総利益", `損益計算書（総括）`)
   ) |>
   mutate(
-    年次 = as.numeric(sub("年", "", `時間軸（年次）`))
+    `損益計算書（総括）` = factor(`損益計算書（総括）`, levels = unique(`損益計算書（総括）`))
   )
 
 p <- ggplot(
-    data = df_pref,
+    data = df2,
     aes(x = 年次, y = value, colour = 都道府県)
   ) +
   geom_line() +
@@ -453,7 +889,13 @@ p <- ggplot(
     grepl("愛媛県|北海道|愛知県", 都道府県),
     label_params = list(family = "Hiragino Sans")
   ) +
-  scale_y_continuous(labels = scales::comma_format(), name = "（千円）") +
+  scale_y_continuous(
+    labels = scales::label_number(
+      scale = 1 / 1e6,
+      big.mark = ","
+    ),
+    name = "（10億円）"
+  ) +
   scale_color_d3() +
   labs(
     title = "農業協同組合の販売事業総利益の推移（都道府県別）",
